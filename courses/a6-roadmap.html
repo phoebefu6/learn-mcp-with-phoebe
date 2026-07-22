@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leader session 6 · The roadmap and your strategy - learn mcp with phoebe</title>
+<link rel="stylesheet" href="../assets/style.css?v=1">
+</head>
+<body>
+
+<div class="toolbar">
+  <div class="wrap">
+    <span class="crumb"><a href="../index.html">learn-mcp-with-phoebe</a> / Leader session 6 of 6</span>
+    <button class="btn" id="toggle-all" type="button">Expand all</button>
+    <button class="btn primary" id="zoom-toggle" type="button">Projector zoom: off</button>
+  </div>
+</div>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="eyebrow">Learn MCP with Phoebe · Leader track · Session 6 of 6</div>
+    <h1>The roadmap and your <span class="accent">strategy</span></h1>
+    <p class="sub">A standard that changes twice a year is either a risk you fear or a tailwind you ride - and which one depends entirely on whether you can read where it is going. This final session teaches you to read a spec changelog like a quarterly report, decodes the revision landing days after this course ships, and leaves you with a fund-wait-watch plan and a one-page position memo. You finish able to make MCP decisions that still look smart two revisions from now.</p>
+    <div class="chip-row">
+      <span class="chip level">🔵 Leader track</span>
+      <span class="chip audience">C-level · managers · curious minds</span>
+      <span class="chip audience">No code - forward strategy</span>
+      <span class="chip time">🟠 Deciding · 45 min</span>
+    </div>
+    <div class="agenda">
+      <span class="a1" style="flex:1">0-3 · Welcome</span>
+      <span class="a2" style="flex:4">3-18 · How MCP evolves</span>
+      <span class="a3" style="flex:3">18-30 · The 2026-07-28 revision</span>
+      <span class="a4" style="flex:4">30-45 · Fund/wait + demos</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ============ INTRO ============ -->
+  <section class="section" id="intro">
+    <div class="section-kicker">
+      <span class="klabel">Part 0</span>
+      <h2>Betting on a moving standard</h2>
+    </div>
+    <p class="lede">Five sessions in, you can spot MCP work, keep it safe, and make the business case. The last skill is temporal: MCP is not finished, and it never will be - it ships a dated revision roughly twice a year through an open process. A leader who treats that as instability will under-invest and get lapped. A leader who treats it as a published roadmap - because that is what it is - can fund the parts that are settling, wait on the parts that are not, and never be surprised. That literacy is what you walk out with tonight.</p>
+    <div class="legend">
+      <span class="pill solid">Live - presented in session</span>
+      <span class="pill light">Self-study - read after class</span>
+      <span class="pill inkpill">Official sources covered</span>
+    </div>
+    <div class="callout win">
+      <strong>★ What you walk out with today</strong>
+      How to read a spec changelog like a quarterly report (dated revisions, the open SEP process, Linux Foundation neutrality, about two revisions a year), a business-level decode of the 2026-07-28 revision - cheaper scaling, servers that ship their own UI, and a migration budget the deprecations create - and a fund-wait-watch plan plus a one-page position memo you can circulate to your leadership team this week.
+    </div>
+  </section>
+
+  <!-- ============ PART 1: HOW MCP EVOLVES ============ -->
+  <section class="section" id="how-evolves">
+    <div class="section-kicker">
+      <span class="klabel">Part 1 · covers spec versioning · SEP process · governance neutrality</span>
+      <h2>How MCP evolves <span class="tag concept">15 min live</span></h2>
+    </div>
+    <p class="lede">MCP versions are dates, not marketing numbers - <code>2025-11-25</code>, not "MCP 4.0." That is a tell about how it is run: changes flow through a public SEP process (the same shape as Python's PEPs), proposed in the open, debated, and merged into a dated revision about twice a year. Since December 2025 the whole thing sits under the Agentic AI Foundation at the Linux Foundation, with OpenAI and Block as co-founders - so no single vendor can steer it toward their own lock-in. For you, that combination - dated cadence plus neutral governance - means the roadmap is legible in advance. You are not waiting for a vendor's surprise announcement; you are reading a public changelog.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Timeline of MCP spec revisions from November 2024 launch through the July 2026 revision, showing roughly two dated revisions per year">
+        <style>
+          .tlK { font: 700 13px Inter, sans-serif; fill: #1E242D; }
+          .tlD { font: 700 12px Inter, sans-serif; fill: #FFFFFF; }
+          .tlL { font: 600 11.5px Inter, sans-serif; fill: #1E242D; }
+          .tlX { font: 400 11px Inter, sans-serif; fill: #5B6674; }
+          .tlN { font: 600 13px Inter, sans-serif; fill: #043029; }
+          .tlbar { stroke: #C3CBD6; stroke-width: 3; }
+        </style>
+        <text class="tlK" x="40" y="34">FIVE REVISIONS - dated, public, about two a year</text>
+        <line class="tlbar" x1="70" y1="120" x2="820" y2="120"/>
+        <circle cx="105" cy="120" r="30" fill="#DDAF7E"/>
+        <text class="tlD" x="79" y="116">2024</text><text class="tlD" x="83" y="130">11-05</text>
+        <text class="tlL" x="72" y="176">Launch</text>
+        <text class="tlX" x="66" y="192">open-sourced</text>
+        <circle cx="285" cy="120" r="30" fill="#C08048"/>
+        <text class="tlD" x="259" y="116">2025</text><text class="tlD" x="263" y="130">03-26</text>
+        <text class="tlL" x="248" y="176">Streamable HTTP</text>
+        <text class="tlX" x="252" y="192">old SSE dropped</text>
+        <circle cx="465" cy="120" r="30" fill="#C08048"/>
+        <text class="tlD" x="439" y="116">2025</text><text class="tlD" x="443" y="130">06-18</text>
+        <text class="tlL" x="428" y="176">Elicitation added</text>
+        <circle cx="645" cy="120" r="34" fill="#A8622B"/>
+        <text class="tlD" x="619" y="116">2025</text><text class="tlD" x="623" y="130">11-25</text>
+        <text class="tlL" x="600" y="176">Current spec</text>
+        <text class="tlX" x="594" y="192">what we teach</text>
+        <circle cx="810" cy="120" r="34" fill="#5C3312"/>
+        <text class="tlD" x="784" y="116">2026</text><text class="tlD" x="788" y="130">07-28</text>
+        <text class="tlL" x="762" y="176">Next revision</text>
+        <text class="tlX" x="760" y="192">lands days after</text>
+        <text class="tlX" x="768" y="206">this course</text>
+        <rect x="40" y="244" width="14" height="14" rx="3" fill="#0E7C6B"/>
+        <text class="tlN" x="64" y="256">Read the cadence, not the panic: a dated revision roughly twice a</text>
+        <text class="tlN" x="64" y="274">year, each with a published Key Changes page you can plan against.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the MCP spec timeline, launch through the revision landing after this course</figcaption>
+    </figure>
+
+    <details class="card" open>
+      <summary><span class="mode live">Live</span>Reading a spec changelog as an executive<span class="mini">5 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>You do not need to read the spec. You need to read its Key Changes page the way you read an analyst note - looking for three things, ignoring the rest.</p>
+        <ul>
+          <li><strong>What got deprecated?</strong> Deprecations are the only entries with a deadline. Each one is a migration your teams will have to budget for before its removal window closes - find these first.</li>
+          <li><strong>What got easier or cheaper?</strong> Look for anything that reduces what a server has to track or a team has to operate. Those are the tailwinds you can lean into now.</li>
+          <li><strong>What is newly possible?</strong> New capabilities open new product surfaces - but only once the hosts you use actually support them. Note these as watch items, not build orders.</li>
+        </ul>
+        <p>Everything else in a changelog - internal routing, schema versions, error codes - is your engineers' concern, not yours. Three questions, five minutes, twice a year. That is the entire executive discipline for a moving standard.</p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>Why "dates, not versions" is a governance signal<span class="mini">3 min read</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>A vendor who owns a standard ships "3.0" and asks you to upgrade. A neutral community ships a dated revision and lets you decide when it matters to you. The date scheme is deliberate: it removes the marketing pressure of a big version number and signals that no revision is a rewrite - just the standard as of that day. Combined with the Linux Foundation's neutral stewardship and the co-founding of OpenAI and Block, this is the property that lets you bet real budget on MCP: the thing you are standardizing on cannot be yanked out from under you by one company's roadmap.</p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ PART 2: THE REVISION DECODED ============ -->
+  <section class="section" id="revision-decoded">
+    <div class="section-kicker">
+      <span class="klabel">Part 2 · covers the 2026-07-28 Key Changes, in business terms</span>
+      <h2>The 2026-07-28 revision, decoded <span class="tag concept">12 min live</span></h2>
+    </div>
+    <p class="lede">Here is the next revision in the only language a leader needs - implications, not protocol detail. Four themes matter. The core goes <strong>stateless</strong>, which is a cost story. <strong>MCP Apps</strong> arrive, which is a product-surface story. <strong>Tasks and Extensions</strong> formalize, which is a maturity story. And several capabilities are <strong>deprecated</strong>, which is a budget story. Take them one card at a time.</p>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>Stateless core - the cost story<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Today, a remote server has to remember each conversation - it holds a session while you talk to it. The revision removes that: the opening handshake and the session identifier disappear, and everything a request needs travels with the request. In plain terms, servers become like a well-designed website that does not care which server answers you - which means they are <strong>cheaper and simpler to scale</strong>. For you: the operating cost of the "expose" and remote-server postures from a5 goes down, and reliability at scale gets easier for your platform team to promise.</p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>MCP Apps - the new product surface<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Until now, a server returned data and the AI app decided how to show it. MCP Apps let a server ship its own <strong>user interface</strong> - a small, sandboxed panel that renders inside the host. Think a booking calendar, a chart, an approval button, delivered by the server itself. This is a genuinely new surface: your product could present interactive UI directly inside someone else's AI assistant. It is also the least mature item here - exciting, first-class in the spec, and not something to bet production on until the hosts your customers use actually render it.</p>
+        <div class="callout tip">
+          <strong>Watch, do not build - yet</strong>
+          MCP Apps is the clearest "watch" item on tonight's roadmap. Fund a small experiment if it maps to your product; do not promise customers a UI-in-their-AI feature until host support is real and widespread.
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>Tasks and Extensions - the maturity story<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Two signs the standard is growing up. <strong>Tasks</strong> - the way a server handles long-running work that does not finish in one reply - graduates into a proper extension. And an <strong>Extensions framework</strong> becomes first-class, meaning MCP now has an official way to add capabilities without bloating the core everyone must implement. For you this reads as reassurance: the protocol can grow at the edges while its center stays small and stable. That is exactly the shape you want in something you are standardizing on - a stable core, optional extensions, no forced churn.</p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>Deprecations - the migration-budget story<span class="mini">3 min read</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>The revision deprecates <strong>Roots, Sampling, and Logging</strong> - older client-side capabilities - with a twelve-month removal window. If none of your servers use them, this is a non-event. If some do, you have a year to migrate, and the honest move is to put that on a roadmap now rather than discover it at month eleven.</p>
+        <ul>
+          <li><strong>The action:</strong> ask your teams "do any of our servers rely on sampling, roots, or logging?" A no closes the topic. A yes starts a small, unhurried migration plan.</li>
+          <li><strong>The principle:</strong> deprecations are the one changelog entry with a deadline. Treat every one as a line item, never as a surprise.</li>
+        </ul>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ PART 3: FUND / WAIT / WATCH ============ -->
+  <section class="section" id="fund-wait">
+    <div class="section-kicker">
+      <span class="klabel">Part 3 · covers the 12-month horizon plan</span>
+      <h2>What to fund, what to wait on <span class="tag concept">10 min live</span></h2>
+    </div>
+    <p class="lede">Decode is useless without allocation, so here is the whole roadmap as three lanes. <strong>Fund</strong> the things that are settled and compounding: your teams' server-building skills, the governance you built in a4, and a presence in the official registry so you are discoverable. <strong>Wait</strong> on production bets that depend on things not yet real - MCP Apps in particular, until the hosts you rely on support them. <strong>Watch</strong> the things that will decide next year's plan: host adoption of the new capabilities and each spec revision's Key Changes page. Money into the fund lane, patience in the wait lane, attention in the watch lane.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Three-lane roadmap: fund settled compounding investments, wait on immature production bets, watch the signals that decide next year">
+        <style>
+          .fwT { font: 700 14px Inter, sans-serif; fill: #FFFFFF; }
+          .fwH { font: 700 13px Inter, sans-serif; fill: #1E242D; }
+          .fwX { font: 400 11.5px Inter, sans-serif; fill: #5B6674; }
+          .fwN { font: 600 13px Inter, sans-serif; fill: #043029; }
+        </style>
+        <text class="fwH" x="40" y="30">THREE LANES - where money, patience, and attention go</text>
+        <rect x="40" y="46" width="255" height="200" rx="10" fill="#5C3312"/>
+        <text class="fwT" x="58" y="76">FUND now</text>
+        <text class="fwX" x="58" y="104" fill="#F8EFE4">Settled and compounding:</text>
+        <text class="fwX" x="58" y="128" fill="#F8EFE4">· server-building skills</text>
+        <text class="fwX" x="58" y="150" fill="#F8EFE4">· governance from a4</text>
+        <text class="fwX" x="58" y="172" fill="#F8EFE4">· registry presence</text>
+        <text class="fwX" x="58" y="206" fill="#DDAF7E">Money goes here.</text>
+        <rect x="312" y="46" width="255" height="200" rx="10" fill="#A8622B"/>
+        <text class="fwT" x="330" y="76">WAIT on</text>
+        <text class="fwX" x="330" y="104" fill="#F8EFE4">Real but immature:</text>
+        <text class="fwX" x="330" y="128" fill="#F8EFE4">· MCP Apps in production</text>
+        <text class="fwX" x="330" y="150" fill="#F8EFE4">· UI-in-their-AI promises</text>
+        <text class="fwX" x="330" y="172" fill="#F8EFE4">· until hosts support it</text>
+        <text class="fwX" x="330" y="206" fill="#F8EFE4">Patience goes here.</text>
+        <rect x="584" y="46" width="256" height="200" rx="10" fill="#C08048"/>
+        <text class="fwT" x="602" y="76">WATCH for</text>
+        <text class="fwX" x="602" y="104" fill="#F8EFE4">Signals that decide 2027:</text>
+        <text class="fwX" x="602" y="128" fill="#F8EFE4">· host adoption of new caps</text>
+        <text class="fwX" x="602" y="150" fill="#F8EFE4">· each Key Changes page</text>
+        <text class="fwX" x="602" y="172" fill="#F8EFE4">· your deprecation exposure</text>
+        <text class="fwX" x="602" y="206" fill="#F8EFE4">Attention goes here.</text>
+        <rect x="40" y="278" width="14" height="14" rx="3" fill="#0E7C6B"/>
+        <text class="fwN" x="64" y="290">The skills and governance you fund are safe bets - they pay off under every revision the roadmap can throw.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the fund / wait / watch roadmap for the next twelve months</figcaption>
+    </figure>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>The 12-month horizon plan<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Turn the three lanes into a plan you can hand to a leadership team. One row per lane, one owner each, revisited at the next revision.</p>
+        <table class="clean">
+          <thead><tr><th>Lane</th><th>Move this year</th><th>Owner</th></tr></thead>
+          <tbody>
+            <tr><td>Fund</td><td>Train a small team to build and maintain servers; adopt the a4 governance; list your first server in the registry.</td><td>Eng lead + your sponsorship</td></tr>
+            <tr><td>Wait</td><td>Run one contained MCP Apps experiment only if it maps to your product; hold production promises until host support is real.</td><td>Product lead</td></tr>
+            <tr><td>Watch</td><td>Assign someone to read each Key Changes page and report the three questions; track your Roots/Sampling/Logging exposure.</td><td>A named individual, not a committee</td></tr>
+          </tbody>
+        </table>
+        <p>The fund lane is where the durable advantage compounds - skills and governance survive every revision. Wait and watch keep you from over-committing to what is still moving.</p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ DEMO 1 ============ -->
+  <section class="section" id="demo-1">
+    <div class="section-kicker">
+      <span class="klabel">Demo 1 of 2</span>
+      <h2>Stress-test your plan against the spec <span class="tag demo">★ 8 min · use your a5 candidate</span></h2>
+    </div>
+    <p class="lede">Take the first-server candidate you circled in a5 and run it forward through the roadmap. The point is to find the assumption that the next revision changes - before it changes for you.</p>
+
+    <div class="steps">
+      <div class="step"><p>State your plan in one line: "we will build a ___ server, remote, this year." Write it where everyone can see it.</p></div>
+      <div class="step"><p>Apply the stateless core: does your plan assume anything about server sessions or per-conversation memory? If yes, note that it gets simpler - and cheaper - under the revision, not harder.</p></div>
+      <div class="step"><p>Check deprecation exposure: would this server use roots, sampling, or logging? If yes, add a migration line with a date inside the twelve-month window.</p></div>
+      <div class="step"><p>Check MCP Apps temptation: is anyone assuming this server will ship its own UI soon? Move that to the wait lane until host support is confirmed.</p></div>
+      <div class="step"><p>Re-state the plan with those three adjustments. If it barely changed, your plan was already roadmap-proof - which is the outcome you want.</p></div>
+    </div>
+  </section>
+
+  <!-- ============ DEMO 2 ============ -->
+  <section class="section" id="demo-2">
+    <div class="section-kicker">
+      <span class="klabel">Demo 2 of 2</span>
+      <h2>Write your MCP position memo <span class="tag demo">★ 7 min · one page, circulate it</span></h2>
+    </div>
+    <p class="lede">Everything in these six sessions collapses into one page your leadership team can align on. Draft it now while the frameworks are fresh; a memo written tonight beats a strategy deck promised for next quarter.</p>
+
+    <div class="steps">
+      <div class="step"><p><strong>Our stance:</strong> one sentence on how your org treats MCP - "a standard we are adopting deliberately, starting read-only." No hedging.</p></div>
+      <div class="step"><p><strong>Our first bet:</strong> the a5 candidate and its one-slide case, in two lines. What we build first and why.</p></div>
+      <div class="step"><p><strong>Our guardrails:</strong> the a4 governance in one line - scope policy, allowlists, human approval on the irreversible ring.</p></div>
+      <div class="step"><p><strong>Our fund/wait/watch:</strong> the three lanes with their owners, from Part 3.</p></div>
+      <div class="step"><p><strong>Our review date:</strong> "we revisit this after the next spec revision." Name the date. That single line makes the memo a living document instead of a filed one.</p></div>
+    </div>
+
+    <div class="callout tip">
+      <strong>The memo is the deliverable</strong>
+      A one-page position memo, owned by you and reviewed each revision, is worth more than any dashboard. It turns MCP from a topic your teams discuss into a strategy your org holds.
+    </div>
+  </section>
+
+  <!-- ============ HOMEWORK ============ -->
+  <section class="section" id="exercise">
+    <div class="section-kicker">
+      <span class="klabel">Homework</span>
+      <h2>Questions to ask your teams this week <span class="tag exercise">◐ 25 min total</span></h2>
+    </div>
+    <ul>
+      <li><strong>Revisit after 2026-07-28.</strong> The next revision finalizes just days after this course shipped - re-open the official Key Changes page once it lands and confirm the four themes decoded here match the published text, then update your memo's review date.</li>
+      <li>Ask your teams: "do any servers we run or plan to run use roots, sampling, or logging?" Turn any yes into a dated migration line inside the twelve-month window.</li>
+      <li>Assign one named person - not a committee - to read each future Key Changes page and report back the three executive questions: what got deprecated, what got cheaper, what is newly possible.</li>
+      <li>Circulate your one-page position memo to your leadership team and book the review-date meeting now, so the strategy stays alive as the standard moves.</li>
+    </ul>
+  </section>
+
+  <!-- ============ SOURCES ============ -->
+  <section class="section" id="official">
+    <div class="section-kicker">
+      <span class="klabel">Source material</span>
+      <h2>Official sources covered</h2>
+    </div>
+    <p class="lede">This session reads the spec's own change record as a strategy document. The full technical delta - what actually changes in the protocol - is builder session b8; the pages below are your canonical reference as the standard evolves.</p>
+    <div class="covered">
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">modelcontextprotocol.io - spec "Key Changes" (2025-11-25 and 2026-07-28)</span><span class="note">Decoded to business implications: stateless core, MCP Apps, Tasks/Extensions, deprecations - re-verify after Jul 28, 2026</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">modelcontextprotocol.io - roadmap + Extensions framework docs</span><span class="note">Read at strategy level for the fund/wait/watch lanes; the mechanics stay in b8</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">Anthropic Academy "MCP: Advanced Topics"</span><span class="note">The advanced-features context behind Tasks, extensions, and MCP Apps; hands-on stays official</span></div>
+    </div>
+  </section>
+
+  <!-- ============ QUIZ ============ -->
+  <section class="section" id="quiz">
+    <div class="section-kicker">
+      <span class="klabel">Check yourself</span>
+      <h2>Three questions before you go 🎯 <span class="tag exercise">◐ 90 seconds</span></h2>
+    </div>
+    <div class="quiz-q" data-answer="2">
+      <p class="qtext">1 · Reading an MCP spec changelog as an executive means looking for...</p>
+      <button class="qopt" type="button">A · Every schema and error-code change, in full</button>
+      <button class="qopt" type="button">B · The new version number and its marketing name</button>
+      <button class="qopt" type="button">C · What got deprecated, what got cheaper, and what is newly possible - three questions, five minutes</button>
+      <p class="qwhy">Deprecations carry deadlines, tailwinds you lean into now, new capabilities you watch until hosts support them. The rest is your engineers' concern. Dates, not versions - so there is no marketing name to find.</p>
+    </div>
+    <div class="quiz-q" data-answer="0">
+      <p class="qtext">2 · The stateless core in the 2026-07-28 revision is, for a leader, primarily a...</p>
+      <button class="qopt" type="button">A · Cost story - remote servers become cheaper and simpler to scale</button>
+      <button class="qopt" type="button">B · Security story - it replaces OAuth</button>
+      <button class="qopt" type="button">C · Feature your customers will notice directly</button>
+      <p class="qwhy">Dropping per-conversation session state makes servers scale like a stateless website - lower operating cost for the remote and expose postures. It is invisible to end users and does not touch auth.</p>
+    </div>
+    <div class="quiz-q" data-answer="1">
+      <p class="qtext">3 · MCP Apps belongs in which roadmap lane this year?</p>
+      <button class="qopt" type="button">A · Fund - build production features on it now</button>
+      <button class="qopt" type="button">B · Wait - real and first-class in the spec, but hold production bets until the hosts you use support it</button>
+      <button class="qopt" type="button">C · Ignore - it will never matter</button>
+      <p class="qwhy">MCP Apps is genuinely new and exciting - servers shipping their own UI - but the least mature item on the roadmap. Experiment small; do not promise customers a UI-in-their-AI feature until host support is widespread.</p>
+    </div>
+    <p class="quiz-score"></p>
+  </section>
+
+  <!-- ============ CHEAT SHEET ============ -->
+  <section class="cheat" id="cheatsheet">
+    <h3>Leader session 6 cheat sheet <span>· pin this</span></h3>
+    <div class="grid-2">
+      <div class="cheat-item"><b>Dates, not versions</b><span>MCP ships a dated revision ~twice a year via open SEP process, Linux Foundation governed. No vendor can yank it.</span></div>
+      <div class="cheat-item"><b>Read a changelog</b><span>Three questions: what got deprecated (deadline), what got cheaper (tailwind), what is newly possible (watch). 5 min, twice a year.</span></div>
+      <div class="cheat-item"><b>Stateless core</b><span>Session handshake removed - servers scale like a stateless website. A cost win for remote + expose postures.</span></div>
+      <div class="cheat-item"><b>MCP Apps</b><span>Servers ship their own sandboxed UI inside the host. New product surface - but wait on production until hosts support it.</span></div>
+      <div class="cheat-item"><b>Tasks + Extensions</b><span>Stable small core, optional extensions at the edge. Maturity signal: growth without forced churn.</span></div>
+      <div class="cheat-item"><b>Deprecations</b><span>Roots, Sampling, Logging - 12-month window. The only changelog entry with a deadline; make it a budgeted line.</span></div>
+      <div class="cheat-item"><b>Fund / wait / watch</b><span>Fund skills + governance + registry · wait on MCP Apps in production · watch host adoption + each Key Changes page.</span></div>
+      <div class="cheat-item"><b>The deliverable</b><span>A one-page position memo you own and review each revision. Book the review date now.</span></div>
+    </div>
+  </section>
+
+  <footer class="pagefoot">
+    <span>Leader session 6 of 6 · learn-mcp-with-phoebe · by Phoebe Fu &nbsp;·&nbsp; 📚 <a href="https://phoebefu6.github.io/learn-with-phoebe/">Learn with Phoebe ↗</a></span>
+    <span><a href="a5-mcp-in-your-org.html">← Prev: MCP in your organization</a> &nbsp;·&nbsp; <a href="b1-what-mcp-is.html">→ Builder track starts at b1</a></span>
+  </footer>
+
+</main>
+
+<script src="../assets/app.js?v=1"></script>
+</body>
+</html>

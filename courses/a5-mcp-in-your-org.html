@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leader session 5 · MCP in your organization - learn mcp with phoebe</title>
+<link rel="stylesheet" href="../assets/style.css?v=1">
+</head>
+<body>
+
+<div class="toolbar">
+  <div class="wrap">
+    <span class="crumb"><a href="../index.html">learn-mcp-with-phoebe</a> / Leader session 5 of 6</span>
+    <button class="btn" id="toggle-all" type="button">Expand all</button>
+    <button class="btn primary" id="zoom-toggle" type="button">Projector zoom: off</button>
+  </div>
+</div>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="eyebrow">Learn MCP with Phoebe · Leader track · Session 5 of 6</div>
+    <h1>MCP in your <span class="accent">organization</span></h1>
+    <p class="sub">You now know what MCP is, how it is governed, and how to keep it safe. This is the session where it stops being a technology briefing and becomes a plan. Where do you look for the wins? Should you buy servers, build them, or turn your own product into one? And how do you frame the spend so a board says yes? You leave with a use-case scan you can run on any department and a one-slide business case you can present next week.</p>
+    <div class="chip-row">
+      <span class="chip level">🔵 Leader track</span>
+      <span class="chip audience">C-level · managers · curious minds</span>
+      <span class="chip audience">No code - real decisions</span>
+      <span class="chip time">🟠 Deciding · 45 min</span>
+    </div>
+    <div class="agenda">
+      <span class="a1" style="flex:1">0-3 · Welcome</span>
+      <span class="a2" style="flex:4">3-18 · Find the wins</span>
+      <span class="a3" style="flex:3">18-30 · Buy, build, or become</span>
+      <span class="a4" style="flex:4">30-45 · ROI + demos</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ============ INTRO ============ -->
+  <section class="section" id="intro">
+    <div class="section-kicker">
+      <span class="klabel">Part 0</span>
+      <h2>From understanding to a plan</h2>
+    </div>
+    <p class="lede">Every session so far has built your judgment. This one spends it. The mistake leaders make with a new standard is to ask "should we adopt MCP?" - a yes/no that stalls in committee. The better question is "where does MCP shaped work already exist in our building, and what is the cheapest one to prove?" That reframe is the whole session: a repeatable way to <strong>spot</strong> the opportunities, a clear <strong>posture</strong> for each one, and a <strong>number</strong> the board can act on.</p>
+    <div class="legend">
+      <span class="pill solid">Live - presented in session</span>
+      <span class="pill light">Self-study - read after class</span>
+      <span class="pill inkpill">Official sources covered</span>
+    </div>
+    <div class="callout win">
+      <strong>★ What you walk out with today</strong>
+      A pattern for spotting MCP-shaped work (repeated copy-paste between an AI app and a system is a server waiting to be built), the five-question filter to test any candidate, the three connector postures - consume, commission, expose - with the knowledge that exposing your product is a strategy decision not an IT one, and a one-slide business case that reframes the spend as integration lead-time, not another AI experiment.
+    </div>
+  </section>
+
+  <!-- ============ PART 1: FIND THE WINS ============ -->
+  <section class="section" id="finding-wins">
+    <div class="section-kicker">
+      <span class="klabel">Part 1 · covers the use-case scan · MCP connector context at strategy level</span>
+      <h2>Scanning for MCP-shaped wins <span class="tag concept">15 min live</span></h2>
+    </div>
+    <p class="lede">There is one tell that never fails. Watch where a person moves information <strong>by hand</strong> between an AI assistant and a system of record - copying a customer ID out of a chat and into a dashboard, pasting a report back into the chat to ask a follow-up question. Every one of those hops is a human being a human API. An MCP server removes the hop: the AI reaches the system directly, under your rules. So the scan is not "where could we use AI?" - it is "where are people already shuttling data in and out of AI by hand?" Those are your candidates, pre-validated by the fact that someone bothered to do them manually.</p>
+
+    <details class="card" open>
+      <summary><span class="mode live">Live</span>The five-question use-case filter<span class="mini">5 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Not every copy-paste hop deserves a server. Run each candidate through five questions - a yes to all five is a green light, and the first no tells you exactly what to fix before you proceed.</p>
+        <ul>
+          <li><strong>1 · Is it repeated?</strong> A hop done once a quarter is not worth a server. A hop done daily by many people is.</li>
+          <li><strong>2 · Is the system reachable?</strong> Does it have an API or database an engineer could wrap? If it is a fax machine, MCP will not save you.</li>
+          <li><strong>3 · Can it start read-only?</strong> The safest first server only reads. If your candidate demands writes on day one, the risk conversation from a4 gets larger.</li>
+          <li><strong>4 · Is the blast radius acceptable?</strong> Same rings as a4 - read, write, irreversible. A read-only reporting hop is a fine first bet; a "let the AI issue refunds" hop is not where you start.</li>
+          <li><strong>5 · Who owns the answer's correctness?</strong> If the AI gets it wrong, who notices and who is accountable? A win with no owner is a liability with a schedule.</li>
+        </ul>
+        <p>Keep this to five questions on purpose. A filter people can hold in their heads gets run; a fifteen-point rubric gets skipped.</p>
+      </div>
+    </details>
+
+    <div class="callout example">
+      <span class="ex-pill">Real world</span>
+      <p><strong>Daybreak finds its first server in a stand-up.</strong> The DTC coffee brand's founder kept pinging the data team the same question - "how did subscriptions do last week versus the promo?" An analyst would pull the number, paste it into chat, and field three follow-ups the same way. That is the tell: a daily, repeated, read-only hop between a person's AI assistant and the sales database, with a clear owner (the data team). It passed all five questions, so the data team shipped a small Daybreak MCP server in a week. Now the founder's assistant answers sales questions directly - and the analyst got their mornings back.</p>
+    </div>
+  </section>
+
+  <!-- ============ PART 2: CONNECTOR STRATEGY ============ -->
+  <section class="section" id="connector-strategy">
+    <div class="section-kicker">
+      <span class="klabel">Part 2 · covers buy-vs-build posture · consume / commission / expose</span>
+      <h2>Connector strategy: buy, build, or become <span class="tag concept">12 min live</span></h2>
+    </div>
+    <p class="lede">Once you have a candidate, you have a posture decision - and there are exactly three. You can <strong>consume</strong> a public server someone else maintains, <strong>commission</strong> an internal server your team builds, or <strong>expose</strong> your own product as a server the world connects to. The first two are operational choices a director can make. The third is a product and go-to-market decision that belongs on the executive agenda - because if your customers can plug your product into their AI as easily as any other server, that is either a moat or a bypass, depending on who moves first.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 340" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Three connector postures as lanes: consume public servers, commission internal servers, expose your product as a server, each with who decides and the main risk">
+        <style>
+          .cslane { font: 700 14px Inter, sans-serif; fill: #FFFFFF; }
+          .cssub { font: 400 11.5px Inter, sans-serif; fill: #FFFFFF; opacity: .92; }
+          .csK { font: 700 13px Inter, sans-serif; fill: #1E242D; }
+          .csX { font: 400 12px Inter, sans-serif; fill: #5B6674; }
+          .csN { font: 600 13px Inter, sans-serif; fill: #043029; }
+        </style>
+        <text class="csK" x="40" y="32">THREE POSTURES - each answers a different question</text>
+        <rect x="40" y="48" width="255" height="150" rx="10" fill="#C08048"/>
+        <text class="cslane" x="58" y="78">Consume</text>
+        <text class="cssub" x="58" y="100">use a public server</text>
+        <text class="cssub" x="58" y="118">someone else maintains</text>
+        <text class="cssub" x="58" y="150">Decides: a team lead</text>
+        <text class="cssub" x="58" y="170">Risk: vendor trust,</text>
+        <text class="cssub" x="58" y="186">updates change under you</text>
+        <rect x="312" y="48" width="255" height="150" rx="10" fill="#A8622B"/>
+        <text class="cslane" x="330" y="78">Commission</text>
+        <text class="cssub" x="330" y="100">build an internal server</text>
+        <text class="cssub" x="330" y="118">over your own systems</text>
+        <text class="cssub" x="330" y="150">Decides: a director</text>
+        <text class="cssub" x="330" y="170">Risk: build + maintain</text>
+        <text class="cssub" x="330" y="186">cost, ownership</text>
+        <rect x="584" y="48" width="256" height="150" rx="10" fill="#5C3312"/>
+        <text class="cslane" x="602" y="78">Expose</text>
+        <text class="cssub" x="602" y="100">ship YOUR product</text>
+        <text class="cssub" x="602" y="118">as a server others connect</text>
+        <text class="cssub" x="602" y="150">Decides: the exec team</text>
+        <text class="cssub" x="602" y="170">Risk: it is a PRODUCT</text>
+        <text class="cssub" x="602" y="186">and GTM bet</text>
+        <rect x="40" y="228" width="14" height="14" rx="3" fill="#0E7C6B"/>
+        <text class="csN" x="64" y="240">Most orgs start by consuming, graduate to commissioning, and</text>
+        <text class="csN" x="64" y="258">only some ever face the expose decision.</text>
+        <rect x="40" y="286" width="14" height="14" rx="3" fill="#0E7C6B"/>
+        <text class="csN" x="64" y="298">Expose is not bigger IT - it changes who your product integrates</text>
+        <text class="csN" x="64" y="316">with and how customers reach it. Treat it as strategy.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the three connector postures and who owns each decision</figcaption>
+    </figure>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>Consume and commission - the operational two<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p><strong>Consume</strong> is the fastest path to value: a maintained public server (from the registry you met in a3) plugs into your AI app today. The cost is trust - you inherit someone else's update schedule and tool descriptions, which is exactly the a4 review discipline in action. <strong>Commission</strong> is the workhorse: your team wraps your own systems in a server, so your domain logic and access rules are yours. The cost is that you now own a piece of software - build, maintain, and re-review it like any other internal service.</p>
+        <ul>
+          <li><strong>Consume when:</strong> the capability is generic (a public data source, a well-known SaaS) and a trusted maintainer already exists.</li>
+          <li><strong>Commission when:</strong> the value is in <em>your</em> data or rules, or the blast radius means you want the credentials to stay in-house.</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>Expose - when your product becomes a server<span class="mini">4 min read</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>The third posture is the one that keeps CEOs up. If your product exposes an MCP server, any customer can wire it into their AI in an afternoon - no integration project, no partnership deal. That cuts both ways. Done first, it makes you the default node in your customers' AI stack, the thing their assistants already know how to call. Done late, a competitor becomes that node and your product is the one requiring the awkward custom integration.</p>
+        <ul>
+          <li><strong>The upside:</strong> distribution. Every AI app that adopts MCP is a potential new surface for your product, with no per-integration engineering.</li>
+          <li><strong>The question it forces:</strong> what does "our product, callable by any AI" do to our pricing, our support model, and our competitive position? That is a board conversation, not a backlog ticket.</li>
+          <li><strong>Why it is here, not in the builder track:</strong> the engineering is the easy part. The strategy - whether and how to open this door - is the hard part, and it is yours.</li>
+        </ul>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ PART 3: ROI ============ -->
+  <section class="section" id="roi">
+    <div class="section-kicker">
+      <span class="klabel">Part 3 · covers ROI framing · the one-slide business case</span>
+      <h2>ROI framing for the board <span class="tag concept">10 min live</span></h2>
+    </div>
+    <p class="lede">Here is the framing that lands. A server build costs roughly what a small internal API project costs - a known, bounded number your engineering leaders can estimate in their sleep. The benefit is the part boards miss: because MCP is one standard, <strong>every AI app you run gains the new capability at once</strong>, and every future AI app inherits it for free. You are not buying one integration; you are buying a socket that all your current and future AI tools plug into. The metric that captures this is <strong>integration lead-time</strong> - how long from "we want the AI to reach this system" to "it can, safely." MCP takes that from a quarter-long project to a config change.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 330" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Before and after lead-time funnel: before MCP each AI app needs its own long integration project; after MCP one server build serves every app and every new app is a fast config">
+        <style>
+          .roiK { font: 700 13px Inter, sans-serif; fill: #1E242D; }
+          .roiT { font: 700 13px Inter, sans-serif; fill: #FFFFFF; }
+          .roiX { font: 400 11.5px Inter, sans-serif; fill: #5B6674; }
+          .roiW { font: 400 11.5px Inter, sans-serif; fill: #FFFFFF; opacity:.92; }
+          .roiN { font: 600 13px Inter, sans-serif; fill: #043029; }
+          .roiline { stroke: #A8622B; stroke-width: 2.5; fill: none; marker-end: url(#roiHd); }
+        </style>
+        <defs>
+          <marker id="roiHd" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+            <path d="M0,0 L9,4.5 L0,9 z" fill="#A8622B"/>
+          </marker>
+        </defs>
+        <text class="roiK" x="40" y="30">BEFORE - one integration project per app</text>
+        <rect x="40" y="44" width="120" height="30" rx="6" fill="#5C3312"/><text class="roiT" x="56" y="64">AI app 1</text>
+        <rect x="40" y="82" width="120" height="30" rx="6" fill="#5C3312"/><text class="roiT" x="56" y="102">AI app 2</text>
+        <rect x="40" y="120" width="120" height="30" rx="6" fill="#5C3312"/><text class="roiT" x="56" y="140">AI app 3</text>
+        <rect x="210" y="44" width="150" height="106" rx="8" fill="#DDAF7E"/>
+        <text class="roiK" x="226" y="90">3 separate</text>
+        <text class="roiK" x="226" y="110">projects</text>
+        <text class="roiX" x="40" y="176">Lead-time: ~a quarter, each, every time.</text>
+        <text class="roiK" x="470" y="30">AFTER - one server, every app plugs in</text>
+        <rect x="470" y="44" width="120" height="30" rx="6" fill="#5C3312"/><text class="roiT" x="486" y="64">AI app 1</text>
+        <rect x="470" y="82" width="120" height="30" rx="6" fill="#5C3312"/><text class="roiT" x="486" y="102">AI app 2</text>
+        <rect x="470" y="120" width="120" height="30" rx="6" fill="#5C3312"/><text class="roiT" x="486" y="140">any new app</text>
+        <rect x="700" y="66" width="140" height="62" rx="8" fill="#A8622B"/>
+        <text class="roiT" x="716" y="94">one MCP</text>
+        <text class="roiT" x="716" y="114">server</text>
+        <path class="roiline" d="M590,59 C650,59 655,92 698,92"/>
+        <path class="roiline" d="M590,97 L698,97"/>
+        <path class="roiline" d="M590,135 C650,135 655,104 698,104"/>
+        <text class="roiX" x="470" y="176">Build once. Lead-time for every next app: a config change.</text>
+        <rect x="40" y="216" width="14" height="14" rx="3" fill="#0E7C6B"/>
+        <text class="roiN" x="64" y="228">Cost line: one server build is priced like a small API project -</text>
+        <text class="roiN" x="64" y="246">a number your engineering leads already know.</text>
+        <rect x="40" y="284" width="14" height="14" rx="3" fill="#0E7C6B"/>
+        <text class="roiN" x="64" y="296">Benefit line: capability arrives for every AI tool at once, and</text>
+        <text class="roiN" x="64" y="314">every future tool inherits it free. Track integration lead-time.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - why one server build pays back across every AI app you run</figcaption>
+    </figure>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>The one-slide business case<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Boards fund clarity, not enthusiasm. Put the whole case on one slide with four lines - if it needs a second slide, you have not decided yet.</p>
+        <table class="clean">
+          <thead><tr><th>Line</th><th>What goes here</th></tr></thead>
+          <tbody>
+            <tr><td>The hop</td><td>The specific repeated manual step you are removing - who does it, how often.</td></tr>
+            <tr><td>The cost</td><td>One server build, priced like a small API project. A bounded, one-time number.</td></tr>
+            <tr><td>The payoff</td><td>The metric: integration lead-time drops from a quarter to a config change, for every AI app - now and future.</td></tr>
+            <tr><td>The guardrail</td><td>Which blast-radius ring it starts in (read-only first) and who signs off - straight from a4.</td></tr>
+          </tbody>
+        </table>
+        <p>Notice the case does not promise "AI transformation." It promises one removed hop, a known cost, a lead-time metric, and a safety posture. That is a decision a board can make in the room.</p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ DEMO 1 ============ -->
+  <section class="section" id="demo-1">
+    <div class="section-kicker">
+      <span class="klabel">Demo 1 of 2</span>
+      <h2>Run the use-case scan on one department <span class="tag demo">★ 8 min · pick a real team</span></h2>
+    </div>
+    <p class="lede">Pick one department you know well - the one whose work you could describe in a sentence. You are going to find its first MCP candidate live, the same way Daybreak's data team found theirs in a stand-up.</p>
+
+    <div class="steps">
+      <div class="step"><p>Name the AI apps that department already uses - even informally. If the answer is "people paste things into a chatbot," that counts, and it is where the hops hide.</p></div>
+      <div class="step"><p>List three moments someone copies data <strong>out of</strong> a system into an AI app, or pastes an AI answer <strong>back into</strong> a system. These are your raw candidates.</p></div>
+      <div class="step"><p>Run each through the five-question filter: repeated, reachable, read-only-capable, acceptable blast radius, clear owner.</p></div>
+      <div class="step"><p>Keep only the ones that pass all five. Circle the most repeated, lowest-risk survivor - that is your first server, not the flashiest one.</p></div>
+      <div class="step"><p>Write its one-sentence owner: "the ___ team owns whether this answer is correct." No owner, no build.</p></div>
+    </div>
+  </section>
+
+  <!-- ============ DEMO 2 ============ -->
+  <section class="section" id="demo-2">
+    <div class="section-kicker">
+      <span class="klabel">Demo 2 of 2</span>
+      <h2>Draft the one-slide case <span class="tag demo">★ 7 min · fill the four lines</span></h2>
+    </div>
+    <p class="lede">Take the candidate you just circled and turn it into the slide you would actually present. Four lines, no more. Below the steps is a model answer built from the Daybreak example so you can check your shape.</p>
+
+    <div class="steps">
+      <div class="step"><p><strong>The hop:</strong> write the exact manual step in one sentence - who, what system, how often.</p></div>
+      <div class="step"><p><strong>The cost:</strong> ask your engineering lead for a rough server-build estimate framed as "a small API project." Put that number down.</p></div>
+      <div class="step"><p><strong>The payoff:</strong> state the lead-time change and name every AI app that gains the capability the day the server ships.</p></div>
+      <div class="step"><p><strong>The guardrail:</strong> name the starting ring (read-only) and the single person who signs off. Now you have a slide.</p></div>
+    </div>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>Model answer - Daybreak's one-slide case<span class="mini">3 min read</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <table class="clean">
+          <thead><tr><th>Line</th><th>Daybreak's answer</th></tr></thead>
+          <tbody>
+            <tr><td>The hop</td><td>The founder asks sales questions daily; an analyst manually pulls the number and pastes it into chat, then fields follow-ups the same way.</td></tr>
+            <tr><td>The cost</td><td>One read-only server over the sales database - roughly a one-week small-API build for the existing data team.</td></tr>
+            <tr><td>The payoff</td><td>Lead-time to "the assistant answers sales questions" drops from a recurring analyst task to instant; the founder's assistant, and any future internal AI app, gains it at once.</td></tr>
+            <tr><td>The guardrail</td><td>Read ring only - no writes. Data team lead signs off; no customer data leaves the system.</td></tr>
+          </tbody>
+        </table>
+        <p>One slide, one week, one owner. That is the shape a board approves - and the shape a6 will show you how to defend as the spec evolves.</p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ HOMEWORK ============ -->
+  <section class="section" id="exercise">
+    <div class="section-kicker">
+      <span class="klabel">Homework</span>
+      <h2>Questions to ask your teams this week <span class="tag exercise">◐ 20 min total</span></h2>
+    </div>
+    <ul>
+      <li>Ask each department head: "where do your people copy data by hand between an AI app and one of our systems?" Collect the hops - the list is the pipeline.</li>
+      <li>Ask your engineering lead: "what would a small read-only MCP server over our most-asked-about system cost, roughly, in weeks?" You want the order of magnitude, not a quote.</li>
+      <li>Ask your product lead the uncomfortable one: "if our product exposed an MCP server, who would connect it - and what would a competitor doing it first cost us?" Even a rough answer tells you whether expose belongs on next quarter's agenda.</li>
+      <li>Pick the single strongest candidate from the scan and sketch its one-slide case yourself, so you can pressure-test your teams' versions later.</li>
+    </ul>
+  </section>
+
+  <!-- ============ SOURCES ============ -->
+  <section class="section" id="official">
+    <div class="section-kicker">
+      <span class="klabel">Source material</span>
+      <h2>Official sources covered</h2>
+    </div>
+    <p class="lede">This session turns the platform and configuration documentation into strategy. The wiring itself - the connector API, the scope files - is builder-track material; the pages below are where your teams go for the mechanics.</p>
+    <div class="covered">
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">Anthropic platform docs - MCP connector</span><span class="note">Read at strategy level: calling remote servers directly from the API is the "consume" posture and the socket behind the ROI case</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">Claude Code MCP docs - local / project / user scopes</span><span class="note">Framed as a governance surface: who may add which servers where becomes reviewable policy</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">modelcontextprotocol.io - official registry</span><span class="note">The pool the "consume" posture draws from; publishing your own is builder session b8</span></div>
+    </div>
+  </section>
+
+  <!-- ============ QUIZ ============ -->
+  <section class="section" id="quiz">
+    <div class="section-kicker">
+      <span class="klabel">Check yourself</span>
+      <h2>Three questions before you go 🎯 <span class="tag exercise">◐ 90 seconds</span></h2>
+    </div>
+    <div class="quiz-q" data-answer="2">
+      <p class="qtext">1 · The most reliable sign of an MCP-shaped opportunity is...</p>
+      <button class="qopt" type="button">A · A department that has asked for "more AI"</button>
+      <button class="qopt" type="button">B · A system with an especially large database</button>
+      <button class="qopt" type="button">C · People repeatedly moving data by hand between an AI app and a system of record</button>
+      <p class="qwhy">A manual hop is a candidate someone has already validated by bothering to do it. The server just removes the human-as-API step, under your rules.</p>
+    </div>
+    <div class="quiz-q" data-answer="1">
+      <p class="qtext">2 · Exposing your own product as an MCP server is primarily...</p>
+      <button class="qopt" type="button">A · An IT task the platform team can schedule</button>
+      <button class="qopt" type="button">B · A product and go-to-market decision for the executive team</button>
+      <button class="qopt" type="button">C · The same as commissioning an internal server</button>
+      <p class="qwhy">The engineering is the easy part. Whether customers can plug your product into any AI - a moat if you move first, a bypass if you move late - is strategy, and it is yours.</p>
+    </div>
+    <div class="quiz-q" data-answer="0">
+      <p class="qtext">3 · The metric that best captures MCP's payoff on a board slide is...</p>
+      <button class="qopt" type="button">A · Integration lead-time - which drops from a quarter-long project to a config change, across every AI app</button>
+      <button class="qopt" type="button">B · The number of AI tools the company has purchased</button>
+      <button class="qopt" type="button">C · The size of the model powering the assistant</button>
+      <p class="qwhy">One server build costs like a small API project, but the capability lands for every current and future AI app at once. Lead-time is what that saving looks like on a slide.</p>
+    </div>
+    <p class="quiz-score"></p>
+  </section>
+
+  <!-- ============ CHEAT SHEET ============ -->
+  <section class="cheat" id="cheatsheet">
+    <h3>Leader session 5 cheat sheet <span>· pin this</span></h3>
+    <div class="grid-2">
+      <div class="cheat-item"><b>The tell</b><span>Repeated copy-paste between an AI app and a system = a server candidate someone already validated by hand.</span></div>
+      <div class="cheat-item"><b>Five-question filter</b><span>Repeated? Reachable? Read-only-capable? Acceptable blast radius? Clear owner? A no tells you what to fix.</span></div>
+      <div class="cheat-item"><b>Three postures</b><span>Consume public · commission internal · expose your product. First two are operational; the third is strategy.</span></div>
+      <div class="cheat-item"><b>Expose is a product bet</b><span>If customers can plug your product into any AI in an afternoon, that is a moat first-mover or a bypass laggard.</span></div>
+      <div class="cheat-item"><b>The cost line</b><span>One server build is priced like a small internal API project - a bounded, one-time number.</span></div>
+      <div class="cheat-item"><b>The benefit line</b><span>One standard: every AI app gains the capability at once, every future app inherits it free.</span></div>
+      <div class="cheat-item"><b>The metric</b><span>Integration lead-time: from a quarter-long project to a config change. That is the board number.</span></div>
+      <div class="cheat-item"><b>The one-slide case</b><span>The hop · the cost · the payoff · the guardrail. If it needs a second slide, you have not decided.</span></div>
+    </div>
+  </section>
+
+  <footer class="pagefoot">
+    <span>Leader session 5 of 6 · learn-mcp-with-phoebe · by Phoebe Fu &nbsp;·&nbsp; 📚 <a href="https://phoebefu6.github.io/learn-with-phoebe/">Learn with Phoebe ↗</a></span>
+    <span><a href="a4-security-trust.html">← Prev: Security and trust</a> &nbsp;·&nbsp; <a href="a6-roadmap.html">Next: The roadmap and your strategy →</a></span>
+  </footer>
+
+</main>
+
+<script src="../assets/app.js?v=1"></script>
+</body>
+</html>

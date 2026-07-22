@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Builder session 4 · Connect to real hosts - learn mcp with phoebe</title>
+<link rel="stylesheet" href="../assets/style.css?v=1">
+</head>
+<body>
+
+<div class="toolbar">
+  <div class="wrap">
+    <span class="crumb"><a href="../index.html">learn-mcp-with-phoebe</a> / Builder session 4 of 8</span>
+    <button class="btn" id="toggle-all" type="button">Expand all</button>
+    <button class="btn primary" id="zoom-toggle" type="button">Projector zoom: off</button>
+  </div>
+</div>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="eyebrow">Learn MCP with Phoebe · Builder track · Session 4 of 8</div>
+    <h1>Connect to <span class="accent">real hosts</span></h1>
+    <p class="sub">Your server works in the Inspector. Tonight it works everywhere. You will wire <code>daybreak-mcp</code> into Claude Code with a checked-in <code>.mcp.json</code>, then into Claude Desktop with a config file - and ask "how did March look?" in a real chat and watch it call your tool and answer $150. The payoff of the whole track lands here: one server, three hosts, zero code changes. The only new skill is configuration, and the only new judgement is scope.</p>
+    <div class="chip-row">
+      <span class="chip level">🟡 Medium</span>
+      <span class="chip audience">Practitioners: DE · DS · AI engineers · builders</span>
+      <span class="chip audience">Python · spec 2025-11-25</span>
+      <span class="chip time">45 min</span>
+    </div>
+    <div class="agenda">
+      <span class="a1" style="flex:1">0-3 · Welcome</span>
+      <span class="a2" style="flex:4">3-20 · Claude Code + scopes</span>
+      <span class="a3" style="flex:3">20-34 · Desktop + beyond</span>
+      <span class="a4" style="flex:2">34-45 · Reference servers + Q&amp;A</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ============ INTRO ============ -->
+  <section class="section" id="intro">
+    <div class="section-kicker">
+      <span class="klabel">Part 0</span>
+      <h2>The same server, three hosts</h2>
+    </div>
+    <p class="lede">You wrote <code>daybreak-mcp</code> once. A host is any AI app that speaks MCP - Claude Code, Claude Desktop, Cursor, VS Code. Each connects to your server by <strong>configuration, not code</strong>: point it at the command that launches your server, and the same handshake and <code>tools/list</code> you have been reading all track runs automatically. Nothing in <code>server.py</code> changes. That interoperability is the entire promise of MCP, and tonight you cash it in.</p>
+    <div class="legend">
+      <span class="pill solid">Live - presented in session</span>
+      <span class="pill light">Self-study - read after class</span>
+      <span class="pill peach">▶ Live MCP wire - step through real messages</span>
+      <span class="pill inkpill">Official sources covered</span>
+    </div>
+    <div class="callout win">
+      <strong>★ What you walk out with today</strong>
+      Daybreak wired into Claude Code via a project-scope <code>.mcp.json</code> and into Claude Desktop via <code>claude_desktop_config.json</code>, a clear rule for which of the three scopes to use when, the tool-naming convention that tells you a server landed (<code>mcp__daybreak__query_sales</code>), and a reference server running alongside your own in the same host.
+    </div>
+  </section>
+
+  <!-- ============ PART 1: CLAUDE CODE + SCOPES ============ -->
+  <section class="section" id="scopes">
+    <div class="section-kicker">
+      <span class="klabel">Part 1 · covers Claude Code MCP docs, official "Connect to local MCP servers"</span>
+      <h2>Claude Code: .mcp.json and scopes <span class="tag concept">8 min live</span></h2>
+    </div>
+    <p class="lede">Claude Code configures MCP servers at three <strong>scopes</strong>, and the scope decides who sees the server and where the config lives. Precedence runs <strong>local &gt; project &gt; user</strong>: if the same server name is defined at more than one scope, the more specific one wins. Get the scope right and you never fight config again.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 280" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Three Claude Code MCP scopes: local, project, user, with precedence local over project over user">
+        <style>
+          .scT { font: 700 13px Inter, sans-serif; fill: #FFFFFF; }
+          .scD { font: 400 11.5px Inter, sans-serif; fill: #FFFFFF; opacity:.9; }
+          .scI { font: 700 13px Inter, sans-serif; fill: #1E242D; }
+          .scX { font: 400 11.5px Inter, sans-serif; fill: #5B6674; }
+          .scN { font: 600 13px Inter, sans-serif; fill: #043029; }
+          .scW { stroke: #A8622B; stroke-width: 2.5; fill: none; marker-end: url(#scHd); }
+        </style>
+        <defs>
+          <marker id="scHd" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+            <path d="M0,0 L9,4.5 L0,9 z" fill="#A8622B"/>
+          </marker>
+        </defs>
+        <rect x="40" y="46" width="250" height="120" rx="8" fill="#5C3312"/>
+        <text class="scT" x="56" y="72">local</text>
+        <text class="scD" x="56" y="94">just you, just this project</text>
+        <text class="scD" x="56" y="114">private to your machine</text>
+        <text class="scD" x="56" y="134">use to: experiment</text>
+        <rect x="315" y="46" width="250" height="120" rx="8" fill="#A8622B"/>
+        <text class="scT" x="331" y="72">project</text>
+        <text class="scD" x="331" y="94">.mcp.json in the repo root</text>
+        <text class="scD" x="331" y="114">checked in, whole team gets it</text>
+        <text class="scD" x="331" y="134">use to: share with a team</text>
+        <rect x="590" y="46" width="250" height="120" rx="8" fill="#C08048"/>
+        <text class="scT" x="606" y="72">user</text>
+        <text class="scD" x="606" y="94">every project you open</text>
+        <text class="scD" x="606" y="114">your personal toolbox</text>
+        <text class="scD" x="606" y="134">use to: everywhere-you tools</text>
+        <text class="scI" x="40" y="204">Precedence when a name collides</text>
+        <text class="scX" x="40" y="226">local</text>
+        <path class="scW" d="M85,222 L150,222"/>
+        <text class="scX" x="158" y="226">project</text>
+        <path class="scW" d="M215,222 L280,222"/>
+        <text class="scX" x="288" y="226">user</text>
+        <text class="scX" x="330" y="226">- the leftmost defined wins</text>
+        <rect x="40" y="248" width="14" height="14" rx="3" fill="#0E7C6B"/>
+        <text class="scN" x="64" y="260">The 2026-07-28 revision keeps scopes; it changes the wire beneath them, not where your config lives.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - three scopes, one precedence rule</figcaption>
+    </figure>
+
+    <details class="card" open>
+      <summary><span class="mode live">Live</span>Scope decision guide<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>The rule is about audience, not difficulty. Ask "who should have this server?" and the scope falls out:</p>
+        <ul>
+          <li><strong>Experimenting alone?</strong> Use <strong>local</strong>. Private to you and this project, gone when you clean up. Nothing leaks into a repo.</li>
+          <li><strong>Team repo where everyone needs it?</strong> Use <strong>project</strong>. The <code>.mcp.json</code> is checked into the repo root, so every teammate who clones gets Daybreak with no setup.</li>
+          <li><strong>A tool you want in every project?</strong> Use <strong>user</strong>. Your personal toolbox - a reference filesystem server, say - available everywhere you work.</li>
+        </ul>
+        <p>Here is the project-scope config. It lives at the repo root as <code>.mcp.json</code> and gets committed:</p>
+        <div class="prompt-box"><span class="label">.mcp.json · project scope, checked into the repo root</span>{
+  "mcpServers": {
+    "daybreak": {
+      "command": "uv",
+      "args": ["run", "python", "server.py"],
+      "env": {
+        "DAYBREAK_DB": "${DAYBREAK_DB:-./daybreak.db}"
+      }
+    }
+  }
+}</div>
+        <ul>
+          <li><strong><code>command</code> + <code>args</code></strong> - exactly how to launch your stdio server; the host runs it as a subprocess.</li>
+          <li><strong><code>env</code></strong> supports variable expansion: <code>${VAR}</code> and <code>${VAR:-default}</code> pull from the environment, so secrets and paths never get hard-coded into the checked-in file.</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>Verifying a server landed<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Two ways to confirm Claude Code actually loaded your server. First, run <code>/mcp</code> in the session - it lists connected servers and their status. Second, look at how the tools are named:</p>
+        <div class="prompt-box"><span class="label">the host renames your tools by server</span>mcp__daybreak__query_sales
+mcp__daybreak__top_products
+mcp__daybreak__subscription_status
+
+# pattern:  mcp__&lt;server-name&gt;__&lt;tool-name&gt;</div>
+        <ul>
+          <li><strong><code>mcp__daybreak__query_sales</code></strong> - the host prefixes every tool with <code>mcp__</code> and the server name from your config. Seeing this prefix is proof the server connected and its tools are namespaced.</li>
+          <li><strong>The server name comes from the JSON key</strong> (<code>"daybreak"</code>), not from <code>FastMCP("daybreak-mcp")</code> - name the key deliberately, because it shows up in every tool name.</li>
+          <li><strong>If <code>/mcp</code> shows the server failed</strong>, the command in your config threw - run it by hand in the terminal to see the error, exactly like the Inspector failures in b2.</li>
+        </ul>
+        <div class="callout tip">
+          <strong>Same handshake, no model in b2</strong>
+          When Claude Code launches your server it runs the exact initialize handshake you stepped through in b1 - just automatically, with a real model on the other end this time.
+        </div>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ PART 2: DESKTOP + BEYOND ============ -->
+  <section class="section" id="desktop">
+    <div class="section-kicker">
+      <span class="klabel">Part 2 · covers official "Connect to local MCP servers", DLAI "Configuring Servers for Claude Desktop"</span>
+      <h2>Claude Desktop and beyond <span class="tag concept">7 min live</span></h2>
+    </div>
+    <p class="lede">Claude Desktop uses a single config file, <code>claude_desktop_config.json</code>, with the same <code>mcpServers</code> shape you just wrote - <code>command</code> and <code>args</code>. Edit it, restart Desktop, and your server appears. This is the payoff moment: the identical <code>server.py</code> now runs in a second host, and you changed zero lines of Python.</p>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>Desktop config walkthrough<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Open Desktop's settings, go to Developer, click Edit Config, and add Daybreak. The file lives at:</p>
+        <div class="prompt-box"><span class="label">where the file lives</span>macOS:   ~/Library/Application Support/Claude/claude_desktop_config.json
+Windows: %APPDATA%\Claude\claude_desktop_config.json</div>
+        <div class="prompt-box"><span class="label">claude_desktop_config.json · add Daybreak</span>{
+  "mcpServers": {
+    "daybreak": {
+      "command": "uv",
+      "args": [
+        "run",
+        "--directory",
+        "/Users/you/daybreak-mcp",
+        "python",
+        "server.py"
+      ]
+    }
+  }
+}</div>
+        <ul>
+          <li><strong>Absolute paths.</strong> Desktop does not launch from your project folder, so pass <code>--directory</code> with the full path - a relative path is the number-one Desktop failure.</li>
+          <li><strong>Restart to load.</strong> Desktop reads this file only at startup. Fully quit and reopen - not just close the window - for the server to appear.</li>
+          <li><strong>Same shape as <code>.mcp.json</code></strong> under the hood: <code>mcpServers</code>, <code>command</code>, <code>args</code>, optional <code>env</code>. Learn it once.</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>VS Code, Cursor, and the rest<span class="mini">3 min read</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>The host list keeps growing, and they all consume the same server. You do not relearn MCP per host - you learn where each keeps its config:</p>
+        <ul>
+          <li><strong>VS Code</strong> (via GitHub Copilot) and <strong>Cursor</strong> both support MCP servers through their own settings, using the same <code>command</code>/<code>args</code>/<code>env</code> idea.</li>
+          <li><strong>The pattern is universal:</strong> a host needs the launch command and, for remote servers, a URL. That is the whole contract.</li>
+          <li><strong>This is why interoperability is the point.</strong> You wrote Daybreak once in b2 and b3; every host above runs it unchanged. Adding a host is config, never code.</li>
+        </ul>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ PART 3: REFERENCE SERVERS ============ -->
+  <section class="section" id="reference">
+    <div class="section-kicker">
+      <span class="klabel">Part 3 · covers official reference servers, DLAI "Connecting to Reference Servers"</span>
+      <h2>Reference servers <span class="tag concept">6 min live</span></h2>
+    </div>
+    <p class="lede">You are not the only server in the host. The MCP project ships official <strong>reference servers</strong> - filesystem, git/github, memory, and more - that you can install alongside Daybreak. A host with several servers is the normal case, and the tool-name prefix is what keeps them straight.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="One host as a hub connecting to the Daybreak server and official reference servers">
+        <style>
+          .hbT { font: 700 13px Inter, sans-serif; fill: #FFFFFF; }
+          .hbD { font: 400 11px "SF Mono", monospace; fill: #FFFFFF; opacity:.9; }
+          .hbI { font: 700 13px Inter, sans-serif; fill: #1E242D; }
+          .hbX { font: 400 11.5px Inter, sans-serif; fill: #5B6674; }
+          .hbN { font: 600 13px Inter, sans-serif; fill: #043029; }
+          .hbW { stroke: #A8622B; stroke-width: 2.5; fill: none; marker-end: url(#hbHd); }
+        </style>
+        <defs>
+          <marker id="hbHd" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+            <path d="M0,0 L9,4.5 L0,9 z" fill="#A8622B"/>
+          </marker>
+        </defs>
+        <rect x="360" y="96" width="160" height="60" rx="10" fill="#5C3312"/>
+        <text class="hbT" x="376" y="122">one host</text>
+        <text class="hbD" x="376" y="142">Claude Code / Desktop</text>
+        <rect x="40" y="40" width="220" height="42" rx="8" fill="#A8622B"/>
+        <text class="hbD" x="56" y="66">daybreak (yours)</text>
+        <rect x="40" y="100" width="220" height="42" rx="8" fill="#C08048"/>
+        <text class="hbD" x="56" y="126">filesystem (reference)</text>
+        <rect x="40" y="160" width="220" height="42" rx="8" fill="#C08048"/>
+        <text class="hbD" x="56" y="186">github (reference)</text>
+        <rect x="620" y="100" width="220" height="42" rx="8" fill="#C08048"/>
+        <text class="hbD" x="636" y="126">memory (reference)</text>
+        <path class="hbW" d="M260,61 C320,61 320,110 355,116"/>
+        <path class="hbW" d="M260,121 L355,124"/>
+        <path class="hbW" d="M260,181 C320,181 320,142 355,136"/>
+        <path class="hbW" d="M525,126 L615,124"/>
+        <rect x="40" y="220" width="14" height="14" rx="3" fill="#0E7C6B"/>
+        <text class="hbN" x="64" y="232">The mcp__&lt;server&gt;__&lt;tool&gt; prefix keeps two servers' tools apart - daybreak's query_sales never collides with anyone's.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - one host, many servers, all named apart</figcaption>
+    </figure>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>Pairing your server with reference servers<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Add a reference server next to Daybreak in the same config. The filesystem server is the classic pairing - now the model can read a file <em>and</em> query your sales in one conversation:</p>
+        <div class="prompt-box"><span class="label">.mcp.json · two servers, one host</span>{
+  "mcpServers": {
+    "daybreak": {
+      "command": "uv",
+      "args": ["run", "python", "server.py"]
+    },
+    "filesystem": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "/Users/you/reports"]
+    }
+  }
+}</div>
+        <p>Reload, and <code>/mcp</code> lists both. The tools are namespaced - <code>mcp__daybreak__query_sales</code> and <code>mcp__filesystem__read_file</code> - so nothing collides. Now watch the handshake that every one of these servers runs when the host starts it:</p>
+        <div class="mcpbox" data-scenario="handshake" data-caption="Every host you configured runs this exact handshake, once per server, at startup - Daybreak and every reference server alike."></div>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ DEMO 1 ============ -->
+  <section class="section" id="demo-1">
+    <div class="section-kicker">
+      <span class="klabel">Demo 1 of 2</span>
+      <h2>Wire Daybreak into Claude Code <span class="tag demo">★ 12 min · everyone connects</span></h2>
+    </div>
+    <p class="lede">Do it live. Four moves from a checked-in config to a real answer about March in a real chat.</p>
+    <div class="steps">
+      <div class="step"><p><strong>Write .mcp.json</strong> at your repo root with the project-scope config from Part 1. Commit it - that is what "project scope" means.</p></div>
+      <div class="step"><p><strong>Reload</strong> Claude Code in that directory and run <code>/mcp</code>. Confirm <code>daybreak</code> is connected.</p></div>
+      <div class="step"><p><strong>Ask, in plain English:</strong> "How did March look?" The model finds <code>mcp__daybreak__query_sales</code>, fills <code>month=2026-03</code>, and calls it.</p></div>
+      <div class="step"><p><strong>Read the answer.</strong> It reports completed revenue <strong>$150.00</strong> with one refund - your server, your data, a real host, no code changes.</p></div>
+    </div>
+  </section>
+
+  <!-- ============ DEMO 2 ============ -->
+  <section class="section" id="demo-2">
+    <div class="section-kicker">
+      <span class="klabel">Demo 2 of 2</span>
+      <h2>Same server, Claude Desktop <span class="tag demo">★ 8 min · connect</span></h2>
+    </div>
+    <p class="lede">Now the second host, to feel the payoff: identical server, different config file, one restart.</p>
+    <div class="steps">
+      <div class="step"><p><strong>Edit config.</strong> Desktop settings -> Developer -> Edit Config. Add the <code>daybreak</code> block from Part 2, with the absolute <code>--directory</code> path.</p></div>
+      <div class="step"><p><strong>Restart Desktop fully</strong> - quit and reopen, not just close the window. It reads the config only at startup.</p></div>
+      <div class="step"><p><strong>Verify.</strong> Open the connectors indicator and confirm <code>daybreak</code> lists its three tools.</p></div>
+      <div class="step"><p><strong>Ask "how did March look?"</strong> again. Same $150 answer, second host, still zero changes to <code>server.py</code>.</p></div>
+    </div>
+  </section>
+
+  <!-- ============ HOMEWORK ============ -->
+  <section class="section" id="exercise">
+    <div class="section-kicker">
+      <span class="klabel">Homework</span>
+      <h2>Try it yourself - this week <span class="tag exercise">◐ 25-35 min total</span></h2>
+    </div>
+    <ul>
+      <li>Add a reference server at <strong>user scope</strong> so it follows you into every project - the filesystem or memory server is a good first choice. Confirm with <code>/mcp</code> from a different project directory.</li>
+      <li>Write your own one-paragraph <strong>scope policy</strong>: which servers your team should put at project scope (checked in) versus user scope (personal), and why. This is the same judgement the leader track calls governance.</li>
+      <li>Deliberately create a name collision: define <code>daybreak</code> at both local and project scope with different commands, and confirm local wins. Then delete the local one.</li>
+      <li>Ask a question that needs two servers at once ("read notes.txt and tell me if March matches"). Watch the model call one tool from each namespace in a single answer.</li>
+    </ul>
+  </section>
+
+  <!-- ============ SOURCES ============ -->
+  <section class="section" id="official">
+    <div class="section-kicker">
+      <span class="klabel">Source material</span>
+      <h2>Official sources covered</h2>
+    </div>
+    <p class="lede">This session teaches the working core of the host-connection docs across the official sources, on the running project. Certificates and videos stay official. This page covers:</p>
+    <div class="covered">
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">code.claude.com - Claude Code MCP docs</span><span class="note">local/project/user scopes, precedence, .mcp.json shape, env-var expansion, /mcp, tool naming</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">modelcontextprotocol.io - "Connect to local MCP servers"</span><span class="note">claude_desktop_config.json, mcpServers, restart-to-load, reference servers</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">DeepLearning.AI "MCP" - "Configuring Servers for Claude Desktop"</span><span class="note">Desktop config end to end + connecting to reference servers</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">github.com/modelcontextprotocol/servers - reference server catalog</span><span class="note">filesystem/github/memory named and paired; full catalog linked</span></div>
+    </div>
+  </section>
+
+  <!-- ============ QUIZ ============ -->
+  <section class="section" id="quiz">
+    <div class="section-kicker">
+      <span class="klabel">Check yourself</span>
+      <h2>Three questions before you go 🎯 <span class="tag exercise">◐ 90 seconds</span></h2>
+    </div>
+    <div class="quiz-q" data-answer="0">
+      <p class="qtext">1 · The same server name is defined at local and user scope. Which wins?</p>
+      <button class="qopt" type="button">A · local - precedence runs local &gt; project &gt; user</button>
+      <button class="qopt" type="button">B · user - it is the broadest scope</button>
+      <button class="qopt" type="button">C · Neither - Claude Code refuses to start</button>
+      <p class="qwhy">Precedence is local &gt; project &gt; user: the most specific scope wins. A local definition overrides both project and user for that server name.</p>
+    </div>
+    <div class="quiz-q" data-answer="2">
+      <p class="qtext">2 · Where does a project-scope <code>.mcp.json</code> live, and what happens to it?</p>
+      <button class="qopt" type="button">A · In your home folder, never shared</button>
+      <button class="qopt" type="button">B · Inside Claude Desktop's settings only</button>
+      <button class="qopt" type="button">C · At the repo root, checked into version control so the whole team gets the server</button>
+      <p class="qwhy">Project scope means .mcp.json sits at the repo root and is committed. Every teammate who clones the repo gets the server with no extra setup - that is the point of the scope.</p>
+    </div>
+    <div class="quiz-q" data-answer="1">
+      <p class="qtext">3 · You edited <code>claude_desktop_config.json</code> but the server does not appear. Most likely fix?</p>
+      <button class="qopt" type="button">A · Rewrite the server in TypeScript</button>
+      <button class="qopt" type="button">B · Fully quit and restart Claude Desktop - it reads the config only at startup</button>
+      <button class="qopt" type="button">C · Delete daybreak.db</button>
+      <p class="qwhy">Claude Desktop loads MCP config at launch. After editing the file you must fully quit and reopen the app (not just close the window) for the new server to load. A relative path is the other common culprit.</p>
+    </div>
+    <p class="quiz-score"></p>
+  </section>
+
+  <!-- ============ CHEAT SHEET ============ -->
+  <section class="cheat" id="cheatsheet">
+    <h3>Builder session 4 cheat sheet <span>· pin this</span></h3>
+    <div class="grid-2">
+      <div class="cheat-item"><b>Three scopes</b><span>local (just you, this project) · project (.mcp.json in repo root, checked in) · user (all your projects).</span></div>
+      <div class="cheat-item"><b>Precedence</b><span>local &gt; project &gt; user. Most specific wins when a server name collides.</span></div>
+      <div class="cheat-item"><b>.mcp.json shape</b><span>mcpServers -> name -> command, args, env. env supports ${VAR} and ${VAR:-default} expansion.</span></div>
+      <div class="cheat-item"><b>Verify it landed</b><span>Run /mcp for status; tools appear as mcp__daybreak__query_sales (server name from the JSON key).</span></div>
+      <div class="cheat-item"><b>Claude Desktop</b><span>claude_desktop_config.json, same mcpServers shape. Use absolute --directory. Restart fully to load.</span></div>
+      <div class="cheat-item"><b>Other hosts</b><span>VS Code, Cursor - same command/args idea. Adding a host is config, never code.</span></div>
+      <div class="cheat-item"><b>Reference servers</b><span>Official filesystem/github/memory run alongside yours; the mcp__ prefix keeps tools from colliding.</span></div>
+      <div class="cheat-item"><b>The payoff</b><span>One server, three hosts, zero code changes. Ask "how did March look?" -> query_sales -> $150.</span></div>
+    </div>
+  </section>
+
+  <footer class="pagefoot">
+    <span>Builder session 4 of 8 · learn-mcp-with-phoebe · by Phoebe Fu &nbsp;·&nbsp; 📚 <a href="https://phoebefu6.github.io/learn-with-phoebe/">Learn with Phoebe ↗</a></span>
+    <span><a href="b3-resources-prompts.html">← Prev: Resources and prompts</a> &nbsp;·&nbsp; <a href="b5-build-a-client.html">Next: Build a client →</a></span>
+  </footer>
+
+</main>
+
+<script src="../assets/mcp-live.js?v=1"></script>
+<script src="../assets/app.js?v=1"></script>
+</body>
+</html>

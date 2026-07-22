@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leader session 2 · The architecture in plain English - learn mcp with phoebe</title>
+<link rel="stylesheet" href="../assets/style.css?v=1">
+</head>
+<body>
+
+<div class="toolbar">
+  <div class="wrap">
+    <span class="crumb"><a href="../index.html">learn-mcp-with-phoebe</a> / Leader session 2 of 6</span>
+    <button class="btn" id="toggle-all" type="button">Expand all</button>
+    <button class="btn primary" id="zoom-toggle" type="button">Projector zoom: off</button>
+  </div>
+</div>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="eyebrow">Learn MCP with Phoebe · Leader track · Session 2 of 6</div>
+    <h1>The architecture in <span class="accent">plain English</span></h1>
+    <p class="sub">You do not need to read a protocol spec to make good decisions about MCP - you need three words and one idea about control. This session gives you host, client, and server in restaurant language, then the three things any server can offer and who is allowed to trigger each. By the end you will read a vendor's capability list the way you read a menu, and know which questions decide whether a server is safe to let near your data. No code, no jargon - just the picture, plus questions to take back to your teams.</p>
+    <div class="chip-row">
+      <span class="chip level">🟢 Leader track · Easy</span>
+      <span class="chip audience">C-level · managers · curious minds</span>
+      <span class="chip time">No code · 45 min</span>
+      <span class="chip time">Builds on a1</span>
+    </div>
+    <div class="agenda">
+      <span class="a1" style="flex:1">0-3 · Recap</span>
+      <span class="a2" style="flex:4">3-22 · Three roles + three offers</span>
+      <span class="a3" style="flex:4">22-40 · Commissioning + exercises</span>
+      <span class="a4" style="flex:1">40-45 · Q&amp;A</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ============ INTRO ============ -->
+  <section class="section" id="intro">
+    <div class="section-kicker">
+      <span class="klabel">Part 0</span>
+      <h2>Where we are</h2>
+    </div>
+    <p class="lede">In a1 you saw <em>why</em> MCP exists: it collapses the integration grid from M x N custom connectors down to M + N implementations of one standard. Today is <em>how the pieces fit</em> - still at your altitude, still no code. We keep using <strong>Daybreak</strong>, a fictional coffee-subscription brand; picture your data team having built a Daybreak-style server over your own sales data. The single idea to hold onto: MCP is not just a plug, it is a plug with rules about who is allowed to press which button.</p>
+    <div class="legend">
+      <span class="pill solid">Live - presented in session</span>
+      <span class="pill light">Self-study - read after class</span>
+      <span class="pill inkpill">Official sources covered</span>
+    </div>
+    <div class="callout win">
+      <strong>★ What you walk out with today</strong>
+      The three MCP roles explained so plainly you could draw them on a napkin, the three things a server can offer and the control rule that keeps each one safe, the difference between a local and a remote server in risk terms, and a one-page method for reading any vendor's capability list before you let it touch your systems.
+    </div>
+  </section>
+
+  <!-- ============ PART 1: THREE ROLES ============ -->
+  <section class="section" id="three-roles">
+    <div class="section-kicker">
+      <span class="klabel">Part 1 · covers official "Architecture overview", Academy "Introducing MCP"</span>
+      <h2>Host, client, server - the restaurant analogy <span class="tag concept">7 min live</span></h2>
+    </div>
+    <p class="lede">Three words carry the whole architecture, and a restaurant makes them stick. The <strong>host</strong> is the restaurant your people sit in - the AI app they actually open, like Claude or Copilot. Inside it, one <strong>client</strong> is a dedicated waiter for each kitchen: exactly one waiter per kitchen, no sharing. Each <strong>server</strong> is a kitchen that publishes its own menu of what it can cook. The host runs the room, the waiters carry orders, the kitchens do the work - and no kitchen ever sees the other kitchens.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 360" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="One host contains one client per server. Each client pairs one-to-one with a server. Host is the restaurant, clients are waiters, servers are kitchens.">
+        <style>
+          .raHd { font: 700 14px Inter, sans-serif; fill: #1E242D; }
+          .raW { font: 700 13px Inter, sans-serif; fill: #FFFFFF; }
+          .raWs { font: 400 11px Inter, sans-serif; fill: #F8EFE4; }
+          .raK { font: 700 13px Inter, sans-serif; fill: #FFFFFF; }
+          .raLbl { font: 400 12px Inter, sans-serif; fill: #5B6674; }
+          .raN { font: 600 13px Inter, sans-serif; fill: #043029; }
+          .raLine { stroke: #A8622B; stroke-width: 2.5; fill: none; }
+        </style>
+        <text class="raHd" x="40" y="34">One host · one waiter per kitchen · one kitchen per waiter</text>
+
+        <rect x="40" y="60" width="290" height="215" rx="10" fill="#F8EFE4" stroke="#C08048" stroke-width="1.5"/>
+        <text class="raHd" x="58" y="86">HOST - your AI app</text>
+        <text class="raLbl" x="58" y="104">(the restaurant your team sits in)</text>
+        <rect x="58" y="118" width="254" height="42" rx="7" fill="#5C3312"/>
+        <text class="raW" x="74" y="138">Client (waiter) 1</text>
+        <text class="raWs" x="74" y="153">handles the sales kitchen only</text>
+        <rect x="58" y="168" width="254" height="42" rx="7" fill="#5C3312"/>
+        <text class="raW" x="74" y="188">Client (waiter) 2</text>
+        <text class="raWs" x="74" y="203">handles the catalog kitchen only</text>
+        <rect x="58" y="218" width="254" height="42" rx="7" fill="#5C3312"/>
+        <text class="raW" x="74" y="238">Client (waiter) 3</text>
+        <text class="raWs" x="74" y="253">handles the reports kitchen only</text>
+
+        <rect x="600" y="112" width="240" height="46" rx="8" fill="#A8622B"/>
+        <text class="raK" x="618" y="132">Sales kitchen</text>
+        <text class="raWs" x="618" y="148">server · publishes a sales menu</text>
+        <rect x="600" y="166" width="240" height="46" rx="8" fill="#A8622B"/>
+        <text class="raK" x="618" y="186">Catalog kitchen</text>
+        <text class="raWs" x="618" y="202">server · publishes a product menu</text>
+        <rect x="600" y="220" width="240" height="46" rx="8" fill="#A8622B"/>
+        <text class="raK" x="618" y="240">Reports kitchen</text>
+        <text class="raWs" x="618" y="256">server · publishes a report menu</text>
+
+        <path class="raLine" d="M312,139 L600,135"/>
+        <path class="raLine" d="M312,189 L600,189"/>
+        <path class="raLine" d="M312,239 L600,243"/>
+
+        <rect x="40" y="300" width="14" height="14" rx="3" fill="#0E7C6B"/>
+        <text class="raN" x="64" y="312">One client per connection, paired one-to-one with one server. Kitchens never see each other.</text>
+        <rect x="40" y="330" width="14" height="14" rx="3" fill="#0E7C6B"/>
+        <text class="raN" x="64" y="342">Add a kitchen and the host gets a new waiter for it - no rebuild of the restaurant.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the three MCP roles as a restaurant floor plan</figcaption>
+    </figure>
+
+    <details class="card" open>
+      <summary><span class="mode live">Live</span>Why the one-waiter-per-kitchen rule matters<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>The one-to-one pairing sounds like a technical detail. It is actually a governance feature you should like. Each client-server connection is its own sealed line, with its own permissions and its own audit trail. A kitchen never learns what another kitchen is doing, and a compromised kitchen cannot reach across the floor.</p>
+        <ul>
+          <li><strong>Isolation by design:</strong> the sales server cannot see the HR server. If one connection is misbehaving, you can cut that one line without touching the others.</li>
+          <li><strong>The host is where policy lives:</strong> the restaurant decides which kitchens open, which waiters are hired, and what a waiter is allowed to carry. That is your control point (a4 and a5 go deep here).</li>
+          <li><strong>Adding capability is additive:</strong> a new kitchen means a new waiter, not a renovation. This is the a1 promise - configuration, not a project - shown at the architecture level.</li>
+        </ul>
+        <div class="callout example">
+          <span class="ex-pill">Real world</span>
+          <p><strong>Daybreak's floor.</strong> Daybreak's support team opens Claude (the host). Behind it sit three kitchens their data team built: sales, catalog, and monthly reports. Each has its own waiter. When Daybreak later adds an inventory kitchen, the host simply hires a fourth waiter - the other three connections, and everything the support team already does, are untouched.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>Who plays each role in the tools you already use<span class="mini">3 min read</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>The vocabulary maps directly onto products you may already run, so you can locate the roles without a demo:</p>
+        <ul>
+          <li><strong>Hosts</strong> are the AI apps people open: Claude Desktop, Claude Code, Microsoft Copilot, Cursor, and a growing list of others.</li>
+          <li><strong>Clients</strong> are invisible to users - they live inside the host, one per server connection. You will rarely say the word "client" in a meeting, but it is why isolation works.</li>
+          <li><strong>Servers</strong> are the capability. Some you buy from a vendor, some your own team builds over your own systems. Sessions a3 and a5 are about which is which.</li>
+        </ul>
+        <p>When someone says "we connected Copilot to our warehouse," translate it: the host is Copilot, a client inside it opened a one-to-one line to a warehouse server. That is the whole sentence, in architecture terms.</p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ PART 2: THREE OFFERS ============ -->
+  <section class="section" id="three-offers">
+    <div class="section-kicker">
+      <span class="klabel">Part 2 · covers official "Architecture overview", Academy "Introducing MCP", DLAI "MCP Architecture"</span>
+      <h2>The three things a server can offer <span class="tag concept">8 min live</span></h2>
+    </div>
+    <p class="lede">Every kitchen can put three kinds of things on its menu. <strong>Tools</strong> are actions the AI can take - "run this query," "send this email." <strong>Resources</strong> are reference material the AI can read - a catalog, a policy doc, a data extract. <strong>Prompts</strong> are playbooks - saved templates a person can invoke, like "write the monthly report the way we always do." The genius is not the three types; it is the rule about <em>who is allowed to trigger each one</em>. That control split is what keeps an eager AI from doing something you never approved.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 340" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The control triangle: tools are model-controlled actions, resources are app-controlled reference material, prompts are user-controlled playbooks.">
+        <style>
+          .triHd { font: 700 14px Inter, sans-serif; fill: #1E242D; }
+          .triT { font: 700 14px Inter, sans-serif; fill: #FFFFFF; }
+          .triC { font: 700 11px Inter, sans-serif; fill: #F8EFE4; }
+          .triS { font: 400 11px Inter, sans-serif; fill: #F8EFE4; }
+          .triMid { font: 600 13px Inter, sans-serif; fill: #5B6674; }
+          .triN { font: 600 13px Inter, sans-serif; fill: #043029; }
+          .triEdge { stroke: #C3CBD6; stroke-width: 2; fill: none; }
+        </style>
+        <text class="triHd" x="40" y="34">The control triangle - who is allowed to pull the trigger</text>
+        <path class="triEdge" d="M440,95 L200,250 M440,95 L680,250 M200,250 L680,250"/>
+
+        <rect x="350" y="66" width="180" height="60" rx="9" fill="#5C3312"/>
+        <text class="triT" x="368" y="90">Tools</text>
+        <text class="triC" x="368" y="106">MODEL-CONTROLLED</text>
+        <text class="triS" x="368" y="120">the AI chooses to run it</text>
+
+        <rect x="90" y="228" width="190" height="60" rx="9" fill="#A8622B"/>
+        <text class="triT" x="108" y="252">Resources</text>
+        <text class="triC" x="108" y="268">APP-CONTROLLED</text>
+        <text class="triS" x="108" y="282">the app supplies it</text>
+
+        <rect x="600" y="228" width="190" height="60" rx="9" fill="#C08048"/>
+        <text class="triT" x="618" y="252">Prompts</text>
+        <text class="triC" x="618" y="268">USER-CONTROLLED</text>
+        <text class="triS" x="618" y="282">a person invokes it</text>
+
+        <text class="triMid" x="372" y="185">actions vs. reading</text>
+        <text class="triMid" x="384" y="203">vs. playbooks</text>
+
+        <rect x="40" y="312" width="14" height="14" rx="3" fill="#0E7C6B"/>
+        <text class="triN" x="64" y="324">Only tools let the AI act. Splitting control by role is the safety mechanism, not decoration.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the control triangle behind the three server offers</figcaption>
+    </figure>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>Why the control split protects you<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Read the triangle as three answers to one question: <em>who decides this happens?</em> The answer is deliberately different for each type, and that difference is the whole safety story.</p>
+        <ul>
+          <li><strong>Tools are model-controlled</strong> - the AI decides, in the moment, to call one. This is the powerful and the risky part: actions with side effects. It is exactly where you want approvals, scoped permissions, and read-only defaults.</li>
+          <li><strong>Resources are app-controlled</strong> - the host app decides what reference material to pull in. The AI reads, it does not reach out and grab. Lower risk, because reading is not acting.</li>
+          <li><strong>Prompts are user-controlled</strong> - a human deliberately picks a saved playbook. Nothing fires on its own. This is the safest of the three and the most under-used.</li>
+        </ul>
+        <p>Leadership takeaway: when a vendor says "our server has 40 tools," hear "40 actions this AI could take against our data." That is not a reason to say no - it is the reason to ask <em>which</em> 40, and what each one can touch.</p>
+      </div>
+    </details>
+
+    <p class="lede">Here is the triangle in Daybreak terms - one card per offer, each a real capability a coffee brand's server would publish.</p>
+
+    <div class="steps">
+      <div class="step"><p><strong>Tool · <code>query_sales</code> (model-controlled).</strong> The AI can run a sales query when it decides the question needs data - "how did the dark roast subscription do last month?" An action, so it is the one you scope carefully: read-only, specific tables, logged.</p></div>
+      <div class="step"><p><strong>Resource · <code>catalog</code> (app-controlled).</strong> The current product catalog, exposed as reference material the host can drop into context. The AI reads it to answer accurately; it never edits it. Reference, not action.</p></div>
+      <div class="step"><p><strong>Prompt · <code>monthly_report</code> (user-controlled).</strong> A saved playbook: "produce the monthly sales report in Daybreak's house format." A manager invokes it on purpose. Nothing runs unless a person picks it.</p></div>
+    </div>
+
+    <div class="callout tip">
+      <strong>The one-line test</strong>
+      For any capability on a server's menu, ask "action, reading, or playbook?" Actions (tools) get the scrutiny; reading (resources) and playbooks (prompts) are lower-risk by design. This single question replaces a lot of technical review.
+    </div>
+  </section>
+
+  <!-- ============ PART 3: COMMISSIONING ============ -->
+  <section class="section" id="commissioning">
+    <div class="section-kicker">
+      <span class="klabel">Part 3 · the leadership takeaway</span>
+      <h2>What you can commission <span class="tag concept">6 min live</span></h2>
+    </div>
+    <p class="lede">Think of each primitive as a capability you can commission - from a vendor or from your own team. A server is a bundle of tools, resources, and prompts, wrapped around one system. When you approve "a server for our CRM," you are approving a specific menu of actions, readings, and playbooks against the CRM. The skill a leader needs is reading that menu quickly and knowing which questions decide whether it is safe.</p>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>How to read a vendor server listing<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>A capability list is just a menu. Read it in this order and you will catch the important things without any technical background:</p>
+        <ul>
+          <li><strong>Count the tools first.</strong> Tools are actions. Ask what each one can do and whether any of them write, delete, or send. A server with only read tools is a very different risk than one that can modify records.</li>
+          <li><strong>Check what the resources expose.</strong> Resources are what the AI can read. Confirm the scope - "the public catalog" is fine; "the entire customer table" deserves a conversation.</li>
+          <li><strong>Note the prompts.</strong> Prompts are convenience playbooks and usually the lowest risk. Their presence is a sign of a mature, well-designed server.</li>
+          <li><strong>Then the two questions from a4:</strong> who maintains it, and how does it authenticate? Hold those for the security session - but know that a menu with no answer to "who owns this" is a red flag.</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>Local vs remote servers - what each implies for risk<span class="mini">3 min read</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Servers come in two flavors, and the difference is mostly about where they run and how they connect. In plain risk terms:</p>
+        <ul>
+          <li><strong>Local server (runs on the user's machine).</strong> It talks to the host over a direct on-device channel. No network hop, but it runs with that person's access and lives outside central visibility unless you manage it. Convenient, harder to govern at scale.</li>
+          <li><strong>Remote server (runs somewhere central, reached over the internet).</strong> It connects over a modern web channel with proper authentication. Easier to govern centrally, to audit, and to share across teams - which is why most enterprise deployments prefer it. The trade is that it is now an internet-facing service you must secure (a4).</li>
+        </ul>
+        <p>Leadership rule of thumb: <strong>local is fine for one person experimenting; remote is what you standardize on</strong> when a capability matters to more than one team, because that is where central governance and auditing live. One older connection style has already been retired, so if a vendor mentions "HTTP+SSE," ask whether they are current.</p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ DEMO 1 ============ -->
+  <section class="section" id="demo-1">
+    <div class="section-kicker">
+      <span class="klabel">Demo 1 of 2</span>
+      <h2>Spec a server on paper <span class="tag demo">★ 8 min · pen and paper</span></h2>
+    </div>
+    <p class="lede">You will understand the control triangle far better by designing a server than by reading about one. No code - just a pen, a system you know, and four decisions.</p>
+
+    <div class="steps">
+      <div class="step"><p><strong>Pick a system</strong> you actually have - say your CRM. Write its name at the top of the page. This is the one thing your imaginary server wraps.</p></div>
+      <div class="step"><p><strong>Name two tools</strong> (actions the AI could take): perhaps <code>lookup_account</code> and <code>log_activity</code>. Beside each, note whether it only reads or also writes.</p></div>
+      <div class="step"><p><strong>Name one resource</strong> (reference material to read): maybe the current product-and-pricing sheet, exposed read-only.</p></div>
+      <div class="step"><p><strong>Name one prompt</strong> (a saved playbook a human invokes): perhaps "draft a renewal outreach in our house tone."</p></div>
+      <div class="step"><p><strong>Mark who controls each</strong> - tools = model, resource = app, prompt = user - and circle the one item you would most want an approval step on. It will be a write tool nearly every time.</p></div>
+    </div>
+
+    <div class="callout tip">
+      <strong>Keep the sheet</strong>
+      This is a real requirements doc in miniature. In a5 you will use exactly this shape - system, tools, resources, prompts, control - to brief your data team on the first servers worth building.
+    </div>
+  </section>
+
+  <!-- ============ DEMO 2 ============ -->
+  <section class="section" id="demo-2">
+    <div class="section-kicker">
+      <span class="klabel">Demo 2 of 2</span>
+      <h2>Read a real capability list <span class="tag demo">★ 6 min · sort the menu</span></h2>
+    </div>
+    <p class="lede">Here is a realistic (fictional) description of a server you might be asked to approve. Read it once, then sort every capability into the three buckets before you open the model answer.</p>
+
+    <div class="callout example">
+      <span class="ex-pill">Real world</span>
+      <p><strong>"Daybreak Ops Server v1.2."</strong> Capabilities: <em>get_subscription_status</em>, <em>refund_order</em>, <em>the returns-policy document</em>, <em>list_open_tickets</em>, <em>the brand voice guide</em>, and <em>"handle-a-churn-risk-customer" workflow</em>. Your exercise: which are tools (actions), which are resources (reading), which are prompts (playbooks)? Which single capability would you insist on an approval step for?</p>
+    </div>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>The sorted answer<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p><strong>Tools (actions, model-controlled):</strong> <code>get_subscription_status</code>, <code>refund_order</code>, <code>list_open_tickets</code>. All three do something on request.</p>
+        <p><strong>Resources (reading, app-controlled):</strong> the returns-policy document and the brand voice guide. Reference material the AI reads, never changes.</p>
+        <p><strong>Prompts (playbooks, user-controlled):</strong> the "handle-a-churn-risk-customer" workflow. A human picks it deliberately.</p>
+        <p><strong>The one to gate:</strong> <code>refund_order</code> - it moves money. It should be scoped, capped, logged, and ideally require a human approval. Notice you reached that conclusion with zero technical knowledge, using only the control triangle.</p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ HOMEWORK ============ -->
+  <section class="section" id="exercise">
+    <div class="section-kicker">
+      <span class="klabel">Homework</span>
+      <h2>Before session 3 <span class="tag exercise">◐ 20-30 min total</span></h2>
+    </div>
+    <ul>
+      <li>Finish the paper server spec from Demo 1 for one real system, and share it with the person who owns that data. Their reaction to "the AI could call these tools" is the a4 conversation starting early.</li>
+      <li>Find one real MCP server listing (a vendor's, or one your team already uses) and sort its capabilities into tools, resources, and prompts. Note anything you could not classify - that is a question for session 3.</li>
+      <li>Ask your teams: for any AI connection we already have, is it a local server on someone's laptop or a remote one we manage centrally? The answer tells you how much governance you currently have.</li>
+      <li>Optional: skim the "Architecture overview" page on modelcontextprotocol.io and notice how much of it is now just vocabulary you already own.</li>
+    </ul>
+  </section>
+
+  <!-- ============ SOURCES ============ -->
+  <section class="section" id="official">
+    <div class="section-kicker">
+      <span class="klabel">Source material</span>
+      <h2>Official sources covered</h2>
+    </div>
+    <p class="lede">This session distills the official architecture documentation and the major MCP courses into decision-maker language. Certificates, videos, and hands-on labs stay on the official sites; this page covers:</p>
+    <div class="covered">
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">modelcontextprotocol.io - "Architecture overview"</span><span class="note">Parts 1-3 · host/client/server, the three server primitives, control model</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">Anthropic Academy - "Introducing MCP"</span><span class="note">Parts 1-2 · roles and primitives, retold as restaurant and menu</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">DeepLearning.AI "MCP: Build Rich-Context AI Apps" - "MCP Architecture"</span><span class="note">Concepts covered in plain terms; the code-level detail stays in the builder track</span></div>
+    </div>
+  </section>
+
+  <!-- ============ QUIZ ============ -->
+  <section class="section" id="quiz">
+    <div class="section-kicker">
+      <span class="klabel">Check yourself</span>
+      <h2>Three questions before you go 🎯 <span class="tag exercise">◐ 90 seconds</span></h2>
+    </div>
+    <div class="quiz-q" data-answer="2">
+      <p class="qtext">1 · In the restaurant analogy, what are the host, client, and server?</p>
+      <button class="qopt" type="button">A · The host is the kitchen, the client is the menu, the server is the waiter</button>
+      <button class="qopt" type="button">B · Host and server are the same thing; the client is just the network cable</button>
+      <button class="qopt" type="button">C · Host = the AI app (the restaurant), client = a waiter (one per kitchen), server = a kitchen that publishes its menu</button>
+      <p class="qwhy">The host is the AI app your people open. Inside it, each client is a dedicated waiter paired one-to-one with a single server (kitchen). Kitchens never see each other - that isolation is a governance feature, not an accident.</p>
+    </div>
+    <div class="quiz-q" data-answer="0">
+      <p class="qtext">2 · A server offers a capability that lets the AI decide, on its own, to send a customer email. Which primitive is that, and why does the control matter?</p>
+      <button class="qopt" type="button">A · A tool - model-controlled, so it is an action the AI can trigger; this is exactly what to scope and gate</button>
+      <button class="qopt" type="button">B · A resource - the AI is just reading the email template</button>
+      <button class="qopt" type="button">C · A prompt - a human always has to pick it first</button>
+      <p class="qwhy">Tools are model-controlled actions - the AI chooses to call them. Sending email has a side effect, so it belongs in the "scrutinize, scope, and log" bucket. Resources are read-only reference; prompts require a person to invoke them.</p>
+    </div>
+    <div class="quiz-q" data-answer="1">
+      <p class="qtext">3 · A capability matters to three different teams. Local server or remote server, and why?</p>
+      <button class="qopt" type="button">A · Local - it is faster and needs no internet</button>
+      <button class="qopt" type="button">B · Remote - it runs centrally, so you can govern, audit, and share it across teams from one place</button>
+      <button class="qopt" type="button">C · It makes no difference; local and remote are identical in risk</button>
+      <p class="qwhy">Local servers live on one person's machine and are hard to govern at scale. Remote servers run centrally over an authenticated web channel - which is why enterprises standardize on them once a capability serves more than one team.</p>
+    </div>
+    <p class="quiz-score"></p>
+  </section>
+
+  <!-- ============ CHEAT SHEET ============ -->
+  <section class="cheat" id="cheatsheet">
+    <h3>Leader session 2 cheat sheet <span>· pin this</span></h3>
+    <div class="grid-2">
+      <div class="cheat-item"><b>The three roles</b><span>Host = the AI app (restaurant). Client = a waiter, one per kitchen. Server = a kitchen that publishes its menu.</span></div>
+      <div class="cheat-item"><b>One-to-one pairing</b><span>Each client pairs with exactly one server. Kitchens never see each other - isolation is a governance feature.</span></div>
+      <div class="cheat-item"><b>Three server offers</b><span>Tools = actions. Resources = reference material to read. Prompts = saved playbooks a person invokes.</span></div>
+      <div class="cheat-item"><b>The control triangle</b><span>Tools are model-controlled, resources app-controlled, prompts user-controlled. Only tools let the AI act.</span></div>
+      <div class="cheat-item"><b>The one-line test</b><span>For any capability ask: action, reading, or playbook? Actions get the scrutiny; the other two are lower-risk.</span></div>
+      <div class="cheat-item"><b>Read a listing</b><span>Count the tools first (which write?), check what resources expose, note the prompts, then ask who owns it.</span></div>
+      <div class="cheat-item"><b>Local vs remote</b><span>Local = one laptop, hard to govern. Remote = central, authenticated, auditable - standardize on it at scale.</span></div>
+      <div class="cheat-item"><b>Daybreak menu</b><span>Tool query_sales, resource catalog, prompt monthly_report - one action, one reading, one playbook.</span></div>
+    </div>
+  </section>
+
+  <footer class="pagefoot">
+    <span>Leader session 2 of 6 · learn-mcp-with-phoebe · by Phoebe Fu &nbsp;·&nbsp; 📚 <a href="https://phoebefu6.github.io/learn-with-phoebe/">Learn with Phoebe ↗</a></span>
+    <span><a href="a1-why-mcp.html">← Prev: Why MCP exists</a> &nbsp;·&nbsp; <a href="a3-ecosystem-play.html">Next: The ecosystem play →</a></span>
+  </footer>
+
+</main>
+
+<script src="../assets/app.js?v=1"></script>
+</body>
+</html>

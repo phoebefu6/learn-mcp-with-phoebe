@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Builder session 3 · Resources and prompts - learn mcp with phoebe</title>
+<link rel="stylesheet" href="../assets/style.css?v=1">
+</head>
+<body>
+
+<div class="toolbar">
+  <div class="wrap">
+    <span class="crumb"><a href="../index.html">learn-mcp-with-phoebe</a> / Builder session 3 of 8</span>
+    <button class="btn" id="toggle-all" type="button">Expand all</button>
+    <button class="btn primary" id="zoom-toggle" type="button">Projector zoom: off</button>
+  </div>
+</div>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="eyebrow">Learn MCP with Phoebe · Builder track · Session 3 of 8</div>
+    <h1>Resources and <span class="accent">prompts</span></h1>
+    <p class="sub">Tools act; resources inform; prompts guide. Last session your server did things. Tonight you give it context to read and playbooks users can pick, and by the end your <code>daybreak-mcp</code> matches the running project exactly: three tools, two resources, one prompt. The recurring lesson is control - who decides when each primitive fires. Get that triangle right and the rest is decoration.</p>
+    <div class="chip-row">
+      <span class="chip level">🟡 Medium</span>
+      <span class="chip audience">Practitioners: DE · DS · AI engineers · builders</span>
+      <span class="chip audience">Python · spec 2025-11-25</span>
+      <span class="chip time">45 min</span>
+    </div>
+    <div class="agenda">
+      <span class="a1" style="flex:1">0-3 · Welcome</span>
+      <span class="a2" style="flex:4">3-18 · Resources</span>
+      <span class="a3" style="flex:4">18-36 · Prompts</span>
+      <span class="a4" style="flex:2">36-45 · Round out + Q&amp;A</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ============ INTRO ============ -->
+  <section class="section" id="intro">
+    <div class="section-kicker">
+      <span class="klabel">Part 0</span>
+      <h2>Completing the server trio</h2>
+    </div>
+    <p class="lede">A server that only exposes tools is a server missing two-thirds of its vocabulary. <strong>Resources</strong> are read-only content the app pulls into context - a catalog, a policy doc. <strong>Prompts</strong> are templates the user picks explicitly, slash-command style. Same decorators you already know, different control model. By the end of tonight <code>server.py</code> is complete and identical to the project reference.</p>
+    <div class="legend">
+      <span class="pill solid">Live - presented in session</span>
+      <span class="pill light">Self-study - read after class</span>
+      <span class="pill peach">▶ Live MCP wire - step through real messages</span>
+      <span class="pill inkpill">Official sources covered</span>
+    </div>
+    <div class="callout win">
+      <strong>★ What you walk out with today</strong>
+      Two working resources with clean URIs (one static, one computed from the db), a <code>monthly_report</code> prompt whose argument becomes a form field in the host, a firm grip on the model/app/user control triangle, and a <code>daybreak-mcp</code> server that matches the running project line for line.
+    </div>
+  </section>
+
+  <!-- ============ PART 1: RESOURCES ============ -->
+  <section class="section" id="resources">
+    <div class="section-kicker">
+      <span class="klabel">Part 1 · covers official "Resources", DLAI "Adding Prompt and Resource Features", Academy "Defining resources"</span>
+      <h2>Resources: context with a URI <span class="tag concept">7 min live</span></h2>
+    </div>
+    <p class="lede">A resource is read-only content the application decides to attach to a conversation. You register one with <code>@mcp.resource("uri")</code>: the decorator argument is the URI, the function returns the content, and the return type hint sets the mime type. The URI scheme is <strong>yours to design</strong> - <code>daybreak://</code> here - and it is how the app addresses the content.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A resource has four parts: uri, name, mimeType, and contents">
+        <style>
+          .reT { font: 700 13px Inter, sans-serif; fill: #FFFFFF; }
+          .reM { font: 600 11.5px "SF Mono", monospace; fill: #FFFFFF; opacity:.92; }
+          .reI { font: 700 13px Inter, sans-serif; fill: #1E242D; }
+          .reX { font: 400 11.5px Inter, sans-serif; fill: #5B6674; }
+          .reN { font: 600 13px Inter, sans-serif; fill: #043029; }
+        </style>
+        <text class="reI" x="40" y="30">One resource, four fields the app sees</text>
+        <rect x="40" y="44" width="195" height="60" rx="8" fill="#5C3312"/>
+        <text class="reT" x="56" y="66">uri</text>
+        <text class="reM" x="56" y="88">daybreak://catalog</text>
+        <rect x="255" y="44" width="195" height="60" rx="8" fill="#A8622B"/>
+        <text class="reT" x="271" y="66">name</text>
+        <text class="reM" x="271" y="88">catalog</text>
+        <rect x="470" y="44" width="195" height="60" rx="8" fill="#C08048"/>
+        <text class="reT" x="486" y="66">mimeType</text>
+        <text class="reM" x="486" y="88">text/plain</text>
+        <rect x="685" y="44" width="155" height="60" rx="8" fill="#DDAF7E"/>
+        <text class="reI" x="701" y="66">contents</text>
+        <text class="reX" x="701" y="88">the string</text>
+        <text class="reX" x="40" y="140">you choose the scheme</text>
+        <text class="reX" x="255" y="140">from the fn name</text>
+        <text class="reX" x="470" y="140">from the return type</text>
+        <text class="reX" x="685" y="140">what the fn returns</text>
+        <rect x="40" y="180" width="14" height="14" rx="3" fill="#0E7C6B"/>
+        <text class="reN" x="64" y="192">Two flows on the wire: resources/list gives the app the menu; resources/read fetches one uri's contents.</text>
+        <rect x="40" y="212" width="14" height="14" rx="3" fill="#0E7C6B"/>
+        <text class="reN" x="64" y="224">App-controlled: the application decides which resources enter context, not the model and not the user.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the anatomy of a resource</figcaption>
+    </figure>
+
+    <details class="card" open>
+      <summary><span class="mode live">Live</span>The catalog resource, line by line<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Daybreak's catalog is <strong>computed from the database</strong> every time it is read - not a static file. That is the point of a resource function: it can run code. Here it queries products and formats a markdown list.</p>
+        <div class="prompt-box"><span class="label">python · a computed resource</span>@mcp.resource("daybreak://catalog")
+def catalog() -&gt; str:
+    """Daybreak product catalog with prices."""
+    rows = _query("SELECT name, category, price, roast FROM products ORDER BY price DESC")
+    lines = ["# Daybreak catalog"]
+    for name, category, price, roast in rows:
+        roast_note = f" ({roast})" if roast else ""
+        lines.append(f"- {name} - {category} - ${price:.2f}{roast_note}")
+    return "\n".join(lines)</div>
+        <ul>
+          <li><strong><code>@mcp.resource("daybreak://catalog")</code></strong> - the URI is the argument; the function name <code>catalog</code> becomes the resource name.</li>
+          <li><strong>Returns <code>str</code></strong>, so the mime type is text. Return bytes or set a type for binary content.</li>
+          <li><strong>Computed live</strong> - add a product to the db and the next read reflects it. No caching to invalidate.</li>
+        </ul>
+        <div class="mcpbox" data-scenario="resources" data-caption="List then read: the app gets the menu of URIs, then fetches daybreak://catalog's contents."></div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>URI design taste - nouns, hierarchies, no verbs<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>The scheme is yours, so design it like an API surface, not a dumping ground. Daybreak uses <code>daybreak://catalog</code> and <code>daybreak://policy/refunds</code> - notice the second one nests under a <code>policy/</code> namespace.</p>
+        <ul>
+          <li><strong>Nouns, not verbs.</strong> Resources are things you read. <code>daybreak://catalog</code>, not <code>daybreak://get-catalog</code>. Verbs are for tools.</li>
+          <li><strong>Hierarchies group.</strong> <code>policy/refunds</code>, <code>policy/shipping</code> - a namespace that scales as you add docs.</li>
+          <li><strong>Stable + addressable.</strong> The app stores the URI; renaming it breaks references. Choose once.</li>
+          <li><strong>Your scheme, your rules.</strong> <code>daybreak://</code> means nothing to anyone else - and that is fine. It only has to be consistent within your server.</li>
+        </ul>
+        <div class="callout tip">
+          <strong>Static vs computed</strong>
+          A resource can return a constant (like the refund policy text) or run a query (like the catalog). Both are just functions - the caller cannot tell which, and should not have to.
+        </div>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ PART 2: PROMPTS ============ -->
+  <section class="section" id="prompts">
+    <div class="section-kicker">
+      <span class="klabel">Part 2 · covers official "Prompts", DLAI "Adding Prompt and Resource Features", Academy "Defining prompts"</span>
+      <h2>Prompts: playbooks users pick <span class="tag concept">7 min live</span></h2>
+    </div>
+    <p class="lede">A prompt is a server-authored template the <strong>user</strong> chooses on purpose - it shows up as a slash command or menu item in the host. Register it with <code>@mcp.prompt()</code>; the function's parameters become the form fields the host renders. Daybreak ships one: <code>monthly_report(month)</code>, the founder's standing ops report.</p>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>monthly_report, walked through<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>The prompt returns the text that will be handed to the model when the user picks it. Its <code>month</code> parameter becomes a field the host asks the user to fill - which is why the wire message carries an <code>arguments</code> declaration.</p>
+        <div class="prompt-box"><span class="label">python · the prompt</span>@mcp.prompt()
+def monthly_report(month: str) -&gt; str:
+    """Standard monthly ops report for the founder."""
+    return (
+        f"Write the {month} ops report for Daybreak: orders and revenue vs the "
+        f"previous month, refunds, subscription changes, and one concrete "
+        f"action for next month. Use query_sales, top_products and "
+        f"subscription_status for the numbers - do not estimate."
+    )</div>
+        <ul>
+          <li><strong><code>month: str</code></strong> becomes a required argument the host renders as a field - the same wire mechanism as a tool's input schema.</li>
+          <li><strong>The template tells the model to use the tools</strong> - a prompt orchestrates your own primitives. Pick <code>monthly_report</code> for 2026-03 and the model will call <code>query_sales</code>, see $150.00, and write the dip up.</li>
+          <li><strong>"do not estimate"</strong> - the prompt is where you encode the house rules for a recurring task.</li>
+        </ul>
+        <div class="mcpbox" data-scenario="prompts" data-caption="Watch the arguments declaration - that is what lets the host render a form for the user to fill."></div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>When a prompt beats a system-prompt doc<span class="mini">3 min read</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>You could paste "here is how we write the monthly report" into a system prompt and be done. Sometimes that is right. But a prompt primitive wins when:</p>
+        <ul>
+          <li><strong>The user should trigger it explicitly.</strong> A slash command is discoverable and intentional - the user knows they are running the report, versus hoping the model remembers a buried instruction.</li>
+          <li><strong>It takes arguments.</strong> <code>month</code> is a parameter, not a copy-paste edit. The host collects it cleanly.</li>
+          <li><strong>It lives with the server.</strong> Update the report format once, on the server, and every host that connects gets the new version - no chasing pasted system prompts across teammates.</li>
+        </ul>
+        <p>Rule of thumb: reusable, parameterized, user-triggered workflows are prompts. One-off context is a system prompt. Recurring reference material is a resource.</p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ PART 3: ROUND OUT ============ -->
+  <section class="section" id="round-out">
+    <div class="section-kicker">
+      <span class="klabel">Part 3 · covers official completion + pagination utilities</span>
+      <h2>Round out the server <span class="tag concept">5 min live</span></h2>
+    </div>
+    <p class="lede">The server trio is complete. Two utilities exist that you should know by name even though Daybreak does not need them yet, and then we confirm your file matches the reference exactly.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The complete Daybreak server: three tools, two resources, one prompt, grouped by who controls each">
+        <style>
+          .mpT { font: 700 13px Inter, sans-serif; fill: #FFFFFF; }
+          .mpS { font: 400 11px "SF Mono", monospace; fill: #FFFFFF; opacity:.9; }
+          .mpI { font: 700 12px Inter, sans-serif; fill: #1E242D; }
+          .mpX { font: 400 11.5px Inter, sans-serif; fill: #5B6674; }
+          .mpN { font: 600 13px Inter, sans-serif; fill: #043029; }
+        </style>
+        <text class="mpI" x="40" y="28">TOOLS - model-controlled</text>
+        <rect x="40" y="40" width="250" height="34" rx="6" fill="#5C3312"/><text class="mpS" x="54" y="62">query_sales(month)</text>
+        <rect x="40" y="80" width="250" height="34" rx="6" fill="#5C3312"/><text class="mpS" x="54" y="102">top_products(from, to)</text>
+        <rect x="40" y="120" width="250" height="34" rx="6" fill="#5C3312"/><text class="mpS" x="54" y="142">subscription_status()</text>
+        <text class="mpI" x="315" y="28">RESOURCES - app-controlled</text>
+        <rect x="315" y="40" width="250" height="34" rx="6" fill="#A8622B"/><text class="mpS" x="329" y="62">daybreak://catalog</text>
+        <rect x="315" y="80" width="250" height="34" rx="6" fill="#A8622B"/><text class="mpS" x="329" y="102">daybreak://policy/refunds</text>
+        <text class="mpI" x="590" y="28">PROMPTS - user-controlled</text>
+        <rect x="590" y="40" width="250" height="34" rx="6" fill="#C08048"/><text class="mpS" x="604" y="62">monthly_report(month)</text>
+        <text class="mpX" x="590" y="102">the user picks it; it drives</text>
+        <text class="mpX" x="590" y="118">the three tools above</text>
+        <rect x="40" y="180" width="14" height="14" rx="3" fill="#0E7C6B"/>
+        <text class="mpN" x="64" y="192">Three primitives, three controllers. The whole server is 3 tools + 2 resources + 1 prompt over daybreak.db.</text>
+        <rect x="40" y="212" width="14" height="14" rx="3" fill="#0E7C6B"/>
+        <text class="mpN" x="64" y="224">Utilities like completion and pagination ride on top when a list grows - Daybreak is small enough to skip them.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the complete Daybreak capability map, grouped by control</figcaption>
+    </figure>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>Completion and pagination, briefly and honestly<span class="mini">2 min read</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Two protocol utilities you will meet in bigger servers, named here so they are not a surprise:</p>
+        <ul>
+          <li><strong>Completion</strong> - the server can offer autocomplete suggestions for a prompt or resource argument (like a month picker suggesting valid months). Nice UX, optional, skipped here.</li>
+          <li><strong>Pagination</strong> - when a <code>list</code> response is long, the server returns a cursor and the client asks for the next page. Daybreak lists three tools and two resources, so there is nothing to paginate. You will care about this when a server exposes hundreds of resources.</li>
+        </ul>
+        <p>Neither changes how you write tools, resources, or prompts - they are protocol plumbing the SDK handles when you need them.</p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>The finished b3 server matches the project exactly<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>At this point your <code>server.py</code> is the running-project reference. Bottom of the file, unchanged since b2:</p>
+        <div class="prompt-box"><span class="label">python · the two resources + the run block</span>@mcp.resource("daybreak://policy/refunds")
+def refund_policy() -&gt; str:
+    """Refund and cancellation policy."""
+    return (
+        "# Daybreak refund + cancellation policy\n"
+        "- Full refund within 14 days of any order, no questions asked.\n"
+        "- Subscriptions cancel any time; the current month still ships.\n"
+        "- Refunded orders keep their row in the orders table with status "
+        "'refunded' - revenue reports must exclude them."
+    )
+
+
+if __name__ == "__main__":
+    mcp.run()  # stdio transport - b6 switches this to streamable-http</div>
+        <p>Restart the Inspector and confirm all six capabilities appear: three tools, two resources, one prompt. That is a complete MCP server, and it is yours.</p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ DEMO 1 ============ -->
+  <section class="section" id="demo-1">
+    <div class="section-kicker">
+      <span class="klabel">Demo 1 of 2</span>
+      <h2>Ship the catalog resource <span class="tag demo">★ 10 min · everyone builds</span></h2>
+    </div>
+    <p class="lede">Add the first resource and read it through the Inspector's Resources tab.</p>
+    <div class="steps">
+      <div class="step"><p><strong>Paste</strong> the <code>catalog</code> resource from Part 1 into <code>server.py</code>, below your tools.</p></div>
+      <div class="step"><p><strong>Restart</strong> the Inspector: <code>uv run mcp dev server.py</code>.</p></div>
+      <div class="step"><p><strong>Open the Resources tab.</strong> You should see <code>daybreak://catalog</code> listed - that is <code>resources/list</code>.</p></div>
+      <div class="step"><p><strong>Read it.</strong> Click the URI; the Inspector fires <code>resources/read</code> and shows the markdown catalog, priced high to low.</p></div>
+    </div>
+  </section>
+
+  <!-- ============ DEMO 2 ============ -->
+  <section class="section" id="demo-2">
+    <div class="section-kicker">
+      <span class="klabel">Demo 2 of 2</span>
+      <h2>Ship monthly_report + the refund policy <span class="tag demo">★ 10 min · build</span></h2>
+    </div>
+    <p class="lede">Add the second resource and the prompt, and test the prompt in the Inspector - watch it ask you for the month.</p>
+    <div class="steps">
+      <div class="step"><p><strong>Paste</strong> <code>refund_policy</code> (Part 3) and <code>monthly_report</code> (Part 2) into <code>server.py</code>.</p></div>
+      <div class="step"><p><strong>Restart</strong> the Inspector and open the Prompts tab. <code>monthly_report</code> appears with a <code>month</code> field.</p></div>
+      <div class="step"><p><strong>Fill month=2026-03</strong> and get the prompt. Read the returned template - it instructs the model to use your three tools and not estimate.</p></div>
+      <div class="step"><p><strong>Confirm the full set:</strong> 3 tools, 2 resources, 1 prompt. Your server now matches the project reference exactly.</p></div>
+    </div>
+  </section>
+
+  <!-- ============ HOMEWORK ============ -->
+  <section class="section" id="exercise">
+    <div class="section-kicker">
+      <span class="klabel">Homework</span>
+      <h2>Try it yourself - this week <span class="tag exercise">◐ 25-35 min total</span></h2>
+    </div>
+    <ul>
+      <li>Add a computed resource <code>daybreak://stats/monthly</code> that returns each month's completed revenue as a small table - one line per month, so a host can read the whole trend without calling <code>query_sales</code> twelve times. Note the <code>stats/</code> namespace choice.</li>
+      <li>Read your new resource in the Inspector and confirm 2026-03 shows $150.00 and 2026-02 shows $271.00 - the dip, now in a resource.</li>
+      <li>Write one more prompt, <code>churn_review()</code> with no arguments, that tells the model to use <code>subscription_status</code> and flag anything worrying. Notice a zero-argument prompt renders no form.</li>
+      <li>Decide, for your own dream server from b1, which items are tools, which are resources, and which are prompts. Bring the mapping to b4.</li>
+    </ul>
+  </section>
+
+  <!-- ============ SOURCES ============ -->
+  <section class="section" id="official">
+    <div class="section-kicker">
+      <span class="klabel">Source material</span>
+      <h2>Official sources covered</h2>
+    </div>
+    <p class="lede">This session teaches the working core of the resource and prompt material across the official docs and the major courses, on the running project. Certificates and videos stay official. This page covers:</p>
+    <div class="covered">
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">modelcontextprotocol.io - "Resources" + "Prompts" server concepts</span><span class="note">@mcp.resource URIs, @mcp.prompt arguments, control model - taught on Daybreak</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">DeepLearning.AI "MCP" - "Adding Prompt and Resource Features"</span><span class="note">Both primitives, full working content, on our own server</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">Anthropic Academy "Introduction to MCP" - defining resources + prompts</span><span class="note">Defining and accessing resources, defining prompts</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">modelcontextprotocol.io - completion + pagination utilities</span><span class="note">Named and explained; not built (Daybreak is small enough to skip them)</span></div>
+    </div>
+  </section>
+
+  <!-- ============ QUIZ ============ -->
+  <section class="section" id="quiz">
+    <div class="section-kicker">
+      <span class="klabel">Check yourself</span>
+      <h2>Three questions before you go 🎯 <span class="tag exercise">◐ 90 seconds</span></h2>
+    </div>
+    <div class="quiz-q" data-answer="1">
+      <p class="qtext">1 · In <code>@mcp.resource("daybreak://catalog")</code>, who defines the <code>daybreak://</code> scheme?</p>
+      <button class="qopt" type="button">A · The MCP spec reserves it</button>
+      <button class="qopt" type="button">B · You do - the URI scheme is the server author's to design, as long as it is consistent</button>
+      <button class="qopt" type="button">C · Claude Desktop assigns it at install</button>
+      <p class="qwhy">The scheme is yours. daybreak:// means nothing outside your server, and that is fine - it just has to be a stable, addressable name the app can store and read from.</p>
+    </div>
+    <div class="quiz-q" data-answer="0">
+      <p class="qtext">2 · What do a prompt function's parameters become?</p>
+      <button class="qopt" type="button">A · Arguments the host renders as form fields for the user to fill</button>
+      <button class="qopt" type="button">B · Environment variables</button>
+      <button class="qopt" type="button">C · Nothing - prompts cannot take input</button>
+      <p class="qwhy">A prompt's parameters (like monthly_report's month) travel as an arguments declaration on the wire, which is exactly what lets the host render a form and collect the user's input.</p>
+    </div>
+    <div class="quiz-q" data-answer="2">
+      <p class="qtext">3 · Who controls when a resource enters the conversation?</p>
+      <button class="qopt" type="button">A · The model, whenever it decides</button>
+      <button class="qopt" type="button">B · The user, by typing a slash command</button>
+      <button class="qopt" type="button">C · The application - resources are app-controlled context</button>
+      <p class="qwhy">The control triangle: model controls tools, user controls prompts, app controls resources. The application decides which read-only content to attach; the server only offers it.</p>
+    </div>
+    <p class="quiz-score"></p>
+  </section>
+
+  <!-- ============ CHEAT SHEET ============ -->
+  <section class="cheat" id="cheatsheet">
+    <h3>Builder session 3 cheat sheet <span>· pin this</span></h3>
+    <div class="grid-2">
+      <div class="cheat-item"><b>Resource</b><span>@mcp.resource("daybreak://catalog") over a function. URI is yours; return type sets the mime type.</span></div>
+      <div class="cheat-item"><b>Static or computed</b><span>A resource can return a constant or run a query. Caller cannot tell; both are just functions.</span></div>
+      <div class="cheat-item"><b>URI taste</b><span>Nouns not verbs, hierarchies (policy/refunds), stable + addressable. Verbs belong to tools.</span></div>
+      <div class="cheat-item"><b>Prompt</b><span>@mcp.prompt() over a function. Parameters become the form fields the host renders.</span></div>
+      <div class="cheat-item"><b>The control triangle</b><span>Model controls tools · app controls resources · user controls prompts. The server only offers.</span></div>
+      <div class="cheat-item"><b>Prompt vs system doc</b><span>Reusable + parameterized + user-triggered -> prompt. One-off -> system prompt. Reference -> resource.</span></div>
+      <div class="cheat-item"><b>Wire flows</b><span>resources/list then resources/read · prompts/list then prompts/get. Same shape as tools.</span></div>
+      <div class="cheat-item"><b>Complete server</b><span>3 tools + 2 resources + 1 prompt over daybreak.db - matches project/server.py exactly.</span></div>
+    </div>
+  </section>
+
+  <footer class="pagefoot">
+    <span>Builder session 3 of 8 · learn-mcp-with-phoebe · by Phoebe Fu &nbsp;·&nbsp; 📚 <a href="https://phoebefu6.github.io/learn-with-phoebe/">Learn with Phoebe ↗</a></span>
+    <span><a href="b2-first-server.html">← Prev: Your first MCP server</a> &nbsp;·&nbsp; <a href="b4-connect-hosts.html">Next: Connect to real hosts →</a></span>
+  </footer>
+
+</main>
+
+<script src="../assets/mcp-live.js?v=1"></script>
+<script src="../assets/app.js?v=1"></script>
+</body>
+</html>

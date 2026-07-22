@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Builder session 1 · What MCP is - learn mcp with phoebe</title>
+<link rel="stylesheet" href="../assets/style.css?v=1">
+</head>
+<body>
+
+<div class="toolbar">
+  <div class="wrap">
+    <span class="crumb"><a href="../index.html">learn-mcp-with-phoebe</a> / Builder session 1 of 8</span>
+    <button class="btn" id="toggle-all" type="button">Expand all</button>
+    <button class="btn primary" id="zoom-toggle" type="button">Projector zoom: off</button>
+  </div>
+</div>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="eyebrow">Learn MCP with Phoebe · Builder track · Session 1 of 8</div>
+    <h1>What <span class="accent">MCP</span> actually is</h1>
+    <p class="sub">Model Context Protocol is the USB-C port of AI: one open standard that lets any AI app talk to any tool or data source. Before you write a line of server code, you will watch the protocol itself - real JSON-RPC messages, one step at a time, in your browser. By session b8 you will have built, connected, secured, and published a full MCP server for Daybreak, the coffee-subscription brand you may remember from the SQL course.</p>
+    <div class="chip-row">
+      <span class="chip level">🟢 Builder track</span>
+      <span class="chip audience">Practitioners: DE · DS · AI engineers · builders</span>
+      <span class="chip audience">Python · spec 2025-11-25</span>
+      <span class="chip time">Start here</span>
+    </div>
+    <div class="agenda">
+      <span class="a1" style="flex:1">0-3 · Welcome</span>
+      <span class="a2" style="flex:4">3-18 · The problem + architecture</span>
+      <span class="a3" style="flex:5">18-42 · Build-along: read the wire</span>
+      <span class="a4" style="flex:1">42-45 · Q&amp;A</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ============ INTRO ============ -->
+  <section class="section" id="intro">
+    <div class="section-kicker">
+      <span class="klabel">Part 0</span>
+      <h2>How this track works</h2>
+    </div>
+    <p class="lede">Eight sessions, one running project: the <strong>Daybreak MCP server</strong> - a Python server that gives any AI app safe access to a coffee brand's sales, subscriptions, catalog, and ops playbooks. Tonight you learn what the protocol actually says on the wire. By b2 you are writing the server, b5 the client, b6 you deploy it remotely, b7 you secure it, b8 you publish it to the official registry. Every session ships a working artifact.</p>
+    <div class="legend">
+      <span class="pill solid">Live - presented in session</span>
+      <span class="pill light">Self-study - read after class</span>
+      <span class="pill peach">▶ Live MCP wire - step through real messages</span>
+      <span class="pill inkpill">Official sources covered</span>
+    </div>
+    <div class="callout win">
+      <strong>★ What you walk out with today</strong>
+      The one-sentence pitch for MCP (and why every major AI vendor adopted it), the host / client / server architecture in your head, all six primitives mapped - three the server offers, three the client offers - and the ability to read a raw MCP conversation message by message, which most people who "use MCP" cannot do.
+    </div>
+  </section>
+
+  <!-- ============ PART 1: THE PROBLEM ============ -->
+  <section class="section" id="the-problem">
+    <div class="section-kicker">
+      <span class="klabel">Part 1 · covers official "What is MCP", DLAI "Why MCP", HF Unit 1 intro</span>
+      <h2>The N x M problem MCP kills <span class="tag concept">6 min live</span></h2>
+    </div>
+    <p class="lede">Before MCP, every AI app that wanted to reach your database, your files, or your ticket system needed its own custom integration - and so did every other AI app, for every other tool. M apps times N tools = M x N connectors, all slightly different, all breaking separately. MCP replaces that grid with one protocol: apps implement it once, tools implement it once, everything interoperates.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 340" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Before MCP: M times N custom connectors. After MCP: M plus N implementations of one protocol.">
+        <style>
+          .nmT { font: 700 14px Inter, sans-serif; fill: #FFFFFF; }
+          .nmI { font: 700 13px Inter, sans-serif; fill: #1E242D; }
+          .nmX { font: 400 12px Inter, sans-serif; fill: #5B6674; }
+          .nmN { font: 600 13px Inter, sans-serif; fill: #043029; }
+          .nmLine { stroke: #C3CBD6; stroke-width: 1.5; fill: none; }
+          .nmMcp { stroke: #A8622B; stroke-width: 2.5; fill: none; }
+        </style>
+        <text class="nmI" x="40" y="34">BEFORE - every pair, its own connector</text>
+        <rect x="40" y="50" width="120" height="30" rx="6" fill="#5C3312"/><text class="nmT" x="52" y="70">Claude</text>
+        <rect x="40" y="90" width="120" height="30" rx="6" fill="#5C3312"/><text class="nmT" x="52" y="110">ChatGPT</text>
+        <rect x="40" y="130" width="120" height="30" rx="6" fill="#5C3312"/><text class="nmT" x="52" y="150">Your app</text>
+        <rect x="280" y="50" width="120" height="30" rx="6" fill="#C08048"/><text class="nmT" x="292" y="70">Database</text>
+        <rect x="280" y="90" width="120" height="30" rx="6" fill="#C08048"/><text class="nmT" x="292" y="110">Files</text>
+        <rect x="280" y="130" width="120" height="30" rx="6" fill="#C08048"/><text class="nmT" x="292" y="150">Tickets</text>
+        <path class="nmLine" d="M160,65 L280,65"/><path class="nmLine" d="M160,65 L280,105"/><path class="nmLine" d="M160,65 L280,145"/>
+        <path class="nmLine" d="M160,105 L280,65"/><path class="nmLine" d="M160,105 L280,105"/><path class="nmLine" d="M160,105 L280,145"/>
+        <path class="nmLine" d="M160,145 L280,65"/><path class="nmLine" d="M160,145 L280,105"/><path class="nmLine" d="M160,145 L280,145"/>
+        <text class="nmX" x="40" y="200">3 apps x 3 tools = 9 connectors. At enterprise scale: hundreds.</text>
+        <text class="nmI" x="500" y="34">AFTER - one protocol in the middle</text>
+        <rect x="480" y="50" width="110" height="30" rx="6" fill="#5C3312"/><text class="nmT" x="492" y="70">Claude</text>
+        <rect x="480" y="90" width="110" height="30" rx="6" fill="#5C3312"/><text class="nmT" x="492" y="110">ChatGPT</text>
+        <rect x="480" y="130" width="110" height="30" rx="6" fill="#5C3312"/><text class="nmT" x="492" y="150">Your app</text>
+        <rect x="620" y="86" width="70" height="38" rx="8" fill="#A8622B"/><text class="nmT" x="633" y="110">MCP</text>
+        <rect x="730" y="50" width="110" height="30" rx="6" fill="#C08048"/><text class="nmT" x="742" y="70">Database</text>
+        <rect x="730" y="90" width="110" height="30" rx="6" fill="#C08048"/><text class="nmT" x="742" y="110">Files</text>
+        <rect x="730" y="130" width="110" height="30" rx="6" fill="#C08048"/><text class="nmT" x="742" y="150">Tickets</text>
+        <path class="nmMcp" d="M590,65 L620,98"/><path class="nmMcp" d="M590,105 L620,105"/><path class="nmMcp" d="M590,145 L620,112"/>
+        <path class="nmMcp" d="M690,98 L730,65"/><path class="nmMcp" d="M690,105 L730,105"/><path class="nmMcp" d="M690,112 L730,145"/>
+        <text class="nmX" x="500" y="200">3 + 3 = 6 implementations of ONE standard. Add a tool once, every app gets it.</text>
+        <rect x="40" y="240" width="14" height="14" rx="3" fill="#0E7C6B"/>
+        <text class="nmN" x="64" y="252">The same move USB-C made for cables and HTTP made for the web: standardize the plug, not the devices.</text>
+        <rect x="40" y="280" width="14" height="14" rx="3" fill="#0E7C6B"/>
+        <text class="nmN" x="64" y="292">MCP shipped Nov 2024; by 2026 it is Linux Foundation governed with ~97M monthly SDK downloads.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the integration grid MCP collapses</figcaption>
+    </figure>
+
+    <details class="card" open>
+      <summary><span class="mode live">Live</span>Why "just use the API" stopped scaling<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Every tool already has an API - so why a new protocol? Because the AI app cannot know, at build time, which tools YOU will need at run time. Traditional integrations are compiled in by the vendor. MCP flips it: the app discovers what a server offers <strong>at runtime</strong> (you will watch <code>tools/list</code> do exactly this in a minute), so anyone can extend any AI app without touching the app's code.</p>
+        <ul>
+          <li><strong>Discovery over hardcoding:</strong> servers describe their own capabilities; hosts adapt on the fly.</li>
+          <li><strong>Standard messages:</strong> every request and reply is JSON-RPC 2.0 - one grammar for every integration.</li>
+          <li><strong>Separation of trust:</strong> the host app stays in control of what the model may touch - the server never reaches in.</li>
+        </ul>
+        <div class="callout example">
+          <span class="ex-pill">Real world</span>
+          <p><strong>The connector team that disappeared.</strong> A fintech's platform team maintained 23 bespoke "AI plugin" integrations - each with its own auth, retry logic, and breakage schedule. After moving to MCP servers, new integrations became config, not code: point the host at a server URL, approve the scopes, done. The team now maintains servers (their domain logic), not glue.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>Who owns MCP now - and why that matters<span class="mini">2 min read</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Anthropic open-sourced MCP in November 2024, and in December 2025 donated it to the <strong>Agentic AI Foundation</strong> under the Linux Foundation, with OpenAI and Block as co-founders. Changes now flow through a public SEP process (like Python's PEPs). Translation for you: MCP is not a vendor lock-in bet - OpenAI adopted it in March 2025, Google DeepMind in April 2025, Microsoft across Copilot and VS Code.</p>
+        <ul>
+          <li><strong>Spec versions are dates:</strong> current is <code>2025-11-25</code>; the next revision lands 2026-07-28 (this course flags every change it brings).</li>
+          <li><strong>Ten official SDKs:</strong> Tier 1 = TypeScript, Python, C#, Go. This track uses Python.</li>
+          <li><strong>An official registry</strong> (since Sept 2025) lists ~10k active servers - you publish yours there in b8.</li>
+        </ul>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ PART 2: ARCHITECTURE ============ -->
+  <section class="section" id="architecture">
+    <div class="section-kicker">
+      <span class="klabel">Part 2 · covers official "Architecture overview", DLAI "MCP Architecture", Academy "Introducing MCP"</span>
+      <h2>Host, client, server - who is who <span class="tag concept">6 min live</span></h2>
+    </div>
+    <p class="lede">Three roles, constantly confused, worth getting exactly right tonight. The <strong>host</strong> is the AI application the human uses (Claude Desktop, Claude Code, your chatbot). Inside it, the host runs one <strong>client</strong> per connection. Each client talks to exactly one <strong>server</strong> - the program that exposes tools and data. Host contains clients; clients pair with servers; 1:1 each.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Host application contains MCP clients; each client connects 1 to 1 with an MCP server over stdio or Streamable HTTP">
+        <style>
+          .arT { font: 700 14px Inter, sans-serif; fill: #FFFFFF; }
+          .arI { font: 700 13px Inter, sans-serif; fill: #1E242D; }
+          .arX { font: 400 12px Inter, sans-serif; fill: #5B6674; }
+          .arN { font: 600 13px Inter, sans-serif; fill: #043029; }
+          .arWire { stroke: #A8622B; stroke-width: 2.5; fill: none; marker-end: url(#arHd); }
+        </style>
+        <defs>
+          <marker id="arHd" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+            <path d="M0,0 L9,4.5 L0,9 z" fill="#A8622B"/>
+          </marker>
+        </defs>
+        <rect x="40" y="40" width="300" height="200" rx="10" fill="#F8EFE4" stroke="#C08048" stroke-width="2"/>
+        <text class="arI" x="60" y="70">HOST - the AI app the human uses</text>
+        <text class="arX" x="60" y="92">Claude Desktop · Claude Code · your chatbot</text>
+        <rect x="60" y="110" width="120" height="34" rx="6" fill="#5C3312"/><text class="arT" x="72" y="132">MCP client 1</text>
+        <rect x="60" y="160" width="120" height="34" rx="6" fill="#5C3312"/><text class="arT" x="72" y="182">MCP client 2</text>
+        <text class="arX" x="60" y="222">one client per server connection</text>
+        <rect x="560" y="80" width="260" height="40" rx="8" fill="#A8622B"/>
+        <text class="arT" x="576" y="105">daybreak-mcp · local · stdio</text>
+        <rect x="560" y="160" width="260" height="40" rx="8" fill="#C08048"/>
+        <text class="arT" x="576" y="185">github-mcp · remote · HTTP</text>
+        <path class="arWire" d="M180,127 C360,127 400,100 555,100"/>
+        <path class="arWire" d="M180,177 C360,177 400,180 555,180"/>
+        <text class="arX" x="370" y="88">stdio: server runs on YOUR machine,</text>
+        <text class="arX" x="370" y="106">messages over stdin/stdout</text>
+        <text class="arX" x="370" y="216">Streamable HTTP: server runs anywhere,</text>
+        <text class="arX" x="370" y="234">messages over plain HTTP POST</text>
+        <rect x="40" y="266" width="14" height="14" rx="3" fill="#0E7C6B"/>
+        <text class="arN" x="64" y="278">Two transports total. The old HTTP+SSE transport was deprecated in March 2025 - if a tutorial teaches it, close the tab.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the three roles and the two transports between them</figcaption>
+    </figure>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>The wire itself: JSON-RPC 2.0, three message shapes<span class="mini">5 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Everything between client and server is <strong>JSON-RPC 2.0</strong>: a <strong>request</strong> (has an <code>id</code>, expects a reply), a <strong>response</strong> (carries the same <code>id</code> back, with <code>result</code> or <code>error</code>), or a <strong>notification</strong> (no <code>id</code>, fire-and-forget). That is the entire grammar. Step through a real session opening below - press Next and read each message before advancing.</p>
+        <div class="mcpbox" data-scenario="handshake" data-caption="The exact bytes a session starts with. Match ids to pair requests with responses."></div>
+        <div class="callout tip">
+          <strong>Changes 2026-07-28</strong>
+          The next spec revision makes the core stateless: this handshake disappears and capabilities travel in <code>_meta</code> on each request instead. We teach the current spec (2025-11-25) and flag every such change - b8 walks the full delta.
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>stdio vs Streamable HTTP - when each<span class="mini">3 min read</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>You will build both in this track. The decision is simpler than it looks:</p>
+        <ul>
+          <li><strong>stdio</strong> - the host launches your server as a subprocess and pipes JSON over stdin/stdout. Zero network, zero auth to design, perfect for personal and local tools. Daybreak starts here in b2.</li>
+          <li><strong>Streamable HTTP</strong> - your server is a web service; clients POST messages to one endpoint, and the server may stream responses. This is how teams and products ship MCP - b6 moves Daybreak onto it.</li>
+          <li><strong>Rule of thumb:</strong> your machine only → stdio. Anyone else, ever → Streamable HTTP.</li>
+        </ul>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ PART 3: PRIMITIVES ============ -->
+  <section class="section" id="primitives">
+    <div class="section-kicker">
+      <span class="klabel">Part 3 · covers official "Understanding servers/clients", DLAI lessons 5-8 concepts</span>
+      <h2>Six primitives: three each way <span class="tag concept">6 min live</span></h2>
+    </div>
+    <p class="lede">Everything MCP can do is six capabilities. The <strong>server</strong> offers three - tools, resources, prompts. The <strong>client</strong> offers three back - sampling, roots, elicitation. The pattern to memorize is who controls each: tools are for the <em>model</em>, resources are for the <em>app</em>, prompts are for the <em>user</em>.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Server primitives: tools, resources, prompts. Client primitives: sampling, roots, elicitation. Each labeled by who controls it.">
+        <style>
+          .prT { font: 700 14px Inter, sans-serif; fill: #FFFFFF; }
+          .prS { font: 400 11.5px Inter, sans-serif; fill: #FFFFFF; opacity: .9; }
+          .prI { font: 700 13px Inter, sans-serif; fill: #1E242D; }
+          .prX { font: 400 12px Inter, sans-serif; fill: #5B6674; }
+          .prN { font: 600 13px Inter, sans-serif; fill: #043029; }
+        </style>
+        <text class="prI" x="40" y="36">THE SERVER OFFERS</text>
+        <rect x="40" y="50" width="250" height="62" rx="8" fill="#5C3312"/>
+        <text class="prT" x="56" y="76">Tools</text>
+        <text class="prS" x="56" y="96">actions · model-controlled</text>
+        <rect x="315" y="50" width="250" height="62" rx="8" fill="#A8622B"/>
+        <text class="prT" x="331" y="76">Resources</text>
+        <text class="prS" x="331" y="96">context · app-controlled</text>
+        <rect x="590" y="50" width="250" height="62" rx="8" fill="#C08048"/>
+        <text class="prT" x="606" y="76">Prompts</text>
+        <text class="prS" x="606" y="96">templates · user-controlled</text>
+        <text class="prX" x="40" y="140">query_sales, top_products</text>
+        <text class="prX" x="315" y="140">the catalog, refund policy</text>
+        <text class="prX" x="590" y="140">/monthly_report for March</text>
+        <text class="prI" x="40" y="186">THE CLIENT OFFERS BACK</text>
+        <rect x="40" y="200" width="250" height="62" rx="8" fill="#DDAF7E"/>
+        <text class="prI" x="56" y="226">Elicitation</text>
+        <text class="prX" x="56" y="246">server asks the user mid-task</text>
+        <rect x="315" y="200" width="250" height="62" rx="8" fill="#DDAF7E"/>
+        <text class="prI" x="331" y="226">Sampling</text>
+        <text class="prX" x="331" y="246">server borrows the host's LLM</text>
+        <rect x="590" y="200" width="250" height="62" rx="8" fill="#DDAF7E"/>
+        <text class="prI" x="606" y="226">Roots</text>
+        <text class="prX" x="606" y="246">which folders the server may see</text>
+        <rect x="40" y="288" width="14" height="14" rx="3" fill="#0E7C6B"/>
+        <text class="prN" x="64" y="300">Heads-up: sampling and roots are deprecated in the 2026-07-28 revision. Elicitation stays - b7 builds with it.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the complete MCP capability map, with who controls what</figcaption>
+    </figure>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>Tools - discovery, then action<span class="mini">5 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Tools are the primitive you will use most. Two methods carry everything: <code>tools/list</code> (what can you do?) and <code>tools/call</code> (do it). Watch discovery first - notice each tool ships a JSON Schema so the model knows exactly what arguments to supply.</p>
+        <div class="mcpbox" data-scenario="tools" data-caption="Runtime discovery: the host learns what Daybreak's server can do, with schemas."></div>
+        <p>The descriptions you see are not documentation garnish - they are <strong>the interface the model reads</strong> to decide what to call. Writing them well is half of server craft, and b2 drills it.</p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>Resources and prompts - context and playbooks<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Tools act; <strong>resources</strong> inform. A resource is read-only content with a URI - Daybreak's catalog, its refund policy - that the app attaches to conversations. <strong>Prompts</strong> are server-authored templates the user picks explicitly, slash-command style. Different control, different primitive: model → tools, app → resources, user → prompts.</p>
+        <div class="mcpbox" data-scenario="resources" data-caption="List, then read: the two-step resource flow."></div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>The client-side three, honestly<span class="mini">3 min read</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Most intros skip the client-side primitives; most older courses teach two of them as if they were forever. The honest 2026 picture:</p>
+        <ul>
+          <li><strong>Elicitation</strong> (since 2025-06-18): the server pauses and asks the user a structured question - "which store?". Alive, growing, and in b7 you build with it.</li>
+          <li><strong>Sampling:</strong> the server asks the host's model to complete a prompt, so servers do not need their own API keys. Clever, rarely implemented by hosts - and <strong>deprecated 2026-07-28</strong>.</li>
+          <li><strong>Roots:</strong> the client tells the server which directories it may touch. Also <strong>deprecated 2026-07-28</strong>.</li>
+        </ul>
+        <p>We teach you to recognize all three on the wire, and to build only on the one with a future.</p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ DEMO 1 ============ -->
+  <section class="section" id="demo-1">
+    <div class="section-kicker">
+      <span class="klabel">Demo 1 of 2</span>
+      <h2>Read a full tool call, message by message <span class="tag demo">★ 12 min · everyone reads the wire</span></h2>
+    </div>
+    <p class="lede">A user asks Daybreak's assistant: "How did March look - is the dip real?" Here is every message that puts the answer on screen. Step through it and say each message's job out loud - if you can narrate this exchange, you understand MCP better than most people shipping servers.</p>
+
+    <div class="steps">
+      <div class="step"><p>Step the <strong>handshake</strong> box in Part 2 again if you skipped it - sessions start there, versions and capabilities agreed.</p></div>
+      <div class="step"><p>Step the <strong>tools/list</strong> box in Part 3 - the host discovers <code>query_sales</code> and hands the model its schema.</p></div>
+      <div class="step"><p>Now step <strong>tools/call</strong> below - the model filled <code>store</code> and <code>week</code> from the user's question; the server does the work and returns content.</p></div>
+      <div class="step"><p>Find the <code>id</code> fields pairing each request to its response. Requests have ids; the <code>notifications/initialized</code> message did not. That distinction is the whole message grammar.</p></div>
+    </div>
+
+    <div class="mcpbox" data-scenario="call" data-caption="The payoff: one tool call, wire-level. The text content goes back to the model, which writes the user-facing answer."></div>
+
+    <div class="callout example">
+      <span class="ex-pill">Real world</span>
+      <p><strong>Why wire-literacy pays.</strong> When an MCP integration misbehaves in production, the difference between a 10-minute fix and a lost afternoon is being able to read the traffic: was the tool never listed (capability problem)? Called with bad arguments (schema problem)? Returned <code>isError:true</code> (server-side failure) or a JSON-RPC error (protocol failure)? You now know the difference - and the Inspector you meet in b2 shows you this same traffic for any real server.</p>
+    </div>
+  </section>
+
+  <!-- ============ DEMO 2 ============ -->
+  <section class="section" id="demo-2">
+    <div class="section-kicker">
+      <span class="klabel">Demo 2 of 2</span>
+      <h2>Your turn: two flows most people never see <span class="tag demo">★ 10 min · explore</span></h2>
+    </div>
+    <p class="lede">Two more scenarios, no narration this time. Step through each and answer the question above it before reading the note under the last message.</p>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>Q1 · Prompts: who chose to run this - the model or the user?<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <div class="mcpbox" data-scenario="prompts" data-caption="Watch for the arguments declaration - that is what lets a host render a form."></div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>Q2 · Errors: how does a protocol error differ from a failed tool?<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <div class="mcpbox" data-scenario="error" data-caption="Compare with the tools/call result above: error object vs result with isError."></div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>Q3 · Elicitation: which side starts this exchange?<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>One flow flips the usual direction entirely - the server asks first. You will build this in b7; for tonight, just notice who holds the <code>id</code>.</p>
+        <div class="mcpbox" data-scenario="elicit" data-caption="The server needs input mid-task and asks through the client. The user can always decline."></div>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ HOMEWORK ============ -->
+  <section class="section" id="exercise">
+    <div class="section-kicker">
+      <span class="klabel">Homework</span>
+      <h2>Try it yourself - this week <span class="tag exercise">◐ 20-30 min total</span></h2>
+    </div>
+    <ul>
+      <li>Step through all seven wire scenarios on this page until you can predict each next message before pressing Next.</li>
+      <li>List the AI apps you already use (Claude Desktop? Claude Code? Cursor? VS Code?) and check which are MCP hosts - all four are. Find where each one configures servers, but do not install anything yet; b2 and b4 do it properly.</li>
+      <li>Write down two tools, one resource, and one prompt YOUR dream MCP server would expose for your own work. Bring the list to b2 - one of them becomes real code.</li>
+      <li>Skim the official "What is MCP" page (modelcontextprotocol.io) and notice how much of it you now already know.</li>
+    </ul>
+  </section>
+
+  <!-- ============ SOURCES ============ -->
+  <section class="section" id="official">
+    <div class="section-kicker">
+      <span class="klabel">Source material</span>
+      <h2>Official sources covered</h2>
+    </div>
+    <p class="lede">This track teaches the working core of the official MCP documentation and the major MCP courses, with the protocol itself made steppable on every page. Certificates, videos, and graded assessments stay on the official sites (linked each session). This page covers:</p>
+    <div class="covered">
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">modelcontextprotocol.io - "What is MCP" + Architecture overview</span><span class="note">Parts 1-3 · roles, transports, all six primitives, message types</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">DeepLearning.AI "MCP: Build Rich-Context AI Apps" - lessons 1-3</span><span class="note">Why MCP + MCP Architecture · taught here on live wire traffic</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">Anthropic Academy "Introduction to MCP" - Introduction section</span><span class="note">Introducing MCP + MCP clients · host/client/server framing</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">Hugging Face MCP course - Unit 1 (Fundamentals)</span><span class="note">Concepts covered; HF's Gradio examples stay official</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">MCP spec 2025-11-25 - Basic: Overview, Lifecycle, Transports</span><span class="note">Read on the wire here; full spec text linked for depth</span></div>
+    </div>
+  </section>
+
+  <!-- ============ QUIZ ============ -->
+  <section class="section" id="quiz">
+    <div class="section-kicker">
+      <span class="klabel">Check yourself</span>
+      <h2>Three questions before you go 🎯 <span class="tag exercise">◐ 90 seconds</span></h2>
+    </div>
+    <div class="quiz-q" data-answer="2">
+      <p class="qtext">1 · In MCP, the "host" is...</p>
+      <button class="qopt" type="button">A · The machine the server runs on</button>
+      <button class="qopt" type="button">B · The program exposing tools and data</button>
+      <button class="qopt" type="button">C · The AI application the human uses, which runs one client per server connection</button>
+      <p class="qwhy">Host = the AI app (Claude Desktop, Claude Code, your chatbot). It contains MCP clients; each client pairs 1:1 with one server - the program offering tools and data.</p>
+    </div>
+    <div class="quiz-q" data-answer="0">
+      <p class="qtext">2 · Tools, resources, prompts - who controls each?</p>
+      <button class="qopt" type="button">A · Model controls tools, app controls resources, user controls prompts</button>
+      <button class="qopt" type="button">B · The server controls all three - it defined them</button>
+      <button class="qopt" type="button">C · User controls tools, model controls resources and prompts</button>
+      <p class="qwhy">The control triangle: the model decides when to call tools, the app decides which resources enter context, the user explicitly picks prompts. The server only offers.</p>
+    </div>
+    <div class="quiz-q" data-answer="1">
+      <p class="qtext">3 · A reply comes back with an "error" object instead of a "result". What happened?</p>
+      <button class="qopt" type="button">A · The tool ran and failed - check isError</button>
+      <button class="qopt" type="button">B · A protocol-level failure - e.g. calling a tool the server never declared</button>
+      <button class="qopt" type="button">C · The transport dropped the connection</button>
+      <p class="qwhy">JSON-RPC error = the protocol itself rejected the request (unknown tool, bad params). A tool that ran but failed returns a normal result with isError:true. Different layers, different fixes.</p>
+    </div>
+    <p class="quiz-score"></p>
+  </section>
+
+  <!-- ============ CHEAT SHEET ============ -->
+  <section class="cheat" id="cheatsheet">
+    <h3>Builder session 1 cheat sheet <span>· pin this</span></h3>
+    <div class="grid-2">
+      <div class="cheat-item"><b>MCP in one line</b><span>One open protocol between AI apps and tools/data - implement once, interoperate with everything. The USB-C move.</span></div>
+      <div class="cheat-item"><b>The three roles</b><span>Host (AI app) contains clients; each client pairs 1:1 with a server (the program offering capabilities).</span></div>
+      <div class="cheat-item"><b>The wire</b><span>JSON-RPC 2.0: request (id, expects reply), response (same id, result or error), notification (no id).</span></div>
+      <div class="cheat-item"><b>Two transports</b><span>stdio (local subprocess) and Streamable HTTP (remote). HTTP+SSE is deprecated - do not learn it.</span></div>
+      <div class="cheat-item"><b>Server primitives</b><span>Tools (model-controlled actions) · Resources (app-controlled context) · Prompts (user-controlled templates).</span></div>
+      <div class="cheat-item"><b>Client primitives</b><span>Elicitation (server asks user - alive) · Sampling + Roots (deprecated in 2026-07-28 revision).</span></div>
+      <div class="cheat-item"><b>Spec + governance</b><span>Current spec 2025-11-25 · Linux Foundation (AAIF) governed · 10 SDKs, Python is Tier 1.</span></div>
+      <div class="cheat-item"><b>Running project</b><span>Daybreak MCP server: b2 builds tools, b3 resources+prompts, b5 a client, b6 remote, b7 auth, b8 registry.</span></div>
+    </div>
+  </section>
+
+  <footer class="pagefoot">
+    <span>Builder session 1 of 8 · learn-mcp-with-phoebe · by Phoebe Fu &nbsp;·&nbsp; 📚 <a href="https://phoebefu6.github.io/learn-with-phoebe/">Learn with Phoebe ↗</a></span>
+    <span><a href="../index.html">← All sessions</a> &nbsp;·&nbsp; <a href="b2-first-server.html">Next: Your first MCP server →</a></span>
+  </footer>
+
+</main>
+
+<script src="../assets/mcp-live.js?v=1"></script>
+<script src="../assets/app.js?v=1"></script>
+</body>
+</html>

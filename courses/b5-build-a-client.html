@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Builder session 5 · Build a client - learn mcp with phoebe</title>
+<link rel="stylesheet" href="../assets/style.css?v=1">
+</head>
+<body>
+
+<div class="toolbar">
+  <div class="wrap">
+    <span class="crumb"><a href="../index.html">learn-mcp-with-phoebe</a> / Builder session 5 of 8</span>
+    <button class="btn" id="toggle-all" type="button">Expand all</button>
+    <button class="btn primary" id="zoom-toggle" type="button">Projector zoom: off</button>
+  </div>
+</div>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="eyebrow">Learn MCP with Phoebe · Builder track · Session 5 of 8</div>
+    <h1>Build a <span class="accent">client</span></h1>
+    <p class="sub">Until now you have written the server and watched hosts drive it. Tonight you cross to the other side of the wire and build the client yourself: the code that owns the connection, initializes the session, discovers tools at runtime, and runs the chat loop that lets a model call Daybreak. You will build it twice - once against the Claude API, once against a local model through Ollama with no API key at all - and prove they run the same loop.</p>
+    <div class="chip-row">
+      <span class="chip level">🟡 Medium</span>
+      <span class="chip audience">Practitioners: DE · DS · AI engineers · builders</span>
+      <span class="chip audience">Python · spec 2025-11-25</span>
+      <span class="chip time">45 min</span>
+    </div>
+    <div class="agenda">
+      <span class="a1" style="flex:1">0-3 · Recap</span>
+      <span class="a2" style="flex:4">3-18 · The connection + session</span>
+      <span class="a3" style="flex:5">18-40 · Build the chatbot loop, twice</span>
+      <span class="a4" style="flex:1">40-45 · Q&amp;A</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ============ INTRO ============ -->
+  <section class="section" id="intro">
+    <div class="section-kicker">
+      <span class="klabel">Part 0</span>
+      <h2>Where we are</h2>
+    </div>
+    <p class="lede">In b2-b3 you built the Daybreak server (three tools, two resources, one prompt). In b4 you connected it to real hosts - Claude Code and Claude Desktop - by editing config files. Those hosts contain a <strong>client</strong> you never saw. Tonight you write that client: a Python program that launches the server, speaks JSON-RPC over stdio, and feeds a model the tools it discovers. The messages are exactly the ones you stepped through in b1 - now you are the code that sends them.</p>
+    <div class="legend">
+      <span class="pill solid">Live - presented in session</span>
+      <span class="pill light">Self-study - read after class</span>
+      <span class="pill peach">▶ Live MCP wire - step through real messages</span>
+      <span class="pill inkpill">Official sources covered</span>
+    </div>
+    <div class="callout win">
+      <strong>★ What you walk out with today</strong>
+      A working <code>client.py</code> that connects to your Daybreak server, discovers its tools, and answers "how did March look?" with the real $150.00 number - powered by Claude. Then the same loop rewired to a local Ollama model with zero API key. You will know exactly who initiates the handshake, how a model's <code>tool_use</code> becomes a <code>session.call_tool</code>, and how to tell a protocol error from a failed tool from a dropped connection.
+    </div>
+  </section>
+
+  <!-- ============ PART 1 ============ -->
+  <section class="section" id="the-other-side">
+    <div class="section-kicker">
+      <span class="klabel">Part 1 · covers official "Build an MCP client", DLAI "Creating an MCP Client", Academy "Implementing a client"</span>
+      <h2>The other side of the wire <span class="tag concept">7 min live</span></h2>
+    </div>
+    <p class="lede">The server is passive: it waits and answers. The <strong>client</strong> is active and owns four jobs. It owns the <strong>connection</strong> (it launches or dials the server), the <strong>session</strong> (it sends <code>initialize</code> and holds the agreed capabilities), <strong>discovery</strong> (it calls <code>tools/list</code> and hands the schemas to the model), and <strong>routing</strong> (when the model asks for a tool, the client is who actually sends <code>tools/call</code>). Every message you watched in b1 was sent or received by a client - tonight that client is your code.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Client internals: connect, initialize, list_tools, chat loop, call_tool, back to model">
+        <style>
+          .ciT { font: 700 13px Inter, sans-serif; fill: #FFFFFF; }
+          .ciI { font: 700 13px Inter, sans-serif; fill: #1E242D; }
+          .ciX { font: 400 11.5px Inter, sans-serif; fill: #5B6674; }
+          .ciN { font: 600 13px Inter, sans-serif; fill: #043029; }
+          .ciFlow { stroke: #A8622B; stroke-width: 2.5; fill: none; marker-end: url(#ciHd); }
+        </style>
+        <defs>
+          <marker id="ciHd" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+            <path d="M0,0 L9,4.5 L0,9 z" fill="#A8622B"/>
+          </marker>
+        </defs>
+        <text class="ciI" x="40" y="34">What client.py does, top to bottom</text>
+        <rect x="40" y="52" width="150" height="46" rx="8" fill="#5C3312"/>
+        <text class="ciT" x="56" y="72">1 · connect</text><text class="ciX" x="56" y="90" fill="#DDAF7E">launch server</text>
+        <rect x="240" y="52" width="150" height="46" rx="8" fill="#A8622B"/>
+        <text class="ciT" x="256" y="72">2 · initialize</text><text class="ciX" x="256" y="90" fill="#F8EFE4">agree version</text>
+        <rect x="440" y="52" width="150" height="46" rx="8" fill="#A8622B"/>
+        <text class="ciT" x="456" y="72">3 · list_tools</text><text class="ciX" x="456" y="90" fill="#F8EFE4">discover schemas</text>
+        <rect x="640" y="52" width="180" height="46" rx="8" fill="#C08048"/>
+        <text class="ciT" x="656" y="72">4 · chat loop</text><text class="ciX" x="656" y="90" fill="#1E242D">model reads tools</text>
+        <path class="ciFlow" d="M190,75 L236,75"/>
+        <path class="ciFlow" d="M390,75 L436,75"/>
+        <path class="ciFlow" d="M590,75 L636,75"/>
+        <rect x="440" y="150" width="150" height="46" rx="8" fill="#5C3312"/>
+        <text class="ciT" x="456" y="170">5 · call_tool</text><text class="ciX" x="456" y="188" fill="#DDAF7E">model asked</text>
+        <rect x="640" y="150" width="180" height="46" rx="8" fill="#C08048"/>
+        <text class="ciT" x="656" y="170">6 · tool_result</text><text class="ciX" x="656" y="188" fill="#1E242D">back to model</text>
+        <path class="ciFlow" d="M730,98 L730,120 L515,120 L515,148"/>
+        <path class="ciFlow" d="M590,173 L636,173"/>
+        <path class="ciFlow" d="M730,196 L730,220 L515,220 L515,232 L640,232 L640,196" />
+        <text class="ciX" x="360" y="245">loop until the model stops asking for tools, then print its answer</text>
+        <rect x="40" y="266" width="14" height="14" rx="3" fill="#0E7C6B"/>
+        <text class="ciN" x="64" y="278">Steps 1-3 run once per connection. Steps 4-6 repeat every turn of the conversation.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the six things your client does, and the loop it runs</figcaption>
+    </figure>
+
+    <details class="card" open>
+      <summary><span class="mode live">Live</span>ClientSession and stdio_client, line by line<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>The Python SDK gives you two pieces. <code>stdio_client</code> launches the server as a subprocess and hands back a read/write pair of streams. <code>ClientSession</code> wraps those streams in the JSON-RPC machinery - <code>initialize</code>, <code>list_tools</code>, <code>call_tool</code>, and the rest. You open both as async context managers so they close cleanly.</p>
+        <div class="prompt-box">
+          <span class="label">connect.py · the minimum viable client</span>
+import asyncio
+from mcp import ClientSession, StdioServerParameters
+from mcp.client.stdio import stdio_client
+
+# Tell the SDK how to LAUNCH the server (this is the stdio transport).
+params = StdioServerParameters(command="python", args=["server.py"], env=None)
+
+async def main():
+    async with stdio_client(params) as (read, write):
+        async with ClientSession(read, write) as session:
+            await session.initialize()                 # the handshake from b1
+            tools = (await session.list_tools()).tools # runtime discovery
+            print("Tools:", [t.name for t in tools])
+            result = await session.call_tool("query_sales", {"month": "2026-03"})
+            print(result.content[0].text)
+
+asyncio.run(main())</div>
+        <p>That is a complete client. Run it and you get the same <code>tools/list</code> and <code>tools/call</code> traffic you stepped through in b1 - but sent by <em>you</em>. Below, watch the call your last line makes go over the wire.</p>
+        <div class="mcpbox" data-scenario="call" data-caption="Your session.call_tool sends this. The client is who SENDS these messages - the server only answers."></div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>Session lifecycle - open once, reuse, close cleanly<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>A session is not per-request; it is per-connection. You initialize once, then send many calls over the same live session. The official quickstart uses an <code>AsyncExitStack</code> so the connection and session are torn down in the right order even if something throws.</p>
+        <div class="prompt-box">
+          <span class="label">DaybreakClient · a reusable session holder</span>
+from contextlib import AsyncExitStack
+from typing import Optional
+from mcp import ClientSession, StdioServerParameters
+from mcp.client.stdio import stdio_client
+from anthropic import Anthropic
+from dotenv import load_dotenv
+
+load_dotenv()  # reads ANTHROPIC_API_KEY from .env
+
+class DaybreakClient:
+    def __init__(self):
+        self.session: Optional[ClientSession] = None
+        self.exit_stack = AsyncExitStack()
+        self.anthropic = Anthropic()
+
+    async def connect(self, server_script: str):
+        params = StdioServerParameters(command="python", args=[server_script], env=None)
+        read, write = await self.exit_stack.enter_async_context(stdio_client(params))
+        self.session = await self.exit_stack.enter_async_context(ClientSession(read, write))
+        await self.session.initialize()
+        tools = (await self.session.list_tools()).tools
+        print("Connected. Tools:", [t.name for t in tools])
+
+    async def cleanup(self):
+        await self.exit_stack.aclose()</div>
+        <ul>
+          <li><strong>Who starts the handshake?</strong> The client - always. <code>session.initialize()</code> sends the first message; the server only answers.</li>
+          <li><strong>Where do capabilities live?</strong> Agreed once, in the initialize exchange. On the current spec (2025-11-25) the session carries them until you close it.</li>
+          <li><strong>Changes 2026-07-28:</strong> the stateless core removes this explicit handshake - capabilities travel in <code>_meta</code> on each request. b8 walks that delta.</li>
+        </ul>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ PART 2 ============ -->
+  <section class="section" id="chatbot-loop">
+    <div class="section-kicker">
+      <span class="klabel">Part 2 · covers DLAI "Chatbot Example" + "Creating an MCP Client", official client quickstart</span>
+      <h2>The chatbot loop <span class="tag concept">7 min live</span></h2>
+    </div>
+    <p class="lede">A client that only calls tools you hardcode is not interesting. The chatbot loop makes the <em>model</em> decide. The shape is always the same: user message → send it to the model with the tool definitions → the model returns <code>tool_use</code> blocks → for each, call <code>session.call_tool</code> → feed the <code>tool_result</code> back → the model writes the final answer. This loop is identical whether the model is Claude in the cloud or Llama on your laptop; only the SDK call in the middle changes.</p>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>The Claude path - Anthropic SDK<span class="mini">5 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>The Anthropic <code>messages.create</code> call takes a <code>tools</code> list. You build it straight from what the session discovered - MCP's <code>inputSchema</code> maps directly to Claude's <code>input_schema</code>. When a reply contains a <code>tool_use</code> block, you run the tool and append a <code>tool_result</code>, then call the model again.</p>
+        <div class="prompt-box">
+          <span class="label">client.py · process_query (Claude)</span>
+async def process_query(self, query: str) -> str:
+    messages = [{"role": "user", "content": query}]
+
+    tools_resp = await self.session.list_tools()
+    available_tools = [{
+        "name": tool.name,
+        "description": tool.description,
+        "input_schema": tool.inputSchema,   # MCP schema -> Claude tool
+    } for tool in tools_resp.tools]
+
+    resp = self.anthropic.messages.create(
+        model="claude-sonnet-5",
+        max_tokens=1000,
+        messages=messages,
+        tools=available_tools,
+    )
+
+    final_text = []
+    assistant_content = []
+    for block in resp.content:
+        if block.type == "text":
+            final_text.append(block.text)
+            assistant_content.append(block)
+        elif block.type == "tool_use":
+            # The model picked the tool and filled the args from the question.
+            result = await self.session.call_tool(block.name, block.input)
+            assistant_content.append(block)
+            messages.append({"role": "assistant", "content": assistant_content})
+            messages.append({"role": "user", "content": [{
+                "type": "tool_result",
+                "tool_use_id": block.id,
+                "content": result.content,
+            }]})
+            follow = self.anthropic.messages.create(
+                model="claude-sonnet-5",
+                max_tokens=1000,
+                messages=messages,
+                tools=available_tools,
+            )
+            final_text.append(follow.content[0].text)
+    return "\n".join(final_text)</div>
+        <p>Notice the mapping you will be quizzed on: a model <code>tool_use</code> block becomes one <code>session.call_tool(name, args)</code>, and its answer goes back as a <code>tool_result</code> keyed by the same <code>tool_use_id</code>. Same id-pairing discipline as the raw JSON-RPC in b1.</p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>The Ollama path - local model, no API key<span class="mini">5 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>The <strong>no-API-key path.</strong> Swap the Anthropic call for the <code>ollama</code> Python package pointed at a local model such as <code>llama3.2</code>. The MCP half does not change at all - same session, same <code>call_tool</code>. Only the model client and the tool-call field names differ (Ollama returns <code>message.tool_calls</code>, each with <code>function.name</code> and <code>function.arguments</code>).</p>
+        <div class="prompt-box">
+          <span class="label">client_ollama.py · same loop, local model (no API key)</span>
+import ollama  # pip install ollama ; run `ollama pull llama3.2` first
+
+async def process_query_ollama(session, query: str) -> str:
+    tools_resp = await session.list_tools()
+    tools = [{
+        "type": "function",
+        "function": {
+            "name": t.name,
+            "description": t.description,
+            "parameters": t.inputSchema,   # same MCP schema, Ollama shape
+        },
+    } for t in tools_resp.tools]
+
+    messages = [{"role": "user", "content": query}]
+    reply = ollama.chat(model="llama3.2", messages=messages, tools=tools)
+
+    for call in reply.message.tool_calls or []:
+        result = await session.call_tool(call.function.name, call.function.arguments)
+        messages.append(reply.message)
+        messages.append({
+            "role": "tool",
+            "name": call.function.name,
+            "content": result.content[0].text,
+        })
+
+    final = ollama.chat(model="llama3.2", messages=messages)
+    return final.message.content</div>
+        <div class="callout tip">
+          <strong>Why teach both</strong>
+          The Claude path ships the best tool-use quality; the Ollama path proves MCP is model-agnostic and runs offline with private data. Same discovery, same <code>call_tool</code>, same result handling. If you can read one, you can read the other.
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>Multi-server clients - one session per server<span class="mini">3 min read</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Real hosts connect to several servers at once - Daybreak plus a filesystem server plus GitHub. The rule from b1 holds: <strong>one client session per server</strong>. You keep a dict of sessions, merge every server's <code>list_tools</code> into one tool list for the model, and route each <code>call_tool</code> to the session that owns that tool name.</p>
+        <div class="prompt-box">
+          <span class="label">sketch · routing across sessions</span>
+self.sessions = {}          # server_name -> ClientSession
+self.tool_owner = {}        # tool_name  -> server_name
+# ...after connecting each server, record which session owns each tool...
+owner = self.tool_owner[block.name]
+result = await self.sessions[owner].call_tool(block.name, block.input)</div>
+        <p>Watch for name collisions: two servers can both expose a tool called <code>search</code>. Hosts usually namespace by server to keep them apart.</p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ PART 3 ============ -->
+  <section class="section" id="when-things-fail">
+    <div class="section-kicker">
+      <span class="klabel">Part 3 · covers official client error handling, spec error semantics</span>
+      <h2>When things fail <span class="tag concept">5 min live</span></h2>
+    </div>
+    <p class="lede">Three different things can go wrong, at three different layers, and the fix for each is different. A <strong>protocol error</strong> is a JSON-RPC <code>error</code> object - the request was malformed or named a tool that does not exist. A <strong>tool failure</strong> is a normal result with <code>isError:true</code> - the tool ran but the work failed. A <strong>transport drop</strong> is neither - the connection died and no message comes back at all. Your client has to handle all three.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Three failure layers: protocol error, tool failure with isError, transport drop">
+        <style>
+          .flI { font: 700 13px Inter, sans-serif; fill: #1E242D; }
+          .flT { font: 700 13px Inter, sans-serif; fill: #FFFFFF; }
+          .flX { font: 400 11.5px Inter, sans-serif; fill: #5B6674; }
+          .flC { font: 400 11.5px Inter, sans-serif; fill: #F8EFE4; }
+          .flN { font: 600 13px Inter, sans-serif; fill: #043029; }
+        </style>
+        <text class="flI" x="40" y="34">Three layers, three fixes</text>
+        <rect x="40" y="50" width="250" height="86" rx="8" fill="#5C3312"/>
+        <text class="flT" x="56" y="76">1 · Protocol error</text>
+        <text class="flC" x="56" y="98">JSON-RPC error object,</text>
+        <text class="flC" x="56" y="116">no result. Code -32602.</text>
+        <rect x="315" y="50" width="250" height="86" rx="8" fill="#A8622B"/>
+        <text class="flT" x="331" y="76">2 · Tool failure</text>
+        <text class="flC" x="331" y="98">result with isError:true.</text>
+        <text class="flC" x="331" y="116">Tool ran, work failed.</text>
+        <rect x="590" y="50" width="250" height="86" rx="8" fill="#C08048"/>
+        <text class="flT" x="606" y="76">3 · Transport drop</text>
+        <text class="flC" x="606" y="98" fill="#1E242D">No message at all.</text>
+        <text class="flC" x="606" y="116" fill="#1E242D">Session is dead.</text>
+        <text class="flX" x="40" y="162">Fix: correct the request -</text>
+        <text class="flX" x="40" y="180">unknown tool, bad params.</text>
+        <text class="flX" x="315" y="162">Fix: read the error text,</text>
+        <text class="flX" x="315" y="180">handle in your app logic.</text>
+        <text class="flX" x="590" y="162">Fix: reconnect + retry,</text>
+        <text class="flX" x="590" y="180">with backoff.</text>
+        <rect x="40" y="220" width="14" height="14" rx="3" fill="#0E7C6B"/>
+        <text class="flN" x="64" y="232">Retries belong only on layer 3. Retrying a layer-1 error just repeats the same rejection.</text>
+        <rect x="40" y="252" width="14" height="14" rx="3" fill="#0E7C6B"/>
+        <text class="flN" x="64" y="264">Wrap call_tool in try/except; inspect result.isError before trusting the content.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the failure layers and where retries actually help</figcaption>
+    </figure>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>The three failure layers on the wire<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Step the error scenario: the client calls a tool the server never declared. What comes back is a JSON-RPC <code>error</code> - not a result. Compare it with the successful <code>tools/call</code> in Part 1: result vs error is the whole distinction.</p>
+        <div class="mcpbox" data-scenario="error" data-caption="A protocol error: code + message, no result. Retrying this changes nothing - fix the request."></div>
+        <div class="prompt-box">
+          <span class="label">defensive call - all three layers</span>
+try:
+    result = await self.session.call_tool(name, args)   # layer 3 dies here
+except Exception as e:
+    return f"Transport/protocol failure: {e}"            # layers 1 + 3
+if getattr(result, "isError", False):                    # layer 2
+    return f"Tool ran but failed: {result.content[0].text}"
+return result.content[0].text</div>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ DEMO 1 ============ -->
+  <section class="section" id="demo-1">
+    <div class="section-kicker">
+      <span class="klabel">Demo 1 of 2</span>
+      <h2>Chat with Daybreak <span class="tag demo">★ 10 min · run it live</span></h2>
+    </div>
+    <p class="lede">Put it together: your <code>client.py</code> launches <code>project/server.py</code>, you ask about March, the model calls <code>query_sales</code>, and the real $150.00 number comes back. This is the whole track paying off - your code, end to end.</p>
+
+    <div class="steps">
+      <div class="step"><p>Install and set your key: <code>uv add mcp anthropic python-dotenv</code>, then put <code>ANTHROPIC_API_KEY=...</code> in a <code>.env</code> file (and add <code>.env</code> to <code>.gitignore</code>).</p></div>
+      <div class="step"><p>Run <code>uv run client.py project/server.py</code>. The client launches the server over stdio and prints the tools it discovered.</p></div>
+      <div class="step"><p>At the prompt, type: <em>how did March look?</em> The model reads <code>query_sales</code>' description, fills <code>{"month": "2026-03"}</code>, and your client sends the call.</p></div>
+      <div class="step"><p>Read the answer: <strong>2026-03: 5 orders (1 refunded), completed revenue $150.00</strong> - down from $271.00 in February. That number came from the SQLite DB through your server, your client, and the model.</p></div>
+    </div>
+
+    <div class="prompt-box">
+      <span class="label">client.py · main entry point (the runnable file)</span>
+import asyncio, sys
+
+async def main():
+    if len(sys.argv) &lt; 2:
+        print("Usage: python client.py &lt;path_to_server.py&gt;")
+        sys.exit(1)
+    client = DaybreakClient()
+    try:
+        await client.connect(sys.argv[1])
+        while True:
+            query = input("\nAsk Daybreak: ").strip()
+            if query.lower() == "quit":
+                break
+            print("\n" + await client.process_query(query))
+    finally:
+        await client.cleanup()
+
+if __name__ == "__main__":
+    asyncio.run(main())</div>
+
+    <div class="callout example">
+      <span class="ex-pill">Real world</span>
+      <p><strong>The client is where product happens.</strong> Servers are commodity - once Daybreak exposes clean tools, any client can drive it. The differentiated work is in the client: which model, how you handle multi-step tool chains, how you surface errors to the user, whether you require human approval before a consequential tool. That is why teams write clients even when off-the-shelf hosts exist.</p>
+    </div>
+  </section>
+
+  <!-- ============ DEMO 2 ============ -->
+  <section class="section" id="demo-2">
+    <div class="section-kicker">
+      <span class="klabel">Demo 2 of 2</span>
+      <h2>Swap Claude for Ollama <span class="tag demo">★ 8 min · same loop, local model</span></h2>
+    </div>
+    <p class="lede">Prove MCP is model-agnostic. Same server, same session, same <code>call_tool</code> - only the model client changes. No API key, no network, private data stays on your machine.</p>
+
+    <div class="steps">
+      <div class="step"><p>Install Ollama, then <code>ollama pull llama3.2</code> (a model that supports tool calling). <code>pip install ollama</code>.</p></div>
+      <div class="step"><p>Run your Ollama client against the same server: <code>uv run client_ollama.py project/server.py</code>. No key needed.</p></div>
+      <div class="step"><p>Ask the same March question. The local model returns a <code>tool_calls</code> entry; your code routes it to <code>session.call_tool("query_sales", ...)</code> exactly as before.</p></div>
+      <div class="step"><p>Compare: same $150.00 from the same DB. The MCP half never moved - that is the point.</p></div>
+    </div>
+
+    <div class="callout tip">
+      <strong>If the local model refuses to call the tool</strong>
+      Small models sometimes answer from guesswork instead of calling a tool. Tighten the tool description, keep the question concrete ("use query_sales for 2026-03"), and prefer a tool-tuned model. This is a model-quality issue, not an MCP issue - your wire traffic is identical.
+    </div>
+  </section>
+
+  <!-- ============ HOMEWORK ============ -->
+  <section class="section" id="exercise">
+    <div class="section-kicker">
+      <span class="klabel">Homework</span>
+      <h2>Try it yourself - this week <span class="tag exercise">◐ 30-45 min total</span></h2>
+    </div>
+    <ul>
+      <li>Get the Claude client answering the March question end to end against <code>project/server.py</code>. Confirm the $150.00 number matches what you saw in b1's <code>call</code> scenario.</li>
+      <li>Add <strong>resources</strong> to your chatbot: before answering, call <code>session.read_resource("daybreak://policy/refunds")</code> and prepend it to the conversation so the model can cite the refund rule. (Hint: it is one <code>resources/read</code> call, just like the tool call - but read-only context, not an action.)</li>
+      <li>Run the Ollama path against the same server and diff the answers. Note where the local model needed a firmer nudge to call the tool.</li>
+      <li>Break it on purpose: call a tool name that does not exist and confirm you get a JSON-RPC error, not an <code>isError</code> result. Then kill the server mid-session and watch the transport drop.</li>
+    </ul>
+  </section>
+
+  <!-- ============ SOURCES ============ -->
+  <section class="section" id="official">
+    <div class="section-kicker">
+      <span class="klabel">Source material</span>
+      <h2>Official sources covered</h2>
+    </div>
+    <p class="lede">Client authoring is the most-taught topic across the major courses; this page teaches the working core against the current SDK, adds the Ollama path nobody else covers, and keeps the wire visible. This page covers:</p>
+    <div class="covered">
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">modelcontextprotocol.io - "Build an MCP client" (Python)</span><span class="note">ClientSession + stdio_client, chatbot loop, tool_use → call_tool</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">DeepLearning.AI - "Creating an MCP Client" + "Chatbot Example"</span><span class="note">Sessions, the query loop, feeding tool results back</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">Anthropic Academy - "Implementing a client"</span><span class="note">Client responsibilities, connection + discovery + routing</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">Ollama Python docs - tool calling</span><span class="note">The no-API-key path; official Ollama examples stay linked</span></div>
+    </div>
+  </section>
+
+  <!-- ============ QUIZ ============ -->
+  <section class="section" id="quiz">
+    <div class="section-kicker">
+      <span class="klabel">Check yourself</span>
+      <h2>Three questions before you go 🎯 <span class="tag exercise">◐ 90 seconds</span></h2>
+    </div>
+    <div class="quiz-q" data-answer="1">
+      <p class="qtext">1 · Who sends the very first message that opens a session?</p>
+      <button class="qopt" type="button">A · The server, announcing its tools</button>
+      <button class="qopt" type="button">B · The client, via session.initialize()</button>
+      <button class="qopt" type="button">C · The model, when it decides to call a tool</button>
+      <p class="qwhy">The client always initiates. session.initialize() sends the initialize request; the server only ever answers. The model is not on the wire at all - it talks to your client, which talks to the server.</p>
+    </div>
+    <div class="quiz-q" data-answer="2">
+      <p class="qtext">2 · A model reply contains a tool_use block. In your client, that maps to...</p>
+      <button class="qopt" type="button">A · A new session.initialize() call</button>
+      <button class="qopt" type="button">B · A resources/read for the tool's schema</button>
+      <button class="qopt" type="button">C · One session.call_tool(name, args), whose result you send back as a tool_result</button>
+      <p class="qwhy">tool_use → session.call_tool(name, args) → tool_result keyed by the same tool_use_id → model writes the answer. That is the whole loop, and it is identical for Claude and Ollama.</p>
+    </div>
+    <div class="quiz-q" data-answer="0">
+      <p class="qtext">3 · Your call_tool returns a normal result with isError:true. Which layer failed, and should you retry?</p>
+      <button class="qopt" type="button">A · The tool ran and failed (layer 2) - do not blindly retry; read the error and handle it</button>
+      <button class="qopt" type="button">B · A protocol error (layer 1) - retry immediately</button>
+      <button class="qopt" type="button">C · The transport dropped (layer 3) - reconnect</button>
+      <p class="qwhy">isError:true means the tool executed but the work failed - a normal result, not a JSON-RPC error. Retries only help layer 3 (transport drops). Layers 1 and 2 need a corrected request or app-level handling.</p>
+    </div>
+    <p class="quiz-score"></p>
+  </section>
+
+  <!-- ============ CHEAT SHEET ============ -->
+  <section class="cheat" id="cheatsheet">
+    <h3>Builder session 5 cheat sheet <span>· pin this</span></h3>
+    <div class="grid-2">
+      <div class="cheat-item"><b>Client owns four jobs</b><span>Connection, session, discovery, routing. The server is passive; the client drives.</span></div>
+      <div class="cheat-item"><b>Two SDK pieces</b><span>stdio_client launches the server + returns streams; ClientSession wraps them in JSON-RPC.</span></div>
+      <div class="cheat-item"><b>Open once</b><span>initialize() then list_tools() run per connection; call_tool repeats per turn. Close with AsyncExitStack.</span></div>
+      <div class="cheat-item"><b>The loop</b><span>user msg → model + tools → tool_use → session.call_tool → tool_result → model → answer.</span></div>
+      <div class="cheat-item"><b>Claude vs Ollama</b><span>Same MCP half. Claude: block.type=="tool_use". Ollama: message.tool_calls, function.name/arguments. No key locally.</span></div>
+      <div class="cheat-item"><b>Three failure layers</b><span>1 protocol error (JSON-RPC error) · 2 tool failure (isError:true) · 3 transport drop. Retry only layer 3.</span></div>
+      <div class="cheat-item"><b>Multi-server</b><span>One session per server; merge tool lists; route each call to the owning session; watch name collisions.</span></div>
+      <div class="cheat-item"><b>The payoff</b><span>uv run client.py project/server.py → "how did March look?" → $150.00 from your own code.</span></div>
+    </div>
+  </section>
+
+  <footer class="pagefoot">
+    <span>Builder session 5 of 8 · learn-mcp-with-phoebe · by Phoebe Fu &nbsp;·&nbsp; 📚 <a href="https://phoebefu6.github.io/learn-with-phoebe/">Learn with Phoebe ↗</a></span>
+    <span><a href="b4-connect-hosts.html">← Prev: Connect real hosts</a> &nbsp;·&nbsp; <a href="b6-remote-servers.html">Next: Remote servers →</a></span>
+  </footer>
+
+</main>
+
+<script src="../assets/mcp-live.js?v=1"></script>
+<script src="../assets/app.js?v=1"></script>
+</body>
+</html>

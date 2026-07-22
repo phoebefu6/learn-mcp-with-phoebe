@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Builder session 2 · Your first MCP server - learn mcp with phoebe</title>
+<link rel="stylesheet" href="../assets/style.css?v=1">
+</head>
+<body>
+
+<div class="toolbar">
+  <div class="wrap">
+    <span class="crumb"><a href="../index.html">learn-mcp-with-phoebe</a> / Builder session 2 of 8</span>
+    <button class="btn" id="toggle-all" type="button">Expand all</button>
+    <button class="btn primary" id="zoom-toggle" type="button">Projector zoom: off</button>
+  </div>
+</div>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="eyebrow">Learn MCP with Phoebe · Builder track · Session 2 of 8</div>
+    <h1>Your first <span class="accent">MCP server</span></h1>
+    <p class="sub">Last session you read the protocol on the wire. Tonight you write the thing that speaks it. In one sitting you will seed the Daybreak database, stand up a FastMCP server, expose <code>query_sales</code> as a real tool, and poke it in the MCP Inspector until it returns the March dip: $150.00. By the end you have three working tools and the one craft skill that separates a good server from a useless one - writing tool descriptions the model can actually act on.</p>
+    <div class="chip-row">
+      <span class="chip level">🟢 Easy</span>
+      <span class="chip audience">Practitioners: DE · DS · AI engineers · builders</span>
+      <span class="chip audience">Python · spec 2025-11-25</span>
+      <span class="chip time">45 min</span>
+    </div>
+    <div class="agenda">
+      <span class="a1" style="flex:1">0-3 · Welcome</span>
+      <span class="a2" style="flex:4">3-16 · Setup + first tool</span>
+      <span class="a3" style="flex:5">16-42 · Build + Inspector</span>
+      <span class="a4" style="flex:1">42-45 · Q&amp;A</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ============ INTRO ============ -->
+  <section class="section" id="intro">
+    <div class="section-kicker">
+      <span class="klabel">Part 0</span>
+      <h2>From reader to author</h2>
+    </div>
+    <p class="lede">In b1 you watched <code>tools/list</code> and <code>tools/call</code> fly past on the wire. You never wrote a line of JSON to make that happen - and tonight you still will not. The Python SDK's <strong>FastMCP</strong> generates every one of those messages for you from ordinary Python functions. Your job is to write good functions and good docstrings; the SDK handles the protocol.</p>
+    <div class="legend">
+      <span class="pill solid">Live - presented in session</span>
+      <span class="pill light">Self-study - read after class</span>
+      <span class="pill peach">▶ Live MCP wire - step through real messages</span>
+      <span class="pill inkpill">Official sources covered</span>
+    </div>
+    <div class="callout win">
+      <strong>★ What you walk out with today</strong>
+      A running <code>daybreak-mcp</code> stdio server with three real tools over a seeded SQLite database, the MCP Inspector open on it, and the single most transferable server skill there is: writing the docstring and type hints that become the tool's name, description, and input schema - the interface the model reads to decide what to call.
+    </div>
+  </section>
+
+  <!-- ============ PART 1: SETUP ============ -->
+  <section class="section" id="setup">
+    <div class="section-kicker">
+      <span class="klabel">Part 1 · covers official "Build an MCP server" setup, Academy "Project setup"</span>
+      <h2>Setup that actually works <span class="tag concept">6 min live</span></h2>
+    </div>
+    <p class="lede">Three commands and a seed script. We use <strong>uv</strong> - the fast Python package manager the official quickstart standardizes on - and the <code>mcp[cli]</code> package, which ships both the SDK and the <code>mcp</code> command line tool that runs the Inspector. Run these in order; do not skip the seed step, or every tool returns empty.</p>
+
+    <div class="prompt-box"><span class="label">bash · create the project</span>uv init daybreak-mcp
+cd daybreak-mcp
+uv venv
+source .venv/bin/activate</div>
+
+    <div class="prompt-box"><span class="label">bash · install the SDK + CLI</span>uv add "mcp[cli]"
+# pip equivalent, if you are not on uv:
+#   pip install "mcp[cli]"</div>
+
+    <div class="prompt-box"><span class="label">bash · seed the running database</span># copy seed_daybreak.py + server.py from the project/ folder into this dir
+python seed_daybreak.py
+# -> daybreak.db created at .../daybreak.db (33 orders)</div>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 240" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Daybreak MCP project layout: server.py, seed_daybreak.py, daybreak.db, pyproject.toml">
+        <style>
+          .lyF { font: 700 13px Inter, sans-serif; fill: #FFFFFF; }
+          .lyD { font: 400 11.5px Inter, sans-serif; fill: #FFFFFF; opacity:.9; }
+          .lyI { font: 700 13px Inter, sans-serif; fill: #1E242D; }
+          .lyX { font: 400 12px Inter, sans-serif; fill: #5B6674; }
+          .lyN { font: 600 13px Inter, sans-serif; fill: #043029; }
+        </style>
+        <text class="lyI" x="40" y="34">daybreak-mcp/ - everything the server needs, one folder</text>
+        <rect x="40" y="50" width="250" height="54" rx="8" fill="#5C3312"/>
+        <text class="lyF" x="56" y="76">server.py</text>
+        <text class="lyD" x="56" y="94">FastMCP app - tools live here</text>
+        <rect x="315" y="50" width="250" height="54" rx="8" fill="#A8622B"/>
+        <text class="lyF" x="331" y="76">seed_daybreak.py</text>
+        <text class="lyD" x="331" y="94">run once to build the db</text>
+        <rect x="590" y="50" width="250" height="54" rx="8" fill="#C08048"/>
+        <text class="lyF" x="606" y="76">daybreak.db</text>
+        <text class="lyD" x="606" y="94">SQLite - 33 orders, 8 products</text>
+        <rect x="40" y="120" width="250" height="54" rx="8" fill="#DDAF7E"/>
+        <text class="lyI" x="56" y="146">pyproject.toml</text>
+        <text class="lyX" x="56" y="164">uv init wrote this; mcp[cli] added</text>
+        <rect x="315" y="120" width="250" height="54" rx="8" fill="#DDAF7E"/>
+        <text class="lyI" x="331" y="146">.venv/</text>
+        <text class="lyX" x="331" y="164">the activated environment</text>
+        <rect x="40" y="200" width="14" height="14" rx="3" fill="#0E7C6B"/>
+        <text class="lyN" x="64" y="212">server.py opens daybreak.db by a path relative to itself, so run from anywhere - but keep the two files together.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the whole project is four files</figcaption>
+    </figure>
+
+    <details class="card" open>
+      <summary><span class="mode live">Live</span>Why uv, and what the seed script builds<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>uv creates the project, the virtual environment, and resolves dependencies in seconds - the official Python quickstart uses it, so your setup matches the docs exactly. The <code>mcp[cli]</code> extra is what gives you the <code>mcp dev</code> command in Part 3.</p>
+        <ul>
+          <li><strong>seed_daybreak.py</strong> drops any old <code>daybreak.db</code> and rebuilds it: customers, products, orders, order_items, subscriptions, events - the same schema as the SQL course, so the March dip is real data, not a fixture.</li>
+          <li><strong>The number to remember:</strong> completed revenue for 2026-03 is <strong>$150.00</strong> with one refund, against $271.00 in 2026-02. Your tool will report exactly that in Part 3.</li>
+          <li><strong>Run the seed once.</strong> Re-run it any time to reset; it is idempotent.</li>
+        </ul>
+        <div class="callout tip">
+          <strong>If a tool returns "No orders found"</strong>
+          You skipped the seed, or you are running the server from a directory where <code>daybreak.db</code> does not sit next to <code>server.py</code>. Re-run <code>python seed_daybreak.py</code> and confirm the file exists.
+        </div>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ PART 2: FASTMCP + FIRST TOOL ============ -->
+  <section class="section" id="first-tool">
+    <div class="section-kicker">
+      <span class="klabel">Part 2 · covers official "Build an MCP server" tools, DLAI "Creating an MCP Server", Academy "Defining tools"</span>
+      <h2>FastMCP and your first tool <span class="tag concept">7 min live</span></h2>
+    </div>
+    <p class="lede">A FastMCP server is a Python object you decorate functions onto. Instantiate it with a name, decorate a function with <code>@mcp.tool()</code>, and the SDK reads the function's name, its docstring, and its type hints to build the tool's <code>name</code>, <code>description</code>, and <code>inputSchema</code> - the exact three fields you saw in <code>tools/list</code> last session. You write Python; the wire format is derived.</p>
+
+    <div class="prompt-box"><span class="label">python · server.py, top of file</span>import pathlib
+import sqlite3
+
+from mcp.server.fastmcp import FastMCP
+
+DB_PATH = pathlib.Path(__file__).parent / "daybreak.db"
+
+mcp = FastMCP("daybreak-mcp")
+
+
+def _query(sql: str, params: tuple = ()) -&gt; list[tuple]:
+    con = sqlite3.connect(DB_PATH)
+    try:
+        return con.execute(sql, params).fetchall()
+    finally:
+        con.close()</div>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A decorated Python function becomes a tools/list entry: name from function name, description from docstring, inputSchema from type hints">
+        <style>
+          .dcT { font: 700 13px Inter, sans-serif; fill: #FFFFFF; }
+          .dcM { font: 600 11.5px "SF Mono", monospace; fill: #FFFFFF; opacity:.92; }
+          .dcI { font: 700 13px Inter, sans-serif; fill: #1E242D; }
+          .dcX { font: 400 11.5px Inter, sans-serif; fill: #5B6674; }
+          .dcN { font: 600 13px Inter, sans-serif; fill: #043029; }
+          .dcW { stroke: #A8622B; stroke-width: 2.5; fill: none; marker-end: url(#dcHd); }
+        </style>
+        <defs>
+          <marker id="dcHd" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+            <path d="M0,0 L9,4.5 L0,9 z" fill="#A8622B"/>
+          </marker>
+        </defs>
+        <text class="dcI" x="40" y="30">Your Python</text>
+        <rect x="40" y="42" width="290" height="150" rx="8" fill="#5C3312"/>
+        <text class="dcM" x="56" y="68">@mcp.tool()</text>
+        <text class="dcM" x="56" y="90">def query_sales(month: str) -&gt; str:</text>
+        <text class="dcM" x="56" y="118">  """Order count, refunds,</text>
+        <text class="dcM" x="56" y="136">  and revenue for one month."""</text>
+        <text class="dcM" x="56" y="164">  ... sql ...</text>
+        <text class="dcM" x="56" y="182">  return f"..."</text>
+        <text class="dcI" x="560" y="30">The tools/list entry it generates</text>
+        <rect x="560" y="42" width="280" height="44" rx="8" fill="#A8622B"/>
+        <text class="dcT" x="576" y="60">name</text>
+        <text class="dcM" x="576" y="78">"query_sales"</text>
+        <rect x="560" y="98" width="280" height="44" rx="8" fill="#C08048"/>
+        <text class="dcT" x="576" y="116">description</text>
+        <text class="dcM" x="576" y="134">"Order count, refunds..."</text>
+        <rect x="560" y="154" width="280" height="44" rx="8" fill="#5C3312"/>
+        <text class="dcT" x="576" y="172">inputSchema</text>
+        <text class="dcM" x="576" y="190">{ month: string, required }</text>
+        <path class="dcW" d="M330,80 C440,80 450,64 555,64"/>
+        <path class="dcW" d="M330,127 C440,127 450,120 555,120"/>
+        <path class="dcW" d="M330,100 C440,100 450,176 555,176"/>
+        <text class="dcX" x="345" y="58">fn name</text>
+        <text class="dcX" x="345" y="115">docstring</text>
+        <text class="dcX" x="345" y="212">type hints</text>
+        <rect x="40" y="228" width="14" height="14" rx="3" fill="#0E7C6B"/>
+        <text class="dcN" x="64" y="240">No JSON Schema by hand. The type hint month: str becomes a required string param; add a default and it becomes optional.</text>
+        <rect x="40" y="262" width="14" height="14" rx="3" fill="#0E7C6B"/>
+        <text class="dcN" x="64" y="274">This is why the docstring matters: it is not a comment, it is the description the model reads to decide when to call.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - decorator to wire: one function, three protocol fields</figcaption>
+    </figure>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>query_sales, line by line<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Here is the real tool from the running project - not a toy. Read it top to bottom: the decorator registers it, the signature declares the interface, the docstring documents it for the model, and the body just queries SQLite and returns a <strong>string</strong>. Every MCP tool result in this course is a string.</p>
+        <div class="prompt-box"><span class="label">python · the first real tool</span>@mcp.tool()
+def query_sales(month: str) -&gt; str:
+    """Order count, refunds, and completed revenue for one month (YYYY-MM)."""
+    rows = _query(
+        """
+        SELECT o.status, COUNT(DISTINCT o.order_id),
+               COALESCE(SUM(oi.quantity * oi.unit_price), 0)
+        FROM orders o
+        JOIN order_items oi ON oi.order_id = o.order_id
+        WHERE substr(o.order_date, 1, 7) = ?
+        GROUP BY o.status
+        """,
+        (month,),
+    )
+    if not rows:
+        return f"No orders found for {month}."
+    by_status = {status: (n, rev) for status, n, rev in rows}
+    total = sum(n for n, _ in by_status.values())
+    completed_rev = by_status.get("completed", (0, 0.0))[1]
+    refunded = by_status.get("refunded", (0, 0.0))[0]
+    return (
+        f"{month}: {total} orders ({refunded} refunded), "
+        f"completed revenue ${completed_rev:.2f}."
+    )</div>
+        <ul>
+          <li><strong><code>month: str</code></strong> - one required string argument. The model must supply it; the Inspector will show a required field.</li>
+          <li><strong>The docstring</strong> spells out the format <code>(YYYY-MM)</code>. That single parenthetical stops the model guessing "March" instead of "2026-03".</li>
+          <li><strong>Refunds are excluded from revenue</strong> by grouping on status - the March refund is why completed revenue is $150.00, not more.</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>Writing tool descriptions the model uses well<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>This is the craft point of the whole session. The docstring is not documentation garnish - it is the <strong>interface the model reads</strong> before every call. Watch the discovery message again and notice the description is the only prose the model gets:</p>
+        <div class="mcpbox" data-scenario="tools" data-caption="tools/list: the description and schema are all the model sees before deciding to call."></div>
+        <p>Four rules that make descriptions the model acts on correctly:</p>
+        <ul>
+          <li><strong>State the format in the description</strong>, not just the type. <code>(YYYY-MM)</code> beats "a month string" every time.</li>
+          <li><strong>Say what it returns and what it excludes.</strong> "completed revenue" tells the model refunds are already handled - it will not double-correct.</li>
+          <li><strong>One tool, one job.</strong> A tool that both queries and mutates confuses the model about when it is safe to call.</li>
+          <li><strong>Name the function like the action.</strong> <code>query_sales</code> reads as a verb; the function name becomes the tool name.</li>
+        </ul>
+        <div class="callout example">
+          <span class="ex-pill">Real world</span>
+          <p><strong>The tool nobody could call.</strong> A team shipped a <code>get_data</code> tool with the docstring "Returns data." The model never picked it correctly because it could not tell what data or when. Renaming it <code>query_sales</code> and writing one sentence about the month format and the revenue definition fixed the call rate overnight - no model change, just the description.</p>
+        </div>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ PART 3: INSPECTOR ============ -->
+  <section class="section" id="inspector">
+    <div class="section-kicker">
+      <span class="klabel">Part 3 · covers official Inspector docs, DLAI Inspector segment, Academy "Server inspector"</span>
+      <h2>Run it and poke it: the Inspector <span class="tag concept">6 min live</span></h2>
+    </div>
+    <p class="lede">One command runs your server and opens a browser devtool wired to it - the <strong>MCP Inspector</strong>. It is the single most useful thing in your toolkit this track: it lists your tools, lets you call them with arguments, and shows the raw result, so you never guess whether a bug is in your code or on the wire.</p>
+
+    <div class="prompt-box"><span class="label">bash · launch the Inspector</span>uv run mcp dev server.py
+# opens the Inspector in your browser, connected over stdio
+# tabs: Tools · Resources · Prompts · and a live message log</div>
+
+    <div class="steps">
+      <div class="step"><p>Run <code>uv run mcp dev server.py</code>. The Inspector opens and connects; if it does not, the server threw on import - read the terminal.</p></div>
+      <div class="step"><p>Open the <strong>Tools</strong> tab. You should see <code>query_sales</code> with its description and a <code>month</code> field. That is your docstring and type hint, rendered.</p></div>
+      <div class="step"><p>Type <code>2026-03</code> into <code>month</code> and press call. Read the result string: it should say completed revenue <strong>$150.00</strong>.</p></div>
+      <div class="step"><p>Call it again with <code>2026-02</code> - $271.00. You just proved the March dip through your own server.</p></div>
+    </div>
+
+    <div class="mcpbox" data-scenario="call" data-caption="What the Inspector shows you as a wire message: the tools/call request your click sends, and the result string that comes back."></div>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>Inspector traffic vs the wire scenarios<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>The stepper above is the same JSON-RPC the Inspector generates when you click "call". The Inspector is just a host that never involves a model - <em>you</em> play the model, choosing the tool and filling the arguments by hand. That is exactly why it is the right debugging tool: it removes the model's judgement so you can test the server in isolation.</p>
+        <ul>
+          <li><strong>Tools tab</strong> = the <code>tools/list</code> response, rendered as a form.</li>
+          <li><strong>Calling a tool</strong> = one <code>tools/call</code> request and its result - the log tab shows the raw JSON.</li>
+          <li><strong>A red result</strong> with <code>isError:true</code> = your tool ran and raised; a protocol error = the Inspector could not even reach the tool.</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>Common first-server failures<span class="mini">3 min read</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Three failures catch nearly everyone once. Recognize them and you save the afternoon:</p>
+        <ul>
+          <li><strong>Path.</strong> The server cannot find <code>daybreak.db</code> because it was launched from a different directory. Fix: <code>DB_PATH</code> is built from <code>__file__</code> in the project, so keep <code>server.py</code> and the db together.</li>
+          <li><strong>Unseeded db.</strong> Tools return "No orders found." Fix: run <code>python seed_daybreak.py</code>.</li>
+          <li><strong>Silent exceptions.</strong> A tool raises but you only see a generic error in the host. Fix: run in the Inspector, which surfaces the traceback - and never print to stdout in a stdio server, because stdout <em>is</em> the protocol channel. Use stderr or logging.</li>
+        </ul>
+        <div class="callout tip">
+          <strong>stdio means stdout is sacred</strong>
+          A stdio server sends every protocol message over stdout. A stray <code>print("debug")</code> corrupts the JSON stream and the host disconnects. Log to stderr instead.
+        </div>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ DEMO 1 ============ -->
+  <section class="section" id="demo-1">
+    <div class="section-kicker">
+      <span class="klabel">Demo 1 of 2</span>
+      <h2>Build query_sales end to end <span class="tag demo">★ 12 min · everyone builds</span></h2>
+    </div>
+    <p class="lede">Do this live, all together. Five moves from empty folder to the March dip on screen through a server you wrote.</p>
+    <div class="steps">
+      <div class="step"><p><strong>Seed the db.</strong> <code>python seed_daybreak.py</code> - confirm "33 orders".</p></div>
+      <div class="step"><p><strong>Write the tool.</strong> Paste the FastMCP header and <code>query_sales</code> from Part 2 into <code>server.py</code>. Add <code>if __name__ == "__main__": mcp.run()</code> at the bottom - <code>mcp.run()</code> defaults to stdio.</p></div>
+      <div class="step"><p><strong>Open the Inspector.</strong> <code>uv run mcp dev server.py</code>. Confirm <code>query_sales</code> appears in the Tools tab.</p></div>
+      <div class="step"><p><strong>Call month=2026-03.</strong> Read the result: <code>2026-03: ... completed revenue $150.00.</code></p></div>
+      <div class="step"><p><strong>Compare to 2026-02</strong> ($271.00). The dip is real, and it is your server saying so.</p></div>
+    </div>
+  </section>
+
+  <!-- ============ DEMO 2 ============ -->
+  <section class="section" id="demo-2">
+    <div class="section-kicker">
+      <span class="klabel">Demo 2 of 2</span>
+      <h2>Add two more tools <span class="tag demo">★ 10 min · build</span></h2>
+    </div>
+    <p class="lede">Two tools give the server real range: <code>top_products</code> takes a date range with defaults, and <code>subscription_status</code> takes no arguments at all. Notice how the signatures change what the Inspector renders.</p>
+    <div class="prompt-box"><span class="label">python · finished code, paste and re-run the Inspector</span>@mcp.tool()
+def top_products(from_date: str = "2026-01-01", to_date: str = "2026-12-31") -&gt; str:
+    """Best-selling products by quantity for a date range (YYYY-MM-DD)."""
+    rows = _query(
+        """
+        SELECT p.name, SUM(oi.quantity) AS qty
+        FROM order_items oi
+        JOIN orders o ON o.order_id = oi.order_id
+        JOIN products p ON p.product_id = oi.product_id
+        WHERE o.order_date BETWEEN ? AND ? AND o.status = 'completed'
+        GROUP BY p.name
+        ORDER BY qty DESC
+        LIMIT 5
+        """,
+        (from_date, to_date),
+    )
+    if not rows:
+        return "No completed sales in that range."
+    lines = [f"{i + 1}. {name} - {qty} sold" for i, (name, qty) in enumerate(rows)]
+    return "Top products " + from_date + " to " + to_date + ":\n" + "\n".join(lines)
+
+
+@mcp.tool()
+def subscription_status() -&gt; str:
+    """Active vs cancelled subscription counts, with monthly quantities."""
+    rows = _query(
+        """
+        SELECT CASE WHEN cancel_date IS NULL THEN 'active' ELSE 'cancelled' END,
+               COUNT(*), SUM(monthly_qty)
+        FROM subscriptions
+        GROUP BY 1
+        """
+    )
+    parts = [f"{status}: {n} subs ({qty} bags/month)" for status, n, qty in rows]
+    return "Subscriptions - " + "; ".join(parts)</div>
+    <div class="steps">
+      <div class="step"><p><strong>Paste both</strong> under <code>query_sales</code>, save, and restart the Inspector.</p></div>
+      <div class="step"><p><strong>top_products</strong> shows two fields, both pre-filled with defaults - that is what the <code>= "..."</code> defaults do to the schema (optional, with a default).</p></div>
+      <div class="step"><p><strong>subscription_status</strong> shows no fields and a call button - a zero-argument tool. Call it and read active vs cancelled.</p></div>
+    </div>
+  </section>
+
+  <!-- ============ HOMEWORK ============ -->
+  <section class="section" id="exercise">
+    <div class="section-kicker">
+      <span class="klabel">Homework</span>
+      <h2>Try it yourself - this week <span class="tag exercise">◐ 25-35 min total</span></h2>
+    </div>
+    <ul>
+      <li>Add a fourth tool, <code>customer_lookup(name: str) -&gt; str</code>, that returns a customer's city, plan, and signup date from the <code>customers</code> table. Write the docstring first, before the body - practice the interface as interface.</li>
+      <li>Test a bad month: call <code>query_sales</code> with <code>2027-01</code>. Confirm it returns "No orders found" and not a crash - graceful empties are part of tool craft.</li>
+      <li>Deliberately break it: add a <code>print("hi")</code> inside a tool, restart the Inspector, and watch the connection fail. Remove it. Now you will never do it by accident.</li>
+      <li>Rewrite one docstring to be vague ("gets sales") and one to be precise, and compare how each reads in the Tools tab. Bring the precise one to b3.</li>
+    </ul>
+  </section>
+
+  <!-- ============ SOURCES ============ -->
+  <section class="section" id="official">
+    <div class="section-kicker">
+      <span class="klabel">Source material</span>
+      <h2>Official sources covered</h2>
+    </div>
+    <p class="lede">This session teaches the working core of the official server-build quickstart and the server-authoring lessons across the major courses, on the actual running project. Certificates and videos stay on the official sites. This page covers:</p>
+    <div class="covered">
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">modelcontextprotocol.io - "Build an MCP server" (Python)</span><span class="note">uv setup, FastMCP, @mcp.tool(), mcp.run stdio - taught on Daybreak instead of the weather sample</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">DeepLearning.AI "MCP" - "Creating an MCP Server"</span><span class="note">Server object, tool decorator, type-hint schemas - full working content</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">Anthropic Academy "Introduction to MCP" - "Hands-on with MCP Servers"</span><span class="note">Project setup, defining tools, the server Inspector</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">Hugging Face MCP course - Unit 1 server section</span><span class="note">Server concepts covered; HF's Gradio path stays official</span></div>
+    </div>
+  </section>
+
+  <!-- ============ QUIZ ============ -->
+  <section class="section" id="quiz">
+    <div class="section-kicker">
+      <span class="klabel">Check yourself</span>
+      <h2>Three questions before you go 🎯 <span class="tag exercise">◐ 90 seconds</span></h2>
+    </div>
+    <div class="quiz-q" data-answer="2">
+      <p class="qtext">1 · With FastMCP, what does a tool function's docstring become?</p>
+      <button class="qopt" type="button">A · A code comment, ignored by the protocol</button>
+      <button class="qopt" type="button">B · The tool's return value</button>
+      <button class="qopt" type="button">C · The tool's description - the prose the model reads to decide when to call it</button>
+      <p class="qwhy">FastMCP derives the tools/list entry from your function: name from the function name, description from the docstring, inputSchema from the type hints. The docstring is the interface, not a comment.</p>
+    </div>
+    <div class="quiz-q" data-answer="1">
+      <p class="qtext">2 · Your stdio server disconnects the moment a tool runs. Likeliest cause?</p>
+      <button class="qopt" type="button">A · The database is too large</button>
+      <button class="qopt" type="button">B · The tool printed to stdout, which is the protocol channel in a stdio server</button>
+      <button class="qopt" type="button">C · You forgot to install uv</button>
+      <p class="qwhy">In stdio transport, every protocol message travels over stdout. A stray print() corrupts the JSON stream and the host drops the connection. Log to stderr instead.</p>
+    </div>
+    <div class="quiz-q" data-answer="0">
+      <p class="qtext">3 · What is the MCP Inspector for?</p>
+      <button class="qopt" type="button">A · Listing, calling, and reading your server's tools by hand - debugging with no model in the loop</button>
+      <button class="qopt" type="button">B · Deploying your server to production</button>
+      <button class="qopt" type="button">C · Writing your tool descriptions for you</button>
+      <p class="qwhy">The Inspector is a host that lets you play the model: pick a tool, fill arguments, see the raw result. It isolates the server so you can tell a code bug from a protocol problem.</p>
+    </div>
+    <p class="quiz-score"></p>
+  </section>
+
+  <!-- ============ CHEAT SHEET ============ -->
+  <section class="cheat" id="cheatsheet">
+    <h3>Builder session 2 cheat sheet <span>· pin this</span></h3>
+    <div class="grid-2">
+      <div class="cheat-item"><b>Setup</b><span>uv init · uv venv · source .venv/bin/activate · uv add "mcp[cli]" (or pip install "mcp[cli]") · python seed_daybreak.py.</span></div>
+      <div class="cheat-item"><b>The server object</b><span>from mcp.server.fastmcp import FastMCP; mcp = FastMCP("daybreak-mcp").</span></div>
+      <div class="cheat-item"><b>A tool</b><span>@mcp.tool() over a plain function. Name, description, schema come from fn name, docstring, type hints.</span></div>
+      <div class="cheat-item"><b>Results are strings</b><span>Every Daybreak tool returns a str. query_sales, top_products, subscription_status.</span></div>
+      <div class="cheat-item"><b>Run it</b><span>if __name__ == "__main__": mcp.run() - defaults to stdio. b6 switches to streamable-http.</span></div>
+      <div class="cheat-item"><b>Inspect it</b><span>uv run mcp dev server.py - browser devtool: Tools tab, call with args, read raw result.</span></div>
+      <div class="cheat-item"><b>The craft point</b><span>The docstring is the interface the model reads. State format, say what is returned + excluded.</span></div>
+      <div class="cheat-item"><b>The number</b><span>2026-03 completed revenue $150.00 (1 refund) vs 2026-02 $271.00 - the March dip.</span></div>
+    </div>
+  </section>
+
+  <footer class="pagefoot">
+    <span>Builder session 2 of 8 · learn-mcp-with-phoebe · by Phoebe Fu &nbsp;·&nbsp; 📚 <a href="https://phoebefu6.github.io/learn-with-phoebe/">Learn with Phoebe ↗</a></span>
+    <span><a href="b1-what-mcp-is.html">← Prev: What MCP is</a> &nbsp;·&nbsp; <a href="b3-resources-prompts.html">Next: Resources and prompts →</a></span>
+  </footer>
+
+</main>
+
+<script src="../assets/mcp-live.js?v=1"></script>
+<script src="../assets/app.js?v=1"></script>
+</body>
+</html>

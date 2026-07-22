@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Builder session 8 · Registry and what's next - learn mcp with phoebe</title>
+<link rel="stylesheet" href="../assets/style.css?v=1">
+</head>
+<body>
+
+<div class="toolbar">
+  <div class="wrap">
+    <span class="crumb"><a href="../index.html">learn-mcp-with-phoebe</a> / Builder session 8 of 8</span>
+    <button class="btn" id="toggle-all" type="button">Expand all</button>
+    <button class="btn primary" id="zoom-toggle" type="button">Projector zoom: off</button>
+  </div>
+</div>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="eyebrow">Learn MCP with Phoebe · Builder track · Session 8 of 8</div>
+    <h1>Registry and <span class="accent">what's next</span></h1>
+    <p class="sub">The last mile: publish Daybreak to the official MCP registry so anyone can discover and install it, then decode the 2026-07-28 revision in full - which finalizes just six days after this course shipped, making this the freshest section of any MCP course you will find. You walk out with a published server, a migration checklist, and the ability to narrate every byte of an MCP conversation.</p>
+    <div class="chip-row">
+      <span class="chip level" style="color:#F87171">🔴 Hardest</span>
+      <span class="chip audience">Practitioners: DE · DS · AI engineers · builders</span>
+      <span class="chip audience">Python · spec 2025-11-25 → 2026-07-28</span>
+      <span class="chip time">45 min · capstone</span>
+    </div>
+    <div class="agenda">
+      <span class="a1" style="flex:1">0-3 · Recap</span>
+      <span class="a2" style="flex:3">3-15 · Publish Daybreak</span>
+      <span class="a3" style="flex:5">15-38 · The 2026-07-28 delta</span>
+      <span class="a4" style="flex:2">38-45 · Migration + graduation</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ============ INTRO ============ -->
+  <section class="section" id="intro">
+    <div class="section-kicker">
+      <span class="klabel">Part 0</span>
+      <h2>Where we are - and the finish line</h2>
+    </div>
+    <p class="lede">You have built (b2-b3), connected (b4), written a client (b5), gone remote (b6), and secured it (b7). Two things remain. First, make Daybreak <strong>discoverable</strong> by publishing it to <code>registry.modelcontextprotocol.io</code>. Second, look forward: the <strong>2026-07-28 revision</strong> reshapes the protocol you just learned, and because it lands days after this course, you get it decoded ahead of nearly everyone. Then a graduation trace where you narrate the whole protocol end to end.</p>
+    <div class="legend">
+      <span class="pill solid">Live - presented in session</span>
+      <span class="pill light">Self-study - read after class</span>
+      <span class="pill peach">▶ Live MCP wire - step through real messages</span>
+      <span class="pill inkpill">Official sources covered</span>
+    </div>
+    <div class="callout win">
+      <strong>★ What you walk out with today</strong>
+      A real server published under your own namespace (<code>io.github.yourname/daybreak</code>), a <code>server.json</code> manifest you understand line by line, the entire 2026-07-28 change register decoded with migration advice per theme, and a checklist that makes the upgrade a non-event. Plus the graduation trace: you can now read and narrate every message MCP puts on the wire.
+    </div>
+  </section>
+
+  <!-- ============ PART 1 ============ -->
+  <section class="section" id="publish">
+    <div class="section-kicker">
+      <span class="klabel">Part 1 · covers official Registry docs (publish, versioning, moderation)</span>
+      <h2>Publish Daybreak <span class="tag concept">6 min live</span></h2>
+    </div>
+    <p class="lede">The registry (live since Sept 2025) is how servers get found. It hosts <strong>metadata, not code</strong> - your package lives on PyPI (or npm), and the registry points at it. You describe your server in a <code>server.json</code> manifest, authenticate with GitHub, and publish with the <code>mcp-publisher</code> CLI. GitHub auth locks your namespace to <code>io.github.yourname/*</code>, so no one can squat your name.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Publish pipeline: write manifest, publish package to PyPI, login with GitHub, publish to registry, discoverable">
+        <style>
+          .puI { font: 700 13px Inter, sans-serif; fill: #1E242D; }
+          .puT { font: 700 12px Inter, sans-serif; fill: #FFFFFF; }
+          .puX { font: 400 11px Inter, sans-serif; fill: #5B6674; }
+          .puN { font: 600 13px Inter, sans-serif; fill: #043029; }
+          .puFlow { stroke: #A8622B; stroke-width: 2.5; fill: none; marker-end: url(#puHd); }
+        </style>
+        <defs>
+          <marker id="puHd" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+            <path d="M0,0 L9,4.5 L0,9 z" fill="#A8622B"/>
+          </marker>
+        </defs>
+        <text class="puI" x="40" y="34">From code to discoverable listing</text>
+        <rect x="40" y="60" width="150" height="56" rx="8" fill="#5C3312"/>
+        <text class="puT" x="56" y="84">1 · server.json</text><text class="puX" x="56" y="102" fill="#DDAF7E">the manifest</text>
+        <rect x="215" y="60" width="150" height="56" rx="8" fill="#C08048"/>
+        <text class="puT" x="231" y="84">2 · publish pkg</text><text class="puX" x="231" y="102" fill="#1E242D">to PyPI</text>
+        <rect x="390" y="60" width="150" height="56" rx="8" fill="#A8622B"/>
+        <text class="puT" x="406" y="84">3 · login github</text><text class="puX" x="406" y="102" fill="#F8EFE4">locks namespace</text>
+        <rect x="565" y="60" width="150" height="56" rx="8" fill="#A8622B"/>
+        <text class="puT" x="581" y="84">4 · publish</text><text class="puX" x="581" y="102" fill="#F8EFE4">to registry</text>
+        <rect x="740" y="60" width="100" height="56" rx="8" fill="#0E7C6B"/>
+        <text class="puT" x="756" y="84">5 · listed</text><text class="puX" x="756" y="102" fill="#E3F4F0">findable</text>
+        <path class="puFlow" d="M190,88 L211,88"/>
+        <path class="puFlow" d="M365,88 L386,88"/>
+        <path class="puFlow" d="M540,88 L561,88"/>
+        <path class="puFlow" d="M715,88 L736,88"/>
+        <rect x="40" y="150" width="14" height="14" rx="3" fill="#0E7C6B"/>
+        <text class="puN" x="64" y="162">The registry stores metadata only; the artifact stays on PyPI/npm. name in server.json must match the package.</text>
+        <rect x="40" y="182" width="14" height="14" rx="3" fill="#0E7C6B"/>
+        <text class="puN" x="64" y="194">GitHub auth requires the name start with io.github.yourname/ - your namespace, no squatting.</text>
+        <rect x="40" y="214" width="14" height="14" rx="3" fill="#0E7C6B"/>
+        <text class="puN" x="64" y="226">Registry is in preview: expect refinements. Moderation removes spam + malicious listings.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the five-step publish pipeline</figcaption>
+    </figure>
+
+    <details class="card" open>
+      <summary><span class="mode live">Live</span>The manifest walkthrough - server.json for Daybreak<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p><code>mcp-publisher init</code> generates a template; you edit it. The key fields: a namespaced <code>name</code>, a human <code>description</code>, the <code>repository</code>, a <code>version</code>, and a <code>packages</code> array telling installers where the artifact lives and how to run it (transport <code>stdio</code> for Daybreak). The <code>name</code> must match the <code>mcpName</code> you put in your package metadata.</p>
+        <div class="prompt-box">
+          <span class="label">server.json · Daybreak (PyPI package, stdio transport)</span>
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.yourname/daybreak",
+  "description": "Sales, subscriptions, catalog and refund policy for the Daybreak coffee brand.",
+  "repository": {
+    "url": "https://github.com/yourname/daybreak-mcp",
+    "source": "github"
+  },
+  "version": "1.0.0",
+  "packages": [
+    {
+      "registryType": "pypi",
+      "identifier": "daybreak-mcp",
+      "version": "1.0.0",
+      "transport": { "type": "stdio" }
+    }
+  ]
+}</div>
+        <div class="prompt-box">
+          <span class="label">the three commands that publish it</span>
+mcp-publisher init            # scaffold server.json from your project
+mcp-publisher login github    # device-code auth; locks you to io.github.yourname/*
+mcp-publisher publish         # push metadata to registry.modelcontextprotocol.io</div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>What a good listing looks like - description quality = adoption<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Discovery is a marketplace. Two servers that do the same thing get wildly different adoption based on their metadata. Your <code>description</code> and your tool descriptions are the pitch - and, as you learned in b7, tool descriptions are also what the <em>model</em> reads to decide what to call. Bad descriptions hurt twice.</p>
+        <ul>
+          <li><strong>Say what it does in one line</strong> - "Sales and subscription analytics for Daybreak", not "an MCP server".</li>
+          <li><strong>Version honestly</strong> with semantic versioning; publish a new version rather than mutating an old one.</li>
+          <li><strong>Point at a real repo</strong> - reviewers and users check it. A README with setup + the security section from b7 builds trust.</li>
+          <li><strong>Respect moderation</strong> - the registry removes spam and malicious servers; a clean, accurate listing survives.</li>
+        </ul>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ PART 2 ============ -->
+  <section class="section" id="delta">
+    <div class="section-kicker">
+      <span class="klabel">Part 2 · covers MCP spec 2026-07-28 "Key Changes" (decoded ahead of finalization)</span>
+      <h2>The 2026-07-28 delta, in full <span class="tag concept">10 min live</span></h2>
+    </div>
+    <p class="lede">This revision finalizes <strong>2026-07-28 - six days after this course shipped</strong>. Everything below is decoded from the release candidate; re-verify against the published spec after that date. It is the freshest material in any MCP course, and it touches things you built this term. Here is the whole change register with what to do about each.</p>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>Stateless core - the handshake disappears<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>The biggest change. The <code>initialize</code>/<code>initialized</code> handshake and the <code>Mcp-Session-Id</code> header are <strong>removed</strong>. Capabilities travel in <code>_meta</code> on each request, and new <code>Mcp-Method</code> / <code>Mcp-Name</code> routing headers let infrastructure route without parsing the body. Any node can serve any request - horizontal scale becomes trivial.</p>
+        <div class="mcpbox" data-scenario="handshake" data-caption="This handshake is what disappears. Under the stateless core, capabilities move into _meta on every request instead."></div>
+        <p><strong>Migration advice:</strong> keep tool handlers pure (everything from arguments, nothing from cross-request server memory) as you practiced in b6. Stateless-friendly servers barely notice the switch.</p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>Deprecations - roots, sampling, logging<span class="mini">2 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p><strong>Roots, sampling, and logging are deprecated</strong> with a 12-month removal window. Two of the three client-side primitives you met in b1 are on the way out; <strong>elicitation stays</strong>. Logging as a protocol feature is deprecated too - use your host's own observability.</p>
+        <p><strong>Migration advice:</strong> do not start new work on sampling or roots. If you have existing use, plan the 12-month exit. Build interactive UX on elicitation (b7).</p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>MCP Apps + Extensions + Tasks<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <ul>
+          <li><strong>MCP Apps (SEP-1865):</strong> servers can ship sandboxed-iframe UIs - first-class interactive surfaces, not just text. Powerful, but host support is early; treat it as a preview and watch which hosts render it.</li>
+          <li><strong>Extensions framework, first-class:</strong> optional capability bundles layered on the core. This is how new features ship without bloating the base protocol.</li>
+          <li><strong>Tasks graduated to an extension:</strong> long-running work gets a standard shape, now delivered through the extensions mechanism rather than the core.</li>
+        </ul>
+        <p><strong>Migration advice:</strong> keep your core server lean and standard; adopt extensions deliberately as host support lands.</p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>Schema + error-code changes<span class="mini">2 min read</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <ul>
+          <li><strong>JSON Schema 2020-12 is the default</strong> for tool input schemas. If you hand-write schemas, target that draft.</li>
+          <li><strong>Error code change:</strong> the "invalid params / unknown tool" style error moves from <code>-32002</code> to <code>-32602</code>. (The live error scenario in this track already shows <code>-32602</code>.)</li>
+        </ul>
+        <p><strong>Migration advice:</strong> if any code branches on the exact numeric error code, update it. Most SDKs abstract this for you.</p>
+      </div>
+    </details>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Old session model with a handshake versus new stateless model with capabilities in _meta">
+        <style>
+          .ovI { font: 700 13px Inter, sans-serif; fill: #1E242D; }
+          .ovT { font: 700 12px Inter, sans-serif; fill: #FFFFFF; }
+          .ovX { font: 400 11px Inter, sans-serif; fill: #5B6674; }
+          .ovN { font: 600 13px Inter, sans-serif; fill: #043029; }
+        </style>
+        <text class="ovI" x="40" y="30">OLD - stateful (spec 2025-11-25)</text>
+        <rect x="40" y="46" width="360" height="30" rx="6" fill="#5C3312"/><text class="ovT" x="56" y="66">initialize → session created</text>
+        <rect x="40" y="82" width="360" height="30" rx="6" fill="#A8622B"/><text class="ovT" x="56" y="102">Mcp-Session-Id on every later request</text>
+        <rect x="40" y="118" width="360" height="30" rx="6" fill="#C08048"/><text class="ovT" x="56" y="138" fill="#1E242D">server remembers session · sticky routing</text>
+        <text class="ovI" x="480" y="30">NEW - stateless (spec 2026-07-28)</text>
+        <rect x="480" y="46" width="360" height="30" rx="6" fill="#0E7C6B"/><text class="ovT" x="496" y="66">no handshake · no session id</text>
+        <rect x="480" y="82" width="360" height="30" rx="6" fill="#0E7C6B"/><text class="ovT" x="496" y="102">capabilities in _meta per request</text>
+        <rect x="480" y="118" width="360" height="30" rx="6" fill="#0E7C6B"/><text class="ovT" x="496" y="138">Mcp-Method/Mcp-Name headers · any node serves</text>
+        <rect x="40" y="176" width="14" height="14" rx="3" fill="#0E7C6B"/>
+        <text class="ovN" x="64" y="188">Same tools, same results - only how the session is carried changes. Pure handlers migrate cleanly.</text>
+        <rect x="40" y="208" width="14" height="14" rx="3" fill="#0E7C6B"/>
+        <text class="ovN" x="64" y="220">Re-verify every callout in this track against the published spec after 2026-07-28.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the old session model vs the new stateless core</figcaption>
+    </figure>
+  </section>
+
+  <!-- ============ PART 3 ============ -->
+  <section class="section" id="migration">
+    <div class="section-kicker">
+      <span class="klabel">Part 3 · synthesis + spec Roadmap</span>
+      <h2>Your migration checklist + where MCP goes <span class="tag concept">5 min live</span></h2>
+    </div>
+    <p class="lede">You cannot flip to 2026-07-28 before it finalizes, but you can build today so the upgrade is a non-event. Here is the checklist, then a look at the trajectory.</p>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>The migration checklist<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <div class="steps">
+          <div class="step"><p><strong>Design stateless now.</strong> Tool handlers derive everything from arguments; no per-user state built up across requests in a session.</p></div>
+          <div class="step"><p><strong>Avoid roots and sampling</strong> in new work; plan a 12-month exit for any existing use.</p></div>
+          <div class="step"><p><strong>Keep elicitation</strong> - it survives, and it is your interactive-UX mechanism.</p></div>
+          <div class="step"><p><strong>Validate the issuer (RFC 9207)</strong> in your auth code today; it becomes required.</p></div>
+          <div class="step"><p><strong>Target JSON Schema 2020-12</strong> for any hand-written tool schemas; don't hardcode the old error number.</p></div>
+          <div class="step"><p><strong>Watch host support for MCP Apps</strong> before shipping iframe UIs; adopt extensions as they land.</p></div>
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>Ecosystem trajectory - where MCP is heading<span class="mini">3 min read</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Two forces to watch. First, the <strong>registry keeps growing</strong> - as it matures out of preview, discovery and trust signals (verification, moderation, download stats) will shape which servers win, much like npm did for JavaScript. Second, <strong>governance under the Agentic AI Foundation</strong> (Linux Foundation) means the roadmap is now public and multi-vendor: stateless core, Apps, and extensions are the current bets, and the SEP process is where the next ones get argued. Translation: MCP is stabilizing into infrastructure. Betting on it is betting on a standard, not a vendor.</p>
+      </div>
+    </details>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 210" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="12-month migration timeline from the 2026-07-28 revision to the removal of deprecated primitives">
+        <style>
+          .tlI { font: 700 13px Inter, sans-serif; fill: #1E242D; }
+          .tlT { font: 700 11.5px Inter, sans-serif; fill: #FFFFFF; }
+          .tlX { font: 400 11px Inter, sans-serif; fill: #5B6674; }
+          .tlN { font: 600 13px Inter, sans-serif; fill: #043029; }
+          .tlLine { stroke: #A8622B; stroke-width: 2.5; }
+        </style>
+        <text class="tlI" x="40" y="34">The 12-month migration window</text>
+        <line class="tlLine" x1="60" y1="90" x2="820" y2="90"/>
+        <circle cx="90" cy="90" r="7" fill="#0E7C6B"/>
+        <rect x="60" y="104" width="200" height="46" rx="6" fill="#5C3312"/>
+        <text class="tlT" x="74" y="124">2026-07-28 · revision</text><text class="tlX" x="74" y="142" fill="#DDAF7E">stateless core lands</text>
+        <circle cx="440" cy="90" r="7" fill="#A8622B"/>
+        <rect x="330" y="104" width="220" height="46" rx="6" fill="#A8622B"/>
+        <text class="tlT" x="344" y="124">months 0-12 · both work</text><text class="tlX" x="344" y="142" fill="#F8EFE4">migrate off roots/sampling/logging</text>
+        <circle cx="800" cy="90" r="7" fill="#C08048"/>
+        <rect x="600" y="104" width="220" height="46" rx="6" fill="#C08048"/>
+        <text class="tlT" x="614" y="124" fill="#1E242D">~2027-07 · removal</text><text class="tlX" x="614" y="142" fill="#1E242D">deprecated primitives gone</text>
+        <rect x="40" y="176" width="14" height="14" rx="3" fill="#0E7C6B"/>
+        <text class="tlN" x="64" y="188">Elicitation is NOT on this timeline - it stays. Only roots, sampling, and logging are being removed.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the deprecation window from revision to removal</figcaption>
+    </figure>
+  </section>
+
+  <!-- ============ DEMO 1 ============ -->
+  <section class="section" id="demo-1">
+    <div class="section-kicker">
+      <span class="klabel">Demo 1 of 2</span>
+      <h2>Write the manifest <span class="tag demo">★ 7 min · scaffold + edit</span></h2>
+    </div>
+    <p class="lede">Generate and edit a real <code>server.json</code> for Daybreak, then dry-run the publish path.</p>
+
+    <div class="steps">
+      <div class="step"><p>Package Daybreak for PyPI (add an <code>mcpName</code> of <code>io.github.yourname/daybreak</code> to your package metadata so the registry can verify it).</p></div>
+      <div class="step"><p>Run <code>mcp-publisher init</code> and edit the generated <code>server.json</code> to match the Part 1 example - name, description, repository, version, the <code>pypi</code> package with <code>stdio</code> transport.</p></div>
+      <div class="step"><p>Authenticate: <code>mcp-publisher login github</code>, complete the device-code flow. This is what binds you to the <code>io.github.yourname/*</code> namespace.</p></div>
+      <div class="step"><p><code>mcp-publisher publish</code>, then verify with a search against the registry API. Your server is now discoverable.</p></div>
+    </div>
+  </section>
+
+  <!-- ============ DEMO 2 ============ -->
+  <section class="section" id="demo-2">
+    <div class="section-kicker">
+      <span class="klabel">Demo 2 of 2</span>
+      <h2>The graduation trace <span class="tag demo">★ 10 min · narrate every byte</span></h2>
+    </div>
+    <p class="lede">The whole track in one exchange. A host connects to Daybreak, discovers its tools, the user asks the March question, the model calls <code>query_sales</code>, and the $150.00 answer comes back. Narrate each message out loud - if you can, you have graduated.</p>
+
+    <div class="steps">
+      <div class="step"><p><strong>Connect + handshake</strong> (b1, b5): the client sends <code>initialize</code>, the server agrees on version and capabilities. On 2026-07-28 this step vanishes - say why.</p></div>
+      <div class="step"><p><strong>Discover</strong> (b1, b2): <code>tools/list</code> returns <code>query_sales</code> with its schema - the description the model reads (b7: also the injection surface).</p></div>
+      <div class="step"><p><strong>Call</strong> (b1, b5): the model fills <code>{"month":"2026-03"}</code>; the client sends <code>tools/call</code>; the server queries the DB.</p></div>
+      <div class="step"><p><strong>Answer:</strong> the content array carries "$150.00, down from $271.00" back to the model, which writes the founder's answer. Now name the transport (b6) and the auth (b7) that carried it if remote.</p></div>
+    </div>
+
+    <div class="mcpbox" data-scenario="call" data-caption="You can now narrate every byte of this: who sends it, what layer it lives on, and what changes on 2026-07-28."></div>
+
+    <div class="callout example">
+      <span class="ex-pill">Real world</span>
+      <p><strong>This is the skill that separates operators from users.</strong> Most people who "use MCP" cannot read this traffic. You can build the server, write the client, deploy it, secure it, publish it, and debug it at the wire level - and you know what the next spec revision changes. That is a rare, durable skill in the agent era.</p>
+    </div>
+  </section>
+
+  <!-- ============ HOMEWORK ============ -->
+  <section class="section" id="exercise">
+    <div class="section-kicker">
+      <span class="klabel">Homework · capstone</span>
+      <h2>Try it yourself - this week <span class="tag exercise">◐ 45-90 min total</span></h2>
+    </div>
+    <ul>
+      <li><strong>Publish a real toy server</strong> under your own <code>io.github.yourname/*</code> namespace - even a two-tool server counts. Confirm it appears in a registry search.</li>
+      <li>Write a one-paragraph <strong>migration note</strong> for Daybreak: which of your code touches the stateless core, roots/sampling, error codes, or schemas - and what you would change.</li>
+      <li><strong>Set a calendar reminder for 2026-07-28</strong> to re-verify every "changes 2026-07-28" callout in this track against the published spec and flip the framing from "coming" to "landed".</li>
+      <li>Do the graduation trace from memory - narrate handshake → list → call → answer without looking, then say what disappears on the new spec.</li>
+    </ul>
+  </section>
+
+  <!-- ============ SOURCES ============ -->
+  <section class="section" id="official">
+    <div class="section-kicker">
+      <span class="klabel">Source material</span>
+      <h2>Official sources covered</h2>
+    </div>
+    <p class="lede">The capstone: registry publishing and the forward-looking spec, decoded before it finalizes. This page covers:</p>
+    <div class="covered">
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">modelcontextprotocol.io - Registry docs (publish, versioning, moderation)</span><span class="note">server.json manifest, mcp-publisher CLI, GitHub auth, namespaces</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">MCP spec 2026-07-28 - "Key Changes"</span><span class="note">Decoded ahead of finalization: stateless core, deprecations, schema/error changes</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">Extensions + MCP Apps (SEP-1865) docs</span><span class="note">Preview - framing + migration advice; host support still early</span></div>
+    </div>
+  </section>
+
+  <!-- ============ QUIZ ============ -->
+  <section class="section" id="quiz">
+    <div class="section-kicker">
+      <span class="klabel">Check yourself</span>
+      <h2>Three questions before you go 🎯 <span class="tag exercise">◐ 90 seconds</span></h2>
+    </div>
+    <div class="quiz-q" data-answer="2">
+      <p class="qtext">1 · What does server.json actually put in the registry?</p>
+      <button class="qopt" type="button">A · Your server's source code, hosted by the registry</button>
+      <button class="qopt" type="button">B · A running instance of your server</button>
+      <button class="qopt" type="button">C · Metadata only - name, description, version, and where the package lives (PyPI/npm)</button>
+      <p class="qwhy">The registry hosts metadata, not artifacts. The package lives on PyPI or npm; server.json describes it and points at it. The name must match your package's mcpName, and GitHub auth locks your io.github.yourname/* namespace.</p>
+    </div>
+    <div class="quiz-q" data-answer="0">
+      <p class="qtext">2 · What does the 2026-07-28 stateless core remove?</p>
+      <button class="qopt" type="button">A · The initialize/initialized handshake and the Mcp-Session-Id header; capabilities move to _meta</button>
+      <button class="qopt" type="button">B · Tools and resources</button>
+      <button class="qopt" type="button">C · The Streamable HTTP transport</button>
+      <p class="qwhy">The handshake and session id go away; capabilities travel in _meta per request, with Mcp-Method/Mcp-Name routing headers, so any node can serve any request. Tools, resources, and Streamable HTTP all remain.</p>
+    </div>
+    <div class="quiz-q" data-answer="1">
+      <p class="qtext">3 · Which primitives are deprecated on 2026-07-28 (12-month window)?</p>
+      <button class="qopt" type="button">A · Tools, resources, prompts</button>
+      <button class="qopt" type="button">B · Roots, sampling, logging - elicitation stays</button>
+      <button class="qopt" type="button">C · Elicitation and prompts</button>
+      <p class="qwhy">Roots, sampling, and logging are deprecated with a 12-month removal window. Elicitation survives - which is why b7 built interactive UX on it. The server primitives (tools, resources, prompts) are untouched.</p>
+    </div>
+    <p class="quiz-score"></p>
+  </section>
+
+  <!-- ============ CHEAT SHEET · CAPSTONE ============ -->
+  <section class="cheat" id="cheatsheet">
+    <h3>Whole-course capstone cheat sheet <span>· pin this</span></h3>
+    <div class="grid-2">
+      <div class="cheat-item"><b>Primitives</b><span>Server: tools (model), resources (app), prompts (user). Client: elicitation (stays), sampling + roots (deprecated 2026-07-28).</span></div>
+      <div class="cheat-item"><b>The wire</b><span>JSON-RPC 2.0: request (id) · response (same id, result or error) · notification (no id). Error -32602 for bad params.</span></div>
+      <div class="cheat-item"><b>Transports</b><span>stdio (local subprocess) · Streamable HTTP (one endpoint, POST + optional SSE upgrade). HTTP+SSE is dead.</span></div>
+      <div class="cheat-item"><b>Client loop</b><span>connect → initialize → list_tools → (user → model → tool_use → call_tool → tool_result → model → answer).</span></div>
+      <div class="cheat-item"><b>Consumption modes</b><span>Host app · your own client · Messages API MCP connector (remote-only, tool-only, no client code).</span></div>
+      <div class="cheat-item"><b>Auth (OAuth 2.1)</b><span>Server = resource server. Metadata (RFC 9728) → auth server → DCR → PKCE → Bearer. Validate issuer (RFC 9207).</span></div>
+      <div class="cheat-item"><b>Security</b><span>Confused deputy · token passthrough (forbidden) · session hijacking · prompt injection via tool descriptions · least privilege · human approval.</span></div>
+      <div class="cheat-item"><b>Registry</b><span>server.json (metadata) + package on PyPI/npm. mcp-publisher init/login github/publish. Namespace io.github.you/*.</span></div>
+      <div class="cheat-item"><b>2026-07-28 migration</b><span>Design stateless now · avoid roots/sampling · keep elicitation · JSON Schema 2020-12 · watch MCP Apps host support.</span></div>
+      <div class="cheat-item"><b>Running project</b><span>Daybreak: query_sales/top_products/subscription_status · catalog + refund policy · monthly_report. March = $150.00.</span></div>
+    </div>
+  </section>
+
+  <footer class="pagefoot">
+    <span>Builder session 8 of 8 · learn-mcp-with-phoebe · by Phoebe Fu &nbsp;·&nbsp; 📚 <a href="https://phoebefu6.github.io/learn-with-phoebe/">Learn with Phoebe ↗</a></span>
+    <span><a href="b7-auth-security.html">← Prev: Auth, security, elicitation</a> &nbsp;·&nbsp; <a href="../index.html">→ Back to all sessions</a></span>
+  </footer>
+
+  <p style="text-align:center;color:var(--muted);font-size:.85rem;margin:1.5rem 0 2rem">Next course: <strong>learn-ai-agents-with-phoebe</strong> - your Daybreak server becomes an agent's toolbox (coming soon)</p>
+
+</main>
+
+<script src="../assets/mcp-live.js?v=1"></script>
+<script src="../assets/app.js?v=1"></script>
+</body>
+</html>

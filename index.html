@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>learn mcp with phoebe - a two-track course on the Model Context Protocol</title>
+<link rel="stylesheet" href="assets/style.css?v=1">
+<style>
+  .stats-row { display: flex; gap: 2.4rem; margin-top: 1.5rem; flex-wrap: wrap; }
+  .stat b { display: block; font-size: 2.1rem; font-weight: 800; line-height: 1.05; font-variant-numeric: tabular-nums; }
+  .stat span { font-size: .72rem; opacity: .85; text-transform: uppercase; letter-spacing: .09em; font-weight: 600; }
+
+  .course-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr)); gap: 1rem; margin-top: 1.5rem; }
+  .course-card {
+    border: 1px solid var(--hairline);
+    border-top: 4px solid var(--diff, var(--indigo));
+    border-radius: var(--radius);
+    padding: 1.2rem 1.3rem 1.1rem;
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+    text-decoration: none;
+    color: var(--ink);
+    background: #fff;
+    transition: box-shadow .15s ease, border-color .15s ease, transform .15s ease;
+    position: relative;
+  }
+  .course-card:hover { border-color: var(--indigo-soft); border-top-color: var(--diff, var(--indigo)); box-shadow: 0 8px 28px rgba(168,98,43,.12); transform: translateY(-3px); }
+  .course-card .cicon { font-size: 1.7rem; line-height: 1; }
+  .course-card .cnum { font-size: .72rem; font-weight: 700; color: var(--indigo); text-transform: uppercase; letter-spacing: .1em; }
+  .course-card h3 { font-size: 1.05rem; font-weight: 800; line-height: 1.3; }
+  .course-card p { font-size: .85rem; color: var(--muted); flex: 1; }
+  .course-card .meta { display: flex; gap: .4rem; flex-wrap: wrap; }
+
+  .diff-legend { display: flex; gap: 1rem; margin-top: 1.6rem; font-size: .74rem; color: var(--muted); font-weight: 600; flex-wrap: wrap; }
+  .diff-legend i { display: inline-block; width: .85rem; height: .35rem; border-radius: 999px; margin-right: .35rem; vertical-align: middle; }
+
+  .paths { margin-top: 2.6rem; }
+  .paths h2 { font-size: 1.3rem; font-weight: 800; margin-bottom: .3rem; }
+  .paths .plede { color: var(--muted); font-size: .92rem; margin-bottom: .8rem; }
+  .path { display: flex; gap: .55rem; align-items: center; padding: .75rem 0; border-bottom: .5px solid var(--hairline); flex-wrap: wrap; }
+  .path:last-child { border-bottom: none; }
+  .path b { min-width: 15.5rem; font-size: .9rem; }
+  .path .pstep { background: var(--indigo-50); color: var(--indigo); border-radius: 999px; padding: .16rem .68rem; font-weight: 700; font-size: .8rem; text-decoration: none; transition: all .12s ease; }
+  .path .pstep:hover { background: var(--indigo); color: #fff; }
+  .path .parr { color: var(--faint); font-weight: 700; }
+
+  .mm-section { margin-top: 1.6rem; }
+  .mm-section h2 { font-size: 1.3rem; font-weight: 800; margin-bottom: .2rem; }
+  .mm-section .mm-lede { color: var(--muted); font-size: .92rem; margin-bottom: .4rem; }
+  .mm-wrap { border: 1px solid var(--hairline); border-radius: var(--radius); background: linear-gradient(180deg,#fff,#FBF6EF); padding: .6rem; overflow-x: auto; }
+  .mm-svg { width: 100%; height: auto; display: block; max-width: 60rem; margin: 0 auto; min-width: 34rem; }
+  .mm-link { cursor: pointer; text-decoration: none; }
+  .mm-node rect { transition: opacity .15s ease, filter .15s ease; }
+  .mm-node text { pointer-events: none; }
+  .mm-link:hover .mm-node rect { filter: brightness(1.06); }
+  .mm-edge { transition: opacity .15s ease; }
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="eyebrow">Learn MCP with Phoebe</div>
+    <h1>Two tracks into the protocol wiring AI to everything</h1>
+    <p class="sub">The Model Context Protocol is how AI apps reach your tools and data - one open standard, Linux Foundation governed, adopted by Anthropic, OpenAI, Google and Microsoft. A leader track teaches you to judge, buy, and govern MCP without touching code. A builder track takes you from reading raw protocol traffic to building, connecting, securing, and publishing a real Python MCP server for Daybreak, a coffee chain. Every builder page has a live wire inspector - step through the actual JSON-RPC messages in your browser.</p>
+    <div class="stats-row">
+      <div class="stat"><b data-count="2">2</b><span>tracks</span></div>
+      <div class="stat"><b data-count="14">14</b><span>sessions</span></div>
+      <div class="stat"><b data-count="7">7</b><span>live wire scenarios</span></div>
+      <div class="stat"><b data-count="45">45</b><span>min per session</span></div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="section">
+    <div class="paths" style="margin-top:0">
+      <h2>The leader track 🤝 <span style="font-size:.85rem;font-weight:600;color:var(--muted)">· for C-level, managers &amp; curious minds · 6 x 45 min · no code to write</span></h2>
+      <p class="plede">Thinking mode: why MCP exists, what it changes for your integration budget, how to question vendors on security, and what the 2026 roadmap means for strategy - each session ends with questions to ask your teams.</p>
+    </div>
+    <div class="course-grid">
+      <a class="course-card" href="courses/a1-why-mcp.html" style="--diff:#34D399">
+        <span class="cicon">🔌</span>
+        <span class="cnum">Leader 1 · easy</span>
+        <h3>Why MCP exists</h3>
+        <p>The N x M integration problem, the USB-C move that collapsed it, and why every major AI vendor signed on within a year.</p>
+        <span class="meta"><span class="pill amber">▶ Leaders start here</span></span>
+      </a>
+      <a class="course-card" href="courses/a2-architecture-plain.html" style="--diff:#34D399">
+        <span class="cicon">🏛️</span>
+        <span class="cnum">Leader 2 · easy</span>
+        <h3>The architecture in plain English</h3>
+        <p>Host, client, server without jargon - and what tools, resources, and prompts mean as business capabilities you can commission.</p>
+        <span class="meta"><span class="pill light">No-code session</span></span>
+      </a>
+      <a class="course-card" href="courses/a3-ecosystem-play.html" style="--diff:#FBBF24">
+        <span class="cicon">🌐</span>
+        <span class="cnum">Leader 3 · medium</span>
+        <h3>The ecosystem play</h3>
+        <p>The official registry, ~97M monthly SDK downloads, who adopted what - and the build vs buy vs wait decision for your org.</p>
+        <span class="meta"><span class="pill light">Build-vs-buy exercise</span></span>
+      </a>
+      <a class="course-card" href="courses/a4-security-trust.html" style="--diff:#FBBF24">
+        <span class="cicon">🛡️</span>
+        <span class="cnum">Leader 4 · medium</span>
+        <h3>Security and trust</h3>
+        <p>What an MCP server can actually reach, OAuth in plain terms, the real risk register, and the questions that expose a weak vendor.</p>
+        <span class="meta"><span class="pill light">Vendor-grilling checklist</span></span>
+      </a>
+      <a class="course-card" href="courses/a5-mcp-in-your-org.html" style="--diff:#FB923C">
+        <span class="cicon">🏢</span>
+        <span class="cnum">Leader 5 · deciding</span>
+        <h3>MCP in your organization</h3>
+        <p>Scanning your org for MCP-shaped wins, connector strategy, governance scopes, and how to frame the ROI to a board.</p>
+        <span class="meta"><span class="pill light">Use-case scan exercise</span></span>
+      </a>
+      <a class="course-card" href="courses/a6-roadmap.html" style="--diff:#FB923C">
+        <span class="cicon">🔭</span>
+        <span class="cnum">Leader 6 · deciding</span>
+        <h3>The roadmap and your strategy</h3>
+        <p>The 2026-07-28 spec revision, MCP Apps, tasks, extensions, deprecations - what changes, what to fund, what to wait on.</p>
+        <span class="meta"><span class="pill light">Strategy session</span></span>
+      </a>
+    </div>
+
+    <div class="paths">
+      <h2>The builder track 🛠️ <span style="font-size:.85rem;font-weight:600;color:var(--muted)">· for practitioners · 8 x 45 min · Python · live wire inspector on every page</span></h2>
+      <p class="plede">One running project, built harder every session: the Daybreak MCP server - tools over real sales data, resources, prompts, then a client, remote deployment, OAuth, and a registry listing. Spec 2025-11-25, with every 2026-07-28 change flagged where it bites.</p>
+    </div>
+    <div class="course-grid">
+      <a class="course-card" href="courses/b1-what-mcp-is.html" style="--diff:#34D399">
+        <span class="cicon">📡</span>
+        <span class="cnum">Builder 1 · easy</span>
+        <h3>What MCP actually is</h3>
+        <p>Host / client / server, all six primitives, and the JSON-RPC wire itself - stepped through message by message, live.</p>
+        <span class="meta"><span class="pill amber">▶ Builders start here</span></span>
+      </a>
+      <a class="course-card" href="courses/b2-first-server.html" style="--diff:#34D399">
+        <span class="cicon">⚙️</span>
+        <span class="cnum">Builder 2 · easy</span>
+        <h3>Your first MCP server</h3>
+        <p>Python SDK, FastMCP, three real tools over Daybreak's data, and the MCP Inspector to poke them - from zero to working server.</p>
+        <span class="meta"><span class="pill light">Ship tools tonight</span></span>
+      </a>
+      <a class="course-card" href="courses/b3-resources-prompts.html" style="--diff:#FBBF24">
+        <span class="cicon">📚</span>
+        <span class="cnum">Builder 3 · medium</span>
+        <h3>Resources and prompts</h3>
+        <p>Complete the server trio: the menu and policies as resources, a daily-report prompt, completion and pagination as they arise.</p>
+        <span class="meta"><span class="pill light">Context + playbooks</span></span>
+      </a>
+      <a class="course-card" href="courses/b4-connect-hosts.html" style="--diff:#FBBF24">
+        <span class="cicon">🔗</span>
+        <span class="cnum">Builder 4 · medium</span>
+        <h3>Connect to real hosts</h3>
+        <p>Daybreak inside Claude Code and Claude Desktop: .mcp.json, local / project / user scopes, env vars, and reference servers.</p>
+        <span class="meta"><span class="pill light">Your server, real apps</span></span>
+      </a>
+      <a class="course-card" href="courses/b5-build-a-client.html" style="--diff:#FBBF24">
+        <span class="cicon">🤖</span>
+        <span class="cnum">Builder 5 · medium</span>
+        <h3>Build a client</h3>
+        <p>The other side of the wire: a Python client and a chatbot that discovers and calls Daybreak's tools - Claude API or local Ollama.</p>
+        <span class="meta"><span class="pill light">Dual Claude/Ollama path</span></span>
+      </a>
+      <a class="course-card" href="courses/b6-remote-servers.html" style="--diff:#FB923C">
+        <span class="cicon">☁️</span>
+        <span class="cnum">Builder 6 · hands-on</span>
+        <h3>Remote servers</h3>
+        <p>Streamable HTTP in depth, state, deployment, and the MCP connector - calling your server straight from the Messages API.</p>
+        <span class="meta"><span class="pill light">stdio to production</span></span>
+      </a>
+      <a class="course-card" href="courses/b7-auth-security.html" style="--diff:#FB923C">
+        <span class="cicon">🔐</span>
+        <span class="cnum">Builder 7 · hands-on</span>
+        <h3>Auth, security, elicitation</h3>
+        <p>OAuth 2.1 as MCP does it, the security best practices that matter, and elicitation - the server asking your user mid-task.</p>
+        <span class="meta"><span class="pill light">The open lane</span></span>
+      </a>
+      <a class="course-card" href="courses/b8-registry-whats-next.html" style="--diff:#F87171">
+        <span class="cicon">🚀</span>
+        <span class="cnum">Builder 8 · hardest</span>
+        <h3>Registry and what's next</h3>
+        <p>Publish Daybreak to the official registry, versioning, then the 2026-07-28 delta in full: stateless core, MCP Apps, tasks, deprecations.</p>
+        <span class="meta"><span class="pill light">Ship + future-proof</span></span>
+      </a>
+    </div>
+    <div class="diff-legend">
+      <span><i style="background:#34D399"></i>easy - everyone</span>
+      <span><i style="background:#FBBF24"></i>medium</span>
+      <span><i style="background:#FB923C"></i>hands-on / deciding</span>
+      <span><i style="background:#F87171"></i>hardest</span>
+    </div>
+
+    <div class="paths">
+      <h2>Choose your path 🗺️</h2>
+      <p class="plede">Two doors, one protocol. Leaders never touch code; builders never sit through strategy they have not just wired themselves.</p>
+      <div class="path"><b>🤝 Leader (judge &amp; govern)</b>
+        <a class="pstep" href="courses/a1-why-mcp.html">a1</a><span class="parr">→</span>
+        <a class="pstep" href="courses/a2-architecture-plain.html">a2</a><span class="parr">→</span>
+        <a class="pstep" href="courses/a3-ecosystem-play.html">a3</a><span class="parr">→</span>
+        <a class="pstep" href="courses/a4-security-trust.html">a4</a><span class="parr">→</span>
+        <a class="pstep" href="courses/a5-mcp-in-your-org.html">a5</a><span class="parr">→</span>
+        <a class="pstep" href="courses/a6-roadmap.html">a6</a>
+      </div>
+      <div class="path"><b>🛠️ Builder (ship Daybreak)</b>
+        <a class="pstep" href="courses/b1-what-mcp-is.html">b1</a><span class="parr">→</span>
+        <a class="pstep" href="courses/b2-first-server.html">b2</a><span class="parr">→</span>
+        <a class="pstep" href="courses/b3-resources-prompts.html">b3</a><span class="parr">→</span>
+        <a class="pstep" href="courses/b4-connect-hosts.html">b4</a><span class="parr">→</span>
+        <a class="pstep" href="courses/b5-build-a-client.html">b5</a><span class="parr">→</span>
+        <a class="pstep" href="courses/b6-remote-servers.html">b6</a><span class="parr">→</span>
+        <a class="pstep" href="courses/b7-auth-security.html">b7</a><span class="parr">→</span>
+        <a class="pstep" href="courses/b8-registry-whats-next.html">b8</a>
+      </div>
+      <div class="path"><b>🌱 Curious follower (a taste)</b>
+        <a class="pstep" href="courses/a1-why-mcp.html">a1</a><span class="parr">→</span>
+        <a class="pstep" href="courses/a2-architecture-plain.html">a2</a><span class="parr">→</span>
+        <a class="pstep" href="courses/b1-what-mcp-is.html">b1</a>
+      </div>
+      <div class="path"><b>🚀 Full journey (lead AND build)</b>
+        <a class="pstep" href="courses/a1-why-mcp.html">a1-a6</a><span class="parr">→</span>
+        <a class="pstep" href="courses/b1-what-mcp-is.html">b1-b8</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section mm-section">
+    <h2>The knowledge map 🧠</h2>
+    <p class="mm-lede">Both tracks at a glance - hover a session to spotlight its concepts, click any node to jump in.</p>
+    <div class="mm-wrap"><div id="mindmap"></div></div>
+  </section>
+
+  <footer class="pagefoot">
+    <span>learn-mcp-with-phoebe · by Phoebe Fu &nbsp;·&nbsp; 📚 <a href="https://phoebefu6.github.io/learn-with-phoebe/">Learn with Phoebe ↗</a> · taught from modelcontextprotocol.io, the MCP spec (2025-11-25), Anthropic docs &amp; Academy, DeepLearning.AI and Hugging Face MCP courses</span>
+  </footer>
+</main>
+
+<script>
+window.MINDMAP_DATA = {
+  title: "Learn\nMCP",
+  centerColor: "#5C3312",
+  sessions: [
+    { label: "Why MCP\nexists", href: "courses/a1-why-mcp.html", color: "#34D399",
+      concepts: [
+        { label: "N x M problem", href: "courses/a1-why-mcp.html" },
+        { label: "The USB-C move", href: "courses/a1-why-mcp.html" },
+        { label: "Who governs it", href: "courses/a1-why-mcp.html" } ] },
+    { label: "Architecture,\nplain English", href: "courses/a2-architecture-plain.html", color: "#34D399",
+      concepts: [
+        { label: "Host / client / server", href: "courses/a2-architecture-plain.html" },
+        { label: "Capabilities you buy", href: "courses/a2-architecture-plain.html" } ] },
+    { label: "Ecosystem\nplay", href: "courses/a3-ecosystem-play.html", color: "#FBBF24",
+      concepts: [
+        { label: "The registry", href: "courses/a3-ecosystem-play.html" },
+        { label: "Build vs buy", href: "courses/a3-ecosystem-play.html" } ] },
+    { label: "Security\n& trust", href: "courses/a4-security-trust.html", color: "#FBBF24",
+      concepts: [
+        { label: "What servers reach", href: "courses/a4-security-trust.html" },
+        { label: "Vendor questions", href: "courses/a4-security-trust.html" } ] },
+    { label: "MCP in\nyour org", href: "courses/a5-mcp-in-your-org.html", color: "#FB923C",
+      concepts: [
+        { label: "Use-case scan", href: "courses/a5-mcp-in-your-org.html" },
+        { label: "ROI framing", href: "courses/a5-mcp-in-your-org.html" } ] },
+    { label: "Roadmap &\nstrategy", href: "courses/a6-roadmap.html", color: "#FB923C",
+      concepts: [
+        { label: "2026-07-28 spec", href: "courses/a6-roadmap.html" },
+        { label: "MCP Apps", href: "courses/a6-roadmap.html" } ] },
+    { label: "What MCP\nactually is", href: "courses/b1-what-mcp-is.html", color: "#34D399",
+      concepts: [
+        { label: "Six primitives", href: "courses/b1-what-mcp-is.html" },
+        { label: "JSON-RPC wire", href: "courses/b1-what-mcp-is.html" },
+        { label: "Two transports", href: "courses/b1-what-mcp-is.html" } ] },
+    { label: "First\nserver", href: "courses/b2-first-server.html", color: "#34D399",
+      concepts: [
+        { label: "FastMCP + tools", href: "courses/b2-first-server.html" },
+        { label: "MCP Inspector", href: "courses/b2-first-server.html" } ] },
+    { label: "Resources\n& prompts", href: "courses/b3-resources-prompts.html", color: "#FBBF24",
+      concepts: [
+        { label: "URIs + context", href: "courses/b3-resources-prompts.html" },
+        { label: "Prompt templates", href: "courses/b3-resources-prompts.html" } ] },
+    { label: "Connect\nreal hosts", href: "courses/b4-connect-hosts.html", color: "#FBBF24",
+      concepts: [
+        { label: ".mcp.json + scopes", href: "courses/b4-connect-hosts.html" },
+        { label: "Claude Code/Desktop", href: "courses/b4-connect-hosts.html" } ] },
+    { label: "Build a\nclient", href: "courses/b5-build-a-client.html", color: "#FBBF24",
+      concepts: [
+        { label: "Client sessions", href: "courses/b5-build-a-client.html" },
+        { label: "Chatbot loop", href: "courses/b5-build-a-client.html" } ] },
+    { label: "Remote\nservers", href: "courses/b6-remote-servers.html", color: "#FB923C",
+      concepts: [
+        { label: "Streamable HTTP", href: "courses/b6-remote-servers.html" },
+        { label: "MCP connector", href: "courses/b6-remote-servers.html" } ] },
+    { label: "Auth &\nelicitation", href: "courses/b7-auth-security.html", color: "#FB923C",
+      concepts: [
+        { label: "OAuth 2.1", href: "courses/b7-auth-security.html" },
+        { label: "Elicitation", href: "courses/b7-auth-security.html" } ] },
+    { label: "Registry &\nwhat's next", href: "courses/b8-registry-whats-next.html", color: "#F87171",
+      concepts: [
+        { label: "Publish Daybreak", href: "courses/b8-registry-whats-next.html" },
+        { label: "Stateless core", href: "courses/b8-registry-whats-next.html" } ] }
+  ]
+};
+</script>
+<script src="assets/mindmap.js?v=1"></script>
+<script src="assets/app.js?v=1"></script>
+</body>
+</html>

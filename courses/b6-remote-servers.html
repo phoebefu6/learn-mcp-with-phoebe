@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Builder session 6 · Remote servers - learn mcp with phoebe</title>
+<link rel="stylesheet" href="../assets/style.css?v=1">
+</head>
+<body>
+
+<div class="toolbar">
+  <div class="wrap">
+    <span class="crumb"><a href="../index.html">learn-mcp-with-phoebe</a> / Builder session 6 of 8</span>
+    <button class="btn" id="toggle-all" type="button">Expand all</button>
+    <button class="btn primary" id="zoom-toggle" type="button">Projector zoom: off</button>
+  </div>
+</div>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="eyebrow">Learn MCP with Phoebe · Builder track · Session 6 of 8</div>
+    <h1>Take Daybreak <span class="accent">remote</span></h1>
+    <p class="sub">stdio was perfect for your laptop. To let a teammate - or Claude's own API - reach Daybreak, it has to become a web service. Tonight you learn Streamable HTTP in depth: one endpoint, a JSON-RPC POST, an optional SSE upgrade per request, and sessions carried in a header today that the 2026-07-28 stateless core removes. Then you flip Daybreak's transport with one line, deploy it provider-neutral, and call it from the Messages API MCP connector with no client code at all.</p>
+    <div class="chip-row">
+      <span class="chip level">🔶 Hands-on</span>
+      <span class="chip audience">Practitioners: DE · DS · AI engineers · builders</span>
+      <span class="chip audience">Python · spec 2025-11-25</span>
+      <span class="chip time">45 min</span>
+    </div>
+    <div class="agenda">
+      <span class="a1" style="flex:1">0-3 · Recap</span>
+      <span class="a2" style="flex:4">3-18 · Streamable HTTP in depth</span>
+      <span class="a3" style="flex:5">18-40 · Deploy + the MCP connector</span>
+      <span class="a4" style="flex:1">40-45 · Q&amp;A</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ============ INTRO ============ -->
+  <section class="section" id="intro">
+    <div class="section-kicker">
+      <span class="klabel">Part 0</span>
+      <h2>Where we are</h2>
+    </div>
+    <p class="lede">You have a server (b2-b3) and a client (b5), both talking over stdio - the host launches the server as a local subprocess. That does not cross machines. Tonight Daybreak becomes a real web service on Streamable HTTP, the only remote transport in the current spec. Then you meet three ways to consume a remote server: a host app, your own client from b5, or - new tonight - Claude's Messages API connector, which needs no client code whatsoever.</p>
+    <div class="legend">
+      <span class="pill solid">Live - presented in session</span>
+      <span class="pill light">Self-study - read after class</span>
+      <span class="pill peach">▶ Live MCP wire - step through real messages</span>
+      <span class="pill inkpill">Official sources covered</span>
+    </div>
+    <div class="callout win">
+      <strong>★ What you walk out with today</strong>
+      Daybreak flipped to Streamable HTTP with a one-line change, running as a web service you can <code>curl</code>. A clear mental model of how the single endpoint works - POST in, optional SSE stream out - and why sessions live in the <code>Mcp-Session-Id</code> header today but disappear on 2026-07-28. And the March answer coming back from the Anthropic Messages API with zero lines of client code, via the MCP connector.
+    </div>
+  </section>
+
+  <!-- ============ PART 1 ============ -->
+  <section class="section" id="streamable-http">
+    <div class="section-kicker">
+      <span class="klabel">Part 1 · covers Academy Advanced "StreamableHTTP" + "State + StreamableHTTP", spec Transports</span>
+      <h2>Streamable HTTP in depth <span class="tag concept">8 min live</span></h2>
+    </div>
+    <p class="lede">Streamable HTTP replaced the old HTTP+SSE transport in March 2025. It is deliberately simple: the server exposes <strong>one</strong> endpoint (say <code>/mcp</code>). The client <strong>POSTs</strong> a JSON-RPC message there. The server may reply with a single JSON response, or - if the work streams (progress, partial results) - it may <strong>upgrade that one request to an SSE stream</strong> and send a sequence of events before closing. One endpoint, one POST per message, optional stream per request. That is the whole transport.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Streamable HTTP sequence: client POSTs to one endpoint, server returns JSON or upgrades to an SSE stream">
+        <style>
+          .shI { font: 700 13px Inter, sans-serif; fill: #1E242D; }
+          .shT { font: 700 12px Inter, sans-serif; fill: #FFFFFF; }
+          .shX { font: 400 11.5px Inter, sans-serif; fill: #5B6674; }
+          .shN { font: 600 13px Inter, sans-serif; fill: #043029; }
+          .shWire { stroke: #A8622B; stroke-width: 2; fill: none; marker-end: url(#shHd); }
+          .shLife { stroke: #C3CBD6; stroke-width: 1.5; fill: none; }
+        </style>
+        <defs>
+          <marker id="shHd" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+            <path d="M0,0 L9,4.5 L0,9 z" fill="#A8622B"/>
+          </marker>
+        </defs>
+        <rect x="70" y="40" width="180" height="30" rx="6" fill="#5C3312"/><text class="shT" x="86" y="60">CLIENT</text>
+        <rect x="630" y="40" width="200" height="30" rx="6" fill="#A8622B"/><text class="shT" x="646" y="60">SERVER · one /mcp endpoint</text>
+        <path class="shLife" d="M160,70 L160,270"/>
+        <path class="shLife" d="M730,70 L730,270"/>
+        <path class="shWire" d="M160,100 L726,100"/>
+        <text class="shX" x="200" y="94">POST /mcp  { jsonrpc, method: "tools/call" }</text>
+        <path class="shWire" d="M730,140 L164,140"/>
+        <text class="shX" x="210" y="134">200 OK  single JSON response  (simple case)</text>
+        <text class="shI" x="70" y="184">OR, when the work streams:</text>
+        <path class="shWire" d="M160,212 L726,212"/>
+        <text class="shX" x="200" y="206">POST /mcp  (a long-running call)</text>
+        <path class="shWire" d="M730,244 L164,244"/>
+        <text class="shX" x="200" y="238">200 OK  Content-Type: text/event-stream  → SSE events, then close</text>
+        <rect x="70" y="284" width="14" height="14" rx="3" fill="#0E7C6B"/>
+        <text class="shN" x="94" y="296">The SSE upgrade is per request and server-chosen. HTTP+SSE (two endpoints) is deprecated - never teach it.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - one endpoint, a POST per message, an optional SSE upgrade</figcaption>
+    </figure>
+
+    <details class="card" open>
+      <summary><span class="mode live">Live</span>The request lifecycle - what a single call looks like<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Everything you stepped through in b1 still applies - it is the same JSON-RPC, now inside HTTP. The client opens by POSTing <code>initialize</code>; the server answers and (on the current spec) issues an <code>Mcp-Session-Id</code>. Every later POST carries that header so the server knows which session it belongs to.</p>
+        <div class="prompt-box">
+          <span class="label">the wire, as HTTP</span>
+POST /mcp  HTTP/1.1
+Content-Type: application/json
+Accept: application/json, text/event-stream
+Mcp-Session-Id: 6f1c...            # returned by initialize; sent on every later request
+
+{"jsonrpc":"2.0","id":3,"method":"tools/call",
+ "params":{"name":"query_sales","arguments":{"month":"2026-03"}}}
+
+# Server may answer with a single JSON body, OR upgrade THIS response
+# to Content-Type: text/event-stream and push SSE events before closing.</div>
+        <p>The <code>Accept</code> header is how the client signals it can handle either shape. The server decides per request whether to stream.</p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>State, and the 2026-07-28 stateless core<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p><strong>This is the course differentiator - nobody else teaches it yet.</strong> Today (spec 2025-11-25), a Streamable HTTP server is stateful: <code>initialize</code> hands out an <code>Mcp-Session-Id</code>, and the server remembers that session between requests. That makes horizontal scaling awkward - every request for a session must reach the node that owns it (sticky sessions).</p>
+        <p>The <strong>2026-07-28 revision makes the core stateless.</strong> The <code>initialize</code>/<code>initialized</code> handshake and <code>Mcp-Session-Id</code> are removed. Instead:</p>
+        <ul>
+          <li><strong>Capabilities travel in <code>_meta</code></strong> on each request - no negotiated session to remember.</li>
+          <li><strong>Routing headers</strong> <code>Mcp-Method</code> and <code>Mcp-Name</code> let infrastructure route a request without parsing the JSON body.</li>
+          <li><strong>Any node can serve any request</strong> - no stickiness, trivial horizontal scale.</li>
+        </ul>
+        <div class="mcpbox" data-scenario="handshake" data-caption="The handshake that issues today's session. Under the 2026-07-28 stateless core, this exchange disappears entirely."></div>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ PART 2 ============ -->
+  <section class="section" id="take-remote">
+    <div class="section-kicker">
+      <span class="klabel">Part 2 · covers official "Connect to remote MCP servers", DLAI "Creating and Deploying Remote Servers"</span>
+      <h2>Take Daybreak remote <span class="tag concept">6 min live</span></h2>
+    </div>
+    <p class="lede">The Python SDK makes this almost anticlimactic. The whole server you built in b2-b3 stays identical; you change how <code>mcp.run</code> is called. FastMCP serves Streamable HTTP on a mount path, and you host the process anywhere that runs Python - no vendor lock-in.</p>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>The one-line transport flip<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>In <code>project/server.py</code>, the last line is <code>mcp.run()</code> (stdio). Switch the transport and Daybreak becomes a web service - same tools, resources, and prompt.</p>
+        <div class="prompt-box">
+          <span class="label">project/server.py · the only change</span>
+if __name__ == "__main__":
+    # b2-b5 used stdio:
+    #     mcp.run()
+    # b6 serves it over HTTP on a single endpoint:
+    mcp.run(transport="streamable-http")   # default mount path: /mcp</div>
+        <p>Run it and FastMCP starts an HTTP server (default <code>http://127.0.0.1:8000/mcp</code>). Your b5 client can now dial the URL instead of launching a subprocess - and so can anything else that speaks the protocol.</p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>Local-to-remote checklist - deploy anywhere Python runs<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Deployment is provider-neutral - these are generic steps, not one host's buttons. The pattern is the same on any Python-friendly platform:</p>
+        <div class="steps">
+          <div class="step"><p>Bind to the platform's port: read <code>PORT</code> from the environment and pass host <code>0.0.0.0</code> so the process is reachable.</p></div>
+          <div class="step"><p>Pin dependencies: <code>mcp[cli]</code> and your DB driver in <code>requirements.txt</code> (or <code>pyproject.toml</code>). Ship <code>daybreak.db</code> or point at a hosted DB.</p></div>
+          <div class="step"><p>Set the start command to run the server module; expose the <code>/mcp</code> path publicly over HTTPS.</p></div>
+          <div class="step"><p>Add auth before you expose real data - b7 is entirely about this. For tonight, deploy the read-only demo.</p></div>
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>Stateless-friendly design now = painless migration later<span class="mini">3 min read</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>You cannot adopt the stateless core before 2026-07-28, but you can build so the switch is a non-event. Keep tool handlers pure: derive everything from the request arguments, not from server memory built up across earlier calls in the same session. Do not stash per-user state on the server between requests; if you need it, pass it in or store it in a shared backing store keyed by request data. Servers written this way barely notice when <code>Mcp-Session-Id</code> goes away.</p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ PART 3 ============ -->
+  <section class="section" id="mcp-connector">
+    <div class="section-kicker">
+      <span class="klabel">Part 3 · covers platform.claude.com MCP connector docs</span>
+      <h2>The MCP connector: serverless clients <span class="tag concept">6 min live</span></h2>
+    </div>
+    <p class="lede">Once Daybreak is remote, the Anthropic Messages API can call it directly - no client code, no b5 loop, no session management. You add an <code>mcp_servers</code> entry to a normal Messages request, list a toolset in <code>tools</code>, and Claude discovers and calls your tools for you. Three consumption modes now exist: a host app, your own client, or this connector.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Three consumption modes: a host app, your own client, and the Messages API MCP connector - all reaching one remote server">
+        <style>
+          .cmI { font: 700 13px Inter, sans-serif; fill: #1E242D; }
+          .cmT { font: 700 12px Inter, sans-serif; fill: #FFFFFF; }
+          .cmX { font: 400 11px Inter, sans-serif; fill: #5B6674; }
+          .cmWire { stroke: #A8622B; stroke-width: 2; fill: none; marker-end: url(#cmHd); }
+        </style>
+        <defs>
+          <marker id="cmHd" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+            <path d="M0,0 L9,4.5 L0,9 z" fill="#A8622B"/>
+          </marker>
+        </defs>
+        <text class="cmI" x="40" y="34">Three ways to consume the same remote Daybreak</text>
+        <rect x="40" y="54" width="230" height="52" rx="8" fill="#5C3312"/>
+        <text class="cmT" x="56" y="78">1 · Host app</text><text class="cmX" x="56" y="96" fill="#DDAF7E">Claude Desktop / Code</text>
+        <rect x="40" y="124" width="230" height="52" rx="8" fill="#A8622B"/>
+        <text class="cmT" x="56" y="148">2 · Your own client</text><text class="cmX" x="56" y="166" fill="#F8EFE4">the b5 chatbot loop</text>
+        <rect x="40" y="194" width="230" height="52" rx="8" fill="#C08048"/>
+        <text class="cmT" x="56" y="218">3 · MCP connector</text><text class="cmX" x="56" y="236" fill="#1E242D">Messages API, no client code</text>
+        <rect x="620" y="124" width="220" height="52" rx="8" fill="#0E7C6B"/>
+        <text class="cmT" x="636" y="148">Daybreak (remote)</text><text class="cmX" x="636" y="166" fill="#E3F4F0">Streamable HTTP · /mcp</text>
+        <path class="cmWire" d="M270,80 C440,80 470,148 616,150"/>
+        <path class="cmWire" d="M270,150 L616,150"/>
+        <path class="cmWire" d="M270,220 C440,220 470,152 616,150"/>
+        <rect x="40" y="266" width="14" height="14" rx="3" fill="#0E7C6B"/>
+        <text class="cmX" x="64" y="277" fill="#043029" style="font-weight:600;font-size:13px">The connector is remote-only and tool-only: no stdio, no resources or prompts - just tool calls.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - host app, your client, or the connector all reach one remote server</figcaption>
+    </figure>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>Connector walkthrough - a real request body<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Add the beta header, point <code>mcp_servers</code> at your deployed URL, and reference it with an <code>mcp_toolset</code>. Claude does the discovery and the tool call; you get the answer back in one response. This is the current connector shape (beta <code>mcp-client-2025-11-20</code>).</p>
+        <div class="prompt-box">
+          <span class="label">curl · Messages API with the MCP connector</span>
+curl https://api.anthropic.com/v1/messages \
+  -H "Content-Type: application/json" \
+  -H "X-API-Key: $ANTHROPIC_API_KEY" \
+  -H "anthropic-version: 2023-06-01" \
+  -H "anthropic-beta: mcp-client-2025-11-20" \
+  -d '{
+    "model": "claude-sonnet-5",
+    "max_tokens": 1000,
+    "messages": [{"role": "user", "content": "How did March look for Daybreak?"}],
+    "mcp_servers": [
+      {
+        "type": "url",
+        "url": "https://your-daybreak.example.com/mcp",
+        "name": "daybreak",
+        "authorization_token": "YOUR_OAUTH_TOKEN"
+      }
+    ],
+    "tools": [
+      {
+        "type": "mcp_toolset",
+        "mcp_server_name": "daybreak",
+        "default_config": { "enabled": false },
+        "configs": { "query_sales": { "enabled": true } }
+      }
+    ]
+  }'</div>
+        <p>The <code>default_config.enabled:false</code> + per-tool <code>configs</code> pattern is an <strong>allowlist</strong>: only <code>query_sales</code> is exposed to the model. Flip the logic for a denylist. Response comes back with <code>mcp_tool_use</code> and <code>mcp_tool_result</code> blocks, then Claude's written answer.</p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>Connector vs your own client - when each<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <table class="clean">
+          <thead><tr><th>Use the connector when...</th><th>Write your own client (b5) when...</th></tr></thead>
+          <tbody>
+            <tr><td>The server is remote and reachable by HTTPS URL</td><td>You need local stdio servers</td></tr>
+            <tr><td>You only need tool calls</td><td>You need resources, prompts, or elicitation</td></tr>
+            <tr><td>You want zero client code + built-in allowlists</td><td>You want full control of the loop and model choice (incl. Ollama)</td></tr>
+            <tr><td>Claude is your model</td><td>You are orchestrating multiple servers your own way</td></tr>
+          </tbody>
+        </table>
+        <div class="callout tip">
+          <strong>Remote-only, tool-only</strong>
+          The connector cannot reach a local stdio server, and today it supports only tool calls - not resources or prompts. Need those, or a non-Claude model? That is exactly what your b5 client is for.
+        </div>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ DEMO 1 ============ -->
+  <section class="section" id="demo-1">
+    <div class="section-kicker">
+      <span class="klabel">Demo 1 of 2</span>
+      <h2>Flip the transport <span class="tag demo">★ 8 min · one line, then curl it</span></h2>
+    </div>
+    <p class="lede">Turn the local Daybreak server into a web service and prove it with a raw HTTP request - no client, no model, just the protocol over HTTP.</p>
+
+    <div class="steps">
+      <div class="step"><p>Change the last line of <code>project/server.py</code> to <code>mcp.run(transport="streamable-http")</code> and run it. FastMCP serves <code>http://127.0.0.1:8000/mcp</code>.</p></div>
+      <div class="step"><p>POST an <code>initialize</code> to the endpoint (below). You get a JSON-RPC result back plus an <code>Mcp-Session-Id</code> header - the session id you will send on every later request.</p></div>
+      <div class="step"><p>Reuse that session id to POST <code>tools/call</code> for <code>query_sales</code> with <code>{"month":"2026-03"}</code> and read the $150.00 result straight off the wire.</p></div>
+      <div class="step"><p>Point your b5 client at the URL instead of a script path - same chatbot, now hitting a remote server.</p></div>
+    </div>
+
+    <div class="prompt-box">
+      <span class="label">curl · initialize the remote server</span>
+curl -i http://127.0.0.1:8000/mcp \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json, text/event-stream" \
+  -d '{"jsonrpc":"2.0","id":1,"method":"initialize",
+       "params":{"protocolVersion":"2025-11-25",
+                 "capabilities":{},
+                 "clientInfo":{"name":"curl","version":"1.0.0"}}}'
+
+# Look at the response headers for:  Mcp-Session-Id: ...
+# Send that header on every subsequent POST (tools/list, tools/call).</div>
+  </section>
+
+  <!-- ============ DEMO 2 ============ -->
+  <section class="section" id="demo-2">
+    <div class="section-kicker">
+      <span class="klabel">Demo 2 of 2</span>
+      <h2>Call it from the Messages API <span class="tag demo">★ 8 min · zero client code</span></h2>
+    </div>
+    <p class="lede">Deploy Daybreak to any public HTTPS host, then let Claude's API call it directly. No b5 loop, no session management - the connector handles discovery and the tool call for you.</p>
+
+    <div class="steps">
+      <div class="step"><p>Deploy the Streamable HTTP server to a public URL (the provider-neutral checklist in Part 2). Confirm <code>curl https://.../mcp</code> answers.</p></div>
+      <div class="step"><p>Send the connector request from Demo 1's Part-3 body, pointing <code>url</code> at your deployment.</p></div>
+      <div class="step"><p>Read the response: an <code>mcp_tool_use</code> block (Claude chose <code>query_sales</code>), an <code>mcp_tool_result</code> block (the $150.00 text), then Claude's written summary of the March dip - all with no client code you wrote.</p></div>
+    </div>
+
+    <div class="callout example">
+      <span class="ex-pill">Real world</span>
+      <p><strong>Serverless integration is why the connector matters.</strong> A team that just wants Claude to reach their internal metrics server does not want to build and host a chatbot. They deploy one MCP server, hand the URL and a scoped OAuth token to whoever calls the Messages API, and allowlist exactly the read-only tools. No client fleet to maintain - the model app is Claude itself.</p>
+    </div>
+  </section>
+
+  <!-- ============ HOMEWORK ============ -->
+  <section class="section" id="exercise">
+    <div class="section-kicker">
+      <span class="klabel">Homework</span>
+      <h2>Try it yourself - this week <span class="tag exercise">◐ 40-60 min total</span></h2>
+    </div>
+    <ul>
+      <li>Flip Daybreak to Streamable HTTP locally and drive it end to end with <code>curl</code> - initialize, capture the <code>Mcp-Session-Id</code>, then <code>tools/call</code> for March and confirm $150.00.</li>
+      <li>Deploy it to a free Python host of your choice. Get <code>curl https://.../mcp</code> answering an <code>initialize</code> over HTTPS.</li>
+      <li>Hit your deployment from the Messages API connector with a <code>query_sales</code> allowlist. Confirm the March answer comes back with no client code.</li>
+      <li>Refactor one tool to be fully stateless (everything from arguments, nothing from server memory) and write one sentence on why that eases the 2026-07-28 migration.</li>
+    </ul>
+  </section>
+
+  <!-- ============ SOURCES ============ -->
+  <section class="section" id="official">
+    <div class="section-kicker">
+      <span class="klabel">Source material</span>
+      <h2>Official sources covered</h2>
+    </div>
+    <p class="lede">Remote transport is where the courses thin out and the connector is Anthropic-only; this page teaches Streamable HTTP against the current spec, decodes the stateless core ahead of finalization, and wires the connector to your own server. This page covers:</p>
+    <div class="covered">
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">Anthropic Academy Advanced - "Transports" (StreamableHTTP + State)</span><span class="note">Single endpoint, SSE upgrade, session state, in depth</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">modelcontextprotocol.io - "Connect to remote MCP servers"</span><span class="note">Transport flip, mount path, remote consumption modes</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">platform.claude.com - MCP connector docs</span><span class="note">mcp_servers + mcp_toolset, allowlists, OAuth Bearer, remote-only</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">DeepLearning.AI - "Creating and Deploying Remote Servers"</span><span class="note">Provider-neutral deploy path, going from local to hosted</span></div>
+    </div>
+  </section>
+
+  <!-- ============ QUIZ ============ -->
+  <section class="section" id="quiz">
+    <div class="section-kicker">
+      <span class="klabel">Check yourself</span>
+      <h2>Three questions before you go 🎯 <span class="tag exercise">◐ 90 seconds</span></h2>
+    </div>
+    <div class="quiz-q" data-answer="2">
+      <p class="qtext">1 · In Streamable HTTP, how does the server stream a long-running result?</p>
+      <button class="qopt" type="button">A · It opens a second SSE endpoint the client subscribes to</button>
+      <button class="qopt" type="button">B · It sends a WebSocket upgrade</button>
+      <button class="qopt" type="button">C · It upgrades that one POST response to an SSE stream and sends events before closing</button>
+      <p class="qwhy">One endpoint, one POST per message. The server may upgrade that single request's response to text/event-stream when the work streams. The old two-endpoint HTTP+SSE transport is deprecated.</p>
+    </div>
+    <div class="quiz-q" data-answer="0">
+      <p class="qtext">2 · How is a session tracked today, and what changes on 2026-07-28?</p>
+      <button class="qopt" type="button">A · Today via the Mcp-Session-Id header; the stateless core removes it and puts capabilities in _meta</button>
+      <button class="qopt" type="button">B · Today via a cookie; nothing changes</button>
+      <button class="qopt" type="button">C · There has never been session state in Streamable HTTP</button>
+      <p class="qwhy">On spec 2025-11-25, initialize hands out an Mcp-Session-Id carried on every later request. The 2026-07-28 stateless core removes the handshake and that header; capabilities travel in _meta, with Mcp-Method/Mcp-Name routing headers.</p>
+    </div>
+    <div class="quiz-q" data-answer="1">
+      <p class="qtext">3 · You want Claude's API to call a local stdio server with no client code. Can the MCP connector do it?</p>
+      <button class="qopt" type="button">A · Yes, the connector supports stdio and HTTP equally</button>
+      <button class="qopt" type="button">B · No - the connector is remote-only (HTTPS URL) and tool-only; use your own client for stdio</button>
+      <button class="qopt" type="button">C · Only if you enable SSE mode on the server</button>
+      <p class="qwhy">The connector reaches remote servers by HTTPS URL and supports tool calls only - no stdio, no resources/prompts. A local server or those primitives need the client you built in b5.</p>
+    </div>
+    <p class="quiz-score"></p>
+  </section>
+
+  <!-- ============ CHEAT SHEET ============ -->
+  <section class="cheat" id="cheatsheet">
+    <h3>Builder session 6 cheat sheet <span>· pin this</span></h3>
+    <div class="grid-2">
+      <div class="cheat-item"><b>Streamable HTTP</b><span>One endpoint. Client POSTs JSON-RPC; server returns JSON or upgrades that request to an SSE stream.</span></div>
+      <div class="cheat-item"><b>Sessions today</b><span>initialize issues Mcp-Session-Id; sent on every later POST. Accept header signals JSON-or-stream.</span></div>
+      <div class="cheat-item"><b>2026-07-28 stateless core</b><span>Handshake + Mcp-Session-Id gone; capabilities in _meta; Mcp-Method/Mcp-Name routing headers; any node serves any request.</span></div>
+      <div class="cheat-item"><b>The one-line flip</b><span>mcp.run(transport="streamable-http"). Same tools/resources/prompt; now a web service at /mcp.</span></div>
+      <div class="cheat-item"><b>Deploy anywhere</b><span>Bind 0.0.0.0 + $PORT, pin deps, expose /mcp over HTTPS, add auth (b7). Provider-neutral.</span></div>
+      <div class="cheat-item"><b>Three consumption modes</b><span>Host app · your own client (b5) · MCP connector (Messages API, no client code).</span></div>
+      <div class="cheat-item"><b>Connector shape</b><span>Beta mcp-client-2025-11-20 + mcp_servers[url] + tools[mcp_toolset]. Allowlist via default_config/configs.</span></div>
+      <div class="cheat-item"><b>Connector limits</b><span>Remote-only (HTTPS URL), tool-only. No stdio, no resources/prompts. OAuth Bearer for auth.</span></div>
+    </div>
+  </section>
+
+  <footer class="pagefoot">
+    <span>Builder session 6 of 8 · learn-mcp-with-phoebe · by Phoebe Fu &nbsp;·&nbsp; 📚 <a href="https://phoebefu6.github.io/learn-with-phoebe/">Learn with Phoebe ↗</a></span>
+    <span><a href="b5-build-a-client.html">← Prev: Build a client</a> &nbsp;·&nbsp; <a href="b7-auth-security.html">Next: Auth, security, elicitation →</a></span>
+  </footer>
+
+</main>
+
+<script src="../assets/mcp-live.js?v=1"></script>
+<script src="../assets/app.js?v=1"></script>
+</body>
+</html>

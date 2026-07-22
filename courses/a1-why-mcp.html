@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leader session 1 · Why MCP exists - learn mcp with phoebe</title>
+<link rel="stylesheet" href="../assets/style.css?v=1">
+</head>
+<body>
+
+<div class="toolbar">
+  <div class="wrap">
+    <span class="crumb"><a href="../index.html">learn-mcp-with-phoebe</a> / Leader session 1 of 6</span>
+    <button class="btn" id="toggle-all" type="button">Expand all</button>
+    <button class="btn primary" id="zoom-toggle" type="button">Projector zoom: off</button>
+  </div>
+</div>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="eyebrow">Learn MCP with Phoebe · Leader track · Session 1 of 6</div>
+    <h1>Why <span class="accent">MCP</span> exists</h1>
+    <p class="sub">Model Context Protocol is the reason "connect the AI to our systems" is turning from a six-month project into a line of configuration. This session explains the integration problem you are already paying for, the standards move that solved it, and why every major AI vendor signed on within a year. No code, no jargon walls - just the picture a decision-maker needs, plus the questions to take back to your teams.</p>
+    <div class="chip-row">
+      <span class="chip level">🟢 Leader track</span>
+      <span class="chip audience">C-level · managers · curious minds</span>
+      <span class="chip time">No code · 45 min</span>
+      <span class="chip time">Start here</span>
+    </div>
+    <div class="agenda">
+      <span class="a1" style="flex:1">0-3 · Welcome</span>
+      <span class="a2" style="flex:4">3-20 · The tax + the USB-C move</span>
+      <span class="a3" style="flex:4">20-40 · Your org + exercises</span>
+      <span class="a4" style="flex:1">40-45 · Q&amp;A</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ============ INTRO ============ -->
+  <section class="section" id="intro">
+    <div class="section-kicker">
+      <span class="klabel">Part 0</span>
+      <h2>How this track works</h2>
+    </div>
+    <p class="lede">Six sessions, forty-five minutes each, zero code. The leader track answers the questions that matter at your altitude: why MCP exists (today), what the architecture means in plain English (a2), how to play the ecosystem (a3), what to demand on security (a4), how to roll it out in your org (a5), and where the roadmap is heading (a6). Where an example helps, we borrow <strong>Daybreak</strong>, a fictional coffee-subscription brand - imagine your data team built a Daybreak-style MCP server over your own sales data.</p>
+    <div class="legend">
+      <span class="pill solid">Live - presented in session</span>
+      <span class="pill light">Self-study - read after class</span>
+      <span class="pill inkpill">Official sources covered</span>
+    </div>
+    <div class="callout win">
+      <strong>★ What you walk out with today</strong>
+      A one-paragraph explanation of MCP you could give your CEO in an elevator, the N x M arithmetic that explains why your AI pilots keep stalling at integration, the adoption timeline that proves this standard already won, and a worksheet to count what the integration tax is costing your own organization.
+    </div>
+  </section>
+
+  <!-- ============ PART 1: THE INTEGRATION TAX ============ -->
+  <section class="section" id="integration-tax">
+    <div class="section-kicker">
+      <span class="klabel">Part 1 · covers official "What is MCP", DLAI "Why MCP"</span>
+      <h2>The integration tax you are already paying <span class="tag concept">8 min live</span></h2>
+    </div>
+    <p class="lede">Here is the budget problem hiding inside every AI initiative. Each AI application that should reach a business system needs a connector - and before MCP, every connector was custom. Three AI apps times three systems is nine builds. Ten apps times twenty systems is two hundred. Each one has its own auth, its own error handling, its own breakage schedule, and its own maintenance line in somebody's budget. That multiplication - M apps x N systems - is the integration tax, and it grows faster than any headcount plan.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 340" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Before MCP: every AI app times every system needs its own connector. After MCP: one standard in the middle, apps and systems each implement it once.">
+        <style>
+          .txA { font: 700 14px Inter, sans-serif; fill: #FFFFFF; }
+          .txAi { font: 700 13px Inter, sans-serif; fill: #1E242D; }
+          .txAx { font: 400 12px Inter, sans-serif; fill: #5B6674; }
+          .txAn { font: 600 13px Inter, sans-serif; fill: #043029; }
+          .txAline { stroke: #C3CBD6; stroke-width: 1.5; fill: none; }
+          .txAmcp { stroke: #A8622B; stroke-width: 2.5; fill: none; }
+        </style>
+        <text class="txAi" x="40" y="34">BEFORE - every pairing is a project</text>
+        <rect x="40" y="50" width="150" height="30" rx="6" fill="#5C3312"/><text class="txA" x="54" y="70">Chat assistant</text>
+        <rect x="40" y="90" width="150" height="30" rx="6" fill="#5C3312"/><text class="txA" x="54" y="110">Coding agent</text>
+        <rect x="40" y="130" width="150" height="30" rx="6" fill="#5C3312"/><text class="txA" x="54" y="150">Support bot</text>
+        <rect x="300" y="50" width="130" height="30" rx="6" fill="#C08048"/><text class="txA" x="314" y="70">CRM</text>
+        <rect x="300" y="90" width="130" height="30" rx="6" fill="#C08048"/><text class="txA" x="314" y="110">Warehouse</text>
+        <rect x="300" y="130" width="130" height="30" rx="6" fill="#C08048"/><text class="txA" x="314" y="150">Ticketing</text>
+        <path class="txAline" d="M190,65 L300,65"/><path class="txAline" d="M190,65 L300,105"/><path class="txAline" d="M190,65 L300,145"/>
+        <path class="txAline" d="M190,105 L300,65"/><path class="txAline" d="M190,105 L300,105"/><path class="txAline" d="M190,105 L300,145"/>
+        <path class="txAline" d="M190,145 L300,65"/><path class="txAline" d="M190,145 L300,105"/><path class="txAline" d="M190,145 L300,145"/>
+        <text class="txAx" x="40" y="198">3 apps x 3 systems = 9 builds. Each one owned, patched, and</text>
+        <text class="txAx" x="40" y="216">re-broken every time either side ships an update.</text>
+        <text class="txAi" x="480" y="34">AFTER - one plug in the middle</text>
+        <rect x="470" y="50" width="130" height="30" rx="6" fill="#5C3312"/><text class="txA" x="484" y="70">Assistant</text>
+        <rect x="470" y="90" width="130" height="30" rx="6" fill="#5C3312"/><text class="txA" x="484" y="110">Coding agent</text>
+        <rect x="470" y="130" width="130" height="30" rx="6" fill="#5C3312"/><text class="txA" x="484" y="150">Support bot</text>
+        <rect x="630" y="86" width="70" height="38" rx="8" fill="#A8622B"/><text class="txA" x="643" y="110">MCP</text>
+        <rect x="730" y="50" width="120" height="30" rx="6" fill="#C08048"/><text class="txA" x="744" y="70">CRM</text>
+        <rect x="730" y="90" width="120" height="30" rx="6" fill="#C08048"/><text class="txA" x="744" y="110">Warehouse</text>
+        <rect x="730" y="130" width="120" height="30" rx="6" fill="#C08048"/><text class="txA" x="744" y="150">Ticketing</text>
+        <path class="txAmcp" d="M600,65 L630,98"/><path class="txAmcp" d="M600,105 L630,105"/><path class="txAmcp" d="M600,145 L630,112"/>
+        <path class="txAmcp" d="M700,98 L730,65"/><path class="txAmcp" d="M700,105 L730,105"/><path class="txAmcp" d="M700,112 L730,145"/>
+        <text class="txAx" x="470" y="198">3 + 3 = 6 implementations of ONE standard.</text>
+        <text class="txAx" x="470" y="216">Connect a new system once; every app can reach it.</text>
+        <rect x="40" y="252" width="14" height="14" rx="3" fill="#0E7C6B"/>
+        <text class="txAn" x="64" y="264">The tax is multiplicative, the fix is additive. At 10 apps x 20 systems that is 200 builds vs 30.</text>
+        <rect x="40" y="292" width="14" height="14" rx="3" fill="#0E7C6B"/>
+        <text class="txAn" x="64" y="304">MCP = Model Context Protocol: one open standard between AI apps and your tools and data.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the integration grid MCP collapses into a hub</figcaption>
+    </figure>
+
+    <details class="card" open>
+      <summary><span class="mode live">Live</span>Why every AI pilot stalls at integration<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>The demo is always easy: the model answers beautifully about whatever you paste into the chat window. The pilot dies the day someone asks it to answer from <em>your</em> systems - the CRM, the warehouse, the ticket queue. That is when a two-week pilot becomes a two-quarter integration project, because every connection had to be built by hand, approved by security, and maintained forever.</p>
+        <ul>
+          <li><strong>The demo-to-production gap is an integration gap</strong>, not a model gap. The model was never the blocker.</li>
+          <li><strong>Every custom connector is a permanent liability:</strong> its own credentials, its own failure modes, its own owner who eventually changes teams.</li>
+          <li><strong>Vendors could not save you:</strong> before MCP, an AI app could only reach the systems its vendor chose to integrate, on the vendor's release schedule.</li>
+        </ul>
+        <div class="callout example">
+          <span class="ex-pill">Real world</span>
+          <p><strong>The pilot that stalled at the warehouse door.</strong> A retail group ran a successful assistant pilot on uploaded spreadsheets. Moving it to live sales data meant a bespoke integration between the AI vendor's plugin format and their warehouse - quoted at four months. By the time it shipped, the vendor had changed plugin formats. With MCP the same connection is one server their data team owns, and it works with every MCP-speaking app they adopt afterwards - including ones that did not exist when the server was written.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>The connector team cost<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Put a price on the grid. A bespoke connector typically costs weeks of engineering to build and a steady fraction of an engineer to keep alive - auth rotations, API changes on either side, monitoring, incident response. Multiply by the number of pairs and you get the quiet headcount sink many organizations call "the platform team's plugin backlog".</p>
+        <ul>
+          <li><strong>Build cost:</strong> each pair needs discovery, auth design, error handling, and security review - none of it reusable for the next pair.</li>
+          <li><strong>Carry cost:</strong> connectors break when either side updates. M x N connectors means M x N independent breakage schedules.</li>
+          <li><strong>Opportunity cost:</strong> every quarter spent on glue code is a quarter not spent on the use cases the glue was for.</li>
+        </ul>
+        <p>MCP does not make integration free - someone still writes and runs each server. It makes integration <strong>additive instead of multiplicative</strong>, and moves the spend from per-pair glue to per-system capability your whole AI portfolio shares.</p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ PART 2: THE USB-C MOVE ============ -->
+  <section class="section" id="usb-c-move">
+    <div class="section-kicker">
+      <span class="klabel">Part 2 · covers official "What is MCP" governance + adoption</span>
+      <h2>The USB-C move <span class="tag concept">8 min live</span></h2>
+    </div>
+    <p class="lede">Industries solve multiplication problems the same way every time: standardize the plug, not the devices. USB-C did it for cables. HTTP did it for the web - any browser, any website, one protocol. MCP is the same move for AI: any AI app, any tool or data source, one protocol in the middle. Anthropic shipped it as an open standard in November 2024, and the rest of the industry did something rare - they adopted a competitor's standard, because the alternative was rebuilding the same grid separately.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="MCP adoption timeline from November 2024 to 2026: Anthropic ships, OpenAI and Google DeepMind adopt, Microsoft integrates, official registry launches, governance moves to the Linux Foundation.">
+        <style>
+          .tlB { font: 700 13px Inter, sans-serif; fill: #1E242D; }
+          .tlBd { font: 700 12px Inter, sans-serif; fill: #A8622B; }
+          .tlBx { font: 400 12px Inter, sans-serif; fill: #5B6674; }
+          .tlBn { font: 600 13px Inter, sans-serif; fill: #043029; }
+          .tlBaxis { stroke: #C3CBD6; stroke-width: 2; fill: none; marker-end: url(#tlBhd); }
+        </style>
+        <defs>
+          <marker id="tlBhd" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+            <path d="M0,0 L9,4.5 L0,9 z" fill="#C3CBD6"/>
+          </marker>
+        </defs>
+        <path class="tlBaxis" d="M50,120 L845,120"/>
+        <circle cx="90" cy="120" r="8" fill="#5C3312"/>
+        <text class="tlBd" x="52" y="82">Nov 2024</text>
+        <text class="tlB" x="52" y="100">Anthropic ships</text>
+        <text class="tlBx" x="52" y="150">MCP released as an</text>
+        <text class="tlBx" x="52" y="166">open standard</text>
+        <circle cx="240" cy="120" r="8" fill="#A8622B"/>
+        <text class="tlBd" x="205" y="82">Mar 2025</text>
+        <text class="tlB" x="205" y="100">OpenAI adopts</text>
+        <text class="tlBx" x="205" y="150">the rival signs on;</text>
+        <text class="tlBx" x="205" y="166">old transport retired</text>
+        <circle cx="390" cy="120" r="8" fill="#A8622B"/>
+        <text class="tlBd" x="355" y="82">Apr 2025</text>
+        <text class="tlB" x="355" y="100">Google DeepMind</text>
+        <text class="tlBx" x="355" y="150">Gemini joins;</text>
+        <text class="tlBx" x="355" y="166">Microsoft follows</text>
+        <circle cx="540" cy="120" r="8" fill="#C08048"/>
+        <text class="tlBd" x="505" y="82">Sept 2025</text>
+        <text class="tlB" x="505" y="100">Official registry</text>
+        <text class="tlBx" x="505" y="150">a public catalog of</text>
+        <text class="tlBx" x="505" y="166">MCP servers opens</text>
+        <circle cx="690" cy="120" r="8" fill="#5C3312"/>
+        <text class="tlBd" x="655" y="82">Dec 2025</text>
+        <text class="tlB" x="655" y="100">Linux Foundation</text>
+        <text class="tlBx" x="655" y="150">donated to AAIF;</text>
+        <text class="tlBx" x="655" y="166">OpenAI + Block co-found</text>
+        <circle cx="815" cy="120" r="8" fill="#DDAF7E"/>
+        <text class="tlBd" x="795" y="82">2026</text>
+        <text class="tlB" x="782" y="100">Table stakes</text>
+        <text class="tlBx" x="770" y="150">~97M monthly</text>
+        <text class="tlBx" x="770" y="166">SDK downloads</text>
+        <rect x="50" y="210" width="14" height="14" rx="3" fill="#0E7C6B"/>
+        <text class="tlBn" x="74" y="222">Thirteen months from one vendor's release to neutral foundation governance - fast for any standard.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the adoption timeline, November 2024 to 2026</figcaption>
+    </figure>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>Runtime discovery - the part USB-C analogies miss<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>The standard plug is only half the story. The sharper half is <strong>runtime discovery</strong>: when an MCP-speaking app connects to a server, it asks "what can you do?" and the server describes its own capabilities on the spot. The app was never programmed to know about your CRM - it learns at connection time.</p>
+        <ul>
+          <li><strong>New capabilities without vendor releases:</strong> your team ships a new server, and every AI app in the building can use it the same day. No waiting on Anthropic, OpenAI, or Microsoft to "support" your system.</li>
+          <li><strong>Precedent - the browser:</strong> websites do not ship as browser updates. HTTP plus discovery is why the web scaled; MCP applies the same logic to AI capabilities.</li>
+          <li><strong>Precedent - USB-C:</strong> the port negotiates what the device can do (charge, display, data) when you plug in. MCP servers negotiate the same way.</li>
+        </ul>
+        <p>For a leader, this is the headline: <strong>connecting AI to a system becomes configuration, not a development project.</strong> That is what collapses the timeline from quarters to days.</p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>Who owns it now - governance you can defend in a board pack<span class="mini">3 min read</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Standards bets fail two ways: the standard loses, or the owner weaponizes it. MCP has answered both. On adoption: OpenAI (March 2025), Google DeepMind (April 2025), Microsoft across Copilot and VS Code, plus AI-native tools like Cursor. On ownership: in December 2025 Anthropic donated MCP to the <strong>Agentic AI Foundation</strong> under the Linux Foundation, with OpenAI and Block as co-founders.</p>
+        <ul>
+          <li><strong>Neutral governance:</strong> changes flow through a public proposal process, not one vendor's roadmap. No single company can move the standard against the ecosystem.</li>
+          <li><strong>Scale signals:</strong> roughly 97 million monthly SDK downloads and about 10,000 active servers, with an official registry running since September 2025.</li>
+          <li><strong>What this means for risk:</strong> adopting MCP is not a bet on Anthropic. It is a bet on the same class of asset as HTTP or Kubernetes - open, foundation-governed, multi-vendor.</li>
+        </ul>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ PART 3: YOUR ORG ============ -->
+  <section class="section" id="your-org">
+    <div class="section-kicker">
+      <span class="klabel">Part 3 · the leadership takeaway</span>
+      <h2>What this means for your org <span class="tag concept">6 min live</span></h2>
+    </div>
+    <p class="lede">If the plug is standard, the money moves. Integration budget shifts away from glue code - the per-pair connectors nobody loves - and toward two things worth funding deliberately: <strong>capability</strong> (which systems should AI reach, exposed as well-designed servers) and <strong>governance</strong> (who may connect what to what, with which permissions). The organizations getting value from MCP in 2026 are not the ones with the most servers; they are the ones who made the build-once, govern-always trade early.</p>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>Three signals MCP matters to you now<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Not every organization needs to move this quarter. These three signals say you do:</p>
+        <ul>
+          <li><strong>1 · You run more than one AI app.</strong> Claude in one team, Copilot in another, Cursor in engineering - the moment M is greater than one, the multiplication starts. One MCP server per system serves all of them.</li>
+          <li><strong>2 · Your AI pilots keep asking for the same data.</strong> If three pilots each requested warehouse access separately, you are paying the tax three times. That is one Daybreak-style server your data team should own.</li>
+          <li><strong>3 · People are already connecting things without you.</strong> MCP servers are easy to adopt - which means enthusiastic employees may be wiring AI apps to systems today, with no inventory and no policy. The governance conversation is cheaper to have before the sprawl (a4 and a5 give you the playbook).</li>
+        </ul>
+        <p>Questions to ask your teams this week: <em>Which AI apps are in use, officially and unofficially? Which systems have they been connected to? Who approved those connections?</em> The answers are the raw material for the exercise below.</p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ DEMO 1 ============ -->
+  <section class="section" id="demo-1">
+    <div class="section-kicker">
+      <span class="klabel">Demo 1 of 2</span>
+      <h2>Count your own N x M <span class="tag demo">★ 8 min · pen and paper</span></h2>
+    </div>
+    <p class="lede">The multiplication is abstract until it is your multiplication. Take five minutes and put real names in the grid - this number is the business case for everything else in this course.</p>
+
+    <div class="steps">
+      <div class="step"><p><strong>List the AI apps</strong> in use in your organization - official and tolerated. Claude, Copilot, Cursor, ChatGPT, internal chatbots. That is your M.</p></div>
+      <div class="step"><p><strong>List the systems AI should reach</strong> to be genuinely useful: CRM, warehouse, ticketing, docs, HR, finance. Be honest, not exhaustive - the top eight will do. That is your N.</p></div>
+      <div class="step"><p><strong>Multiply.</strong> M x N is the number of custom connectors the old world required. Write it down next to M + N, the MCP world's number.</p></div>
+      <div class="step"><p><strong>Price the gap.</strong> Estimate each custom connector at several engineer-weeks to build plus ongoing upkeep. The difference between M x N and M + N, in engineer-weeks, is your integration tax - the number to open your next platform-budget conversation with.</p></div>
+    </div>
+
+    <div class="callout tip">
+      <strong>Keep the worksheet</strong>
+      You will reuse this list in a3 (which servers to buy vs build) and a5 (rollout sequencing). The three columns worth keeping: system name, business value if AI could reach it, and who owns the data.
+    </div>
+  </section>
+
+  <!-- ============ DEMO 2 ============ -->
+  <section class="section" id="demo-2">
+    <div class="section-kicker">
+      <span class="klabel">Demo 2 of 2</span>
+      <h2>The elevator brief <span class="tag demo">★ 6 min · write it in your own words</span></h2>
+    </div>
+    <p class="lede">You will be asked "what is this MCP thing?" by someone senior, probably soon, probably in a hallway. Draft your three-sentence answer now: one sentence on what it is, one on why it won, one on what you propose to do about it. Then compare with the model answer below - but yours, in your voice, is the one that will land.</p>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>A model answer to steal from<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p><strong>Sentence 1 - what it is:</strong> "MCP is an open standard that lets any AI app connect to any of our systems through one common plug, instead of a custom integration for every pairing."</p>
+        <p><strong>Sentence 2 - why it won:</strong> "Anthropic released it in late 2024, OpenAI, Google, and Microsoft all adopted it within months, and it now sits under the Linux Foundation - so it is neutral infrastructure, not a vendor bet."</p>
+        <p><strong>Sentence 3 - what we do:</strong> "I want us to inventory what is already connected, pick two systems where AI access has clear value, and stand up governed connections there first."</p>
+        <p>Notice what the answer avoids: protocol mechanics, primitive names, JSON. The architecture vocabulary arrives in a2 - and only the parts a leader actually needs.</p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ HOMEWORK ============ -->
+  <section class="section" id="exercise">
+    <div class="section-kicker">
+      <span class="klabel">Homework</span>
+      <h2>Before session 2 <span class="tag exercise">◐ 20-30 min total</span></h2>
+    </div>
+    <ul>
+      <li>Finish the N x M worksheet from Demo 1 with real numbers - ask IT for the sanctioned AI app list and add the unsanctioned ones you know about.</li>
+      <li>Deliver your elevator brief to one real person and note which sentence raised a question - that question is what a2 through a4 will answer.</li>
+      <li>Bring one concrete integration pain to session 2: a pilot that stalled, a connector that keeps breaking, or a data request that took a quarter. We will map it onto the MCP architecture together.</li>
+      <li>Optional: skim the "What is MCP" page on modelcontextprotocol.io - notice how much of it you now already recognize.</li>
+    </ul>
+  </section>
+
+  <!-- ============ SOURCES ============ -->
+  <section class="section" id="official">
+    <div class="section-kicker">
+      <span class="klabel">Source material</span>
+      <h2>Official sources covered</h2>
+    </div>
+    <p class="lede">The leader track distills the official MCP documentation and the major MCP courses into decision-maker language. Certificates, videos, and hands-on labs stay on the official sites; this page covers:</p>
+    <div class="covered">
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">modelcontextprotocol.io - "What is MCP"</span><span class="note">Parts 1-2 · the problem, the standard, governance and adoption</span></div>
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">DeepLearning.AI "MCP: Build Rich-Context AI Apps" - "Why MCP"</span><span class="note">Part 1 · N x M framing, retold in budget terms</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">Hugging Face MCP course - Unit 1 introduction</span><span class="note">Motivation and analogies covered; technical depth stays in the builder track</span></div>
+    </div>
+  </section>
+
+  <!-- ============ QUIZ ============ -->
+  <section class="section" id="quiz">
+    <div class="section-kicker">
+      <span class="klabel">Check yourself</span>
+      <h2>Three questions before you go 🎯 <span class="tag exercise">◐ 90 seconds</span></h2>
+    </div>
+    <div class="quiz-q" data-answer="1">
+      <p class="qtext">1 · Your org runs 5 AI apps and wants them reaching 12 systems. What does MCP change about the integration count?</p>
+      <button class="qopt" type="button">A · Nothing - each pairing still needs its own connector, MCP just documents them</button>
+      <button class="qopt" type="button">B · 60 custom connectors become 17 implementations of one standard - 5 + 12 instead of 5 x 12</button>
+      <button class="qopt" type="button">C · MCP eliminates integration work entirely - the model connects itself</button>
+      <p class="qwhy">The tax is multiplicative (M x N), the fix is additive (M + N). Each app implements MCP once, each system gets one server once, and every combination works. Someone still builds and runs each server - the work does not vanish, it stops multiplying.</p>
+    </div>
+    <div class="quiz-q" data-answer="2">
+      <p class="qtext">2 · Who governs MCP in 2026?</p>
+      <button class="qopt" type="button">A · Anthropic - it is their protocol and they control the roadmap</button>
+      <button class="qopt" type="button">B · A private consortium of paying AI vendors</button>
+      <button class="qopt" type="button">C · The Agentic AI Foundation under the Linux Foundation, with OpenAI and Block as co-founders</button>
+      <p class="qwhy">Anthropic created MCP (Nov 2024) but donated it in December 2025. Neutral, foundation-based governance with rivals as co-founders is exactly what makes MCP defensible as an infrastructure bet rather than a vendor bet.</p>
+    </div>
+    <div class="quiz-q" data-answer="0">
+      <p class="qtext">3 · What does runtime discovery buy your organization?</p>
+      <button class="qopt" type="button">A · New capabilities reach every AI app the day your team ships a server - no vendor release needed</button>
+      <button class="qopt" type="button">B · The AI model discovers security vulnerabilities at run time</button>
+      <button class="qopt" type="button">C · Faster model responses, because discovery caches the answers</button>
+      <p class="qwhy">MCP apps ask a server "what can you do?" when they connect. Your team ships a new server and every MCP-speaking app can use it immediately - connecting AI to a system becomes configuration, not a development project waiting on a vendor.</p>
+    </div>
+    <p class="quiz-score"></p>
+  </section>
+
+  <!-- ============ CHEAT SHEET ============ -->
+  <section class="cheat" id="cheatsheet">
+    <h3>Leader session 1 cheat sheet <span>· pin this</span></h3>
+    <div class="grid-2">
+      <div class="cheat-item"><b>MCP in one line</b><span>One open standard between AI apps and your tools and data - implement once, everything interoperates.</span></div>
+      <div class="cheat-item"><b>The integration tax</b><span>M apps x N systems = M x N custom connectors. MCP makes it M + N. The tax is multiplicative; the fix is additive.</span></div>
+      <div class="cheat-item"><b>Why pilots stall</b><span>The demo-to-production gap is an integration gap, not a model gap. MCP is what closes it.</span></div>
+      <div class="cheat-item"><b>The USB-C move</b><span>Standardize the plug, not the devices - the same play HTTP made for the web and USB-C made for hardware.</span></div>
+      <div class="cheat-item"><b>Runtime discovery</b><span>Apps learn what a server offers at connection time. New capability = config change, not a vendor release.</span></div>
+      <div class="cheat-item"><b>Governance</b><span>Donated Dec 2025 to the Agentic AI Foundation (Linux Foundation); OpenAI + Block co-founders. Not a vendor bet.</span></div>
+      <div class="cheat-item"><b>Adoption proof</b><span>OpenAI Mar 2025, Google Apr 2025, Microsoft Copilot/VS Code, Cursor · ~97M monthly SDK downloads · ~10k servers.</span></div>
+      <div class="cheat-item"><b>Where the money goes</b><span>Budget shifts from glue code to capability (good servers) and governance (who connects what). a4-a5 cover how.</span></div>
+    </div>
+  </section>
+
+  <footer class="pagefoot">
+    <span>Leader session 1 of 6 · learn-mcp-with-phoebe · by Phoebe Fu &nbsp;·&nbsp; 📚 <a href="https://phoebefu6.github.io/learn-with-phoebe/">Learn with Phoebe ↗</a></span>
+    <span><a href="../index.html">← All sessions</a> &nbsp;·&nbsp; <a href="a2-architecture-plain.html">Next: The architecture in plain English →</a></span>
+  </footer>
+
+</main>
+
+<script src="../assets/app.js?v=1"></script>
+</body>
+</html>

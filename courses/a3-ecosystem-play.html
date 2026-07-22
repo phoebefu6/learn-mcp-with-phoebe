@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leader session 3 · The ecosystem play - learn mcp with phoebe</title>
+<link rel="stylesheet" href="../assets/style.css?v=1">
+</head>
+<body>
+
+<div class="toolbar">
+  <div class="wrap">
+    <span class="crumb"><a href="../index.html">learn-mcp-with-phoebe</a> / Leader session 3 of 6</span>
+    <button class="btn" id="toggle-all" type="button">Expand all</button>
+    <button class="btn primary" id="zoom-toggle" type="button">Projector zoom: off</button>
+  </div>
+</div>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="eyebrow">Learn MCP with Phoebe · Leader track · Session 3 of 6</div>
+    <h1>The ecosystem <span class="accent">play</span></h1>
+    <p class="sub">A standard is only worth adopting if it won, and the numbers say MCP did: roughly 97 million monthly SDK downloads, around 10,000 servers, an official registry since September 2025, and every major AI vendor on board. This session turns that into strategy - how to read the registry like an app store, how to judge a listed server before you trust it, and the build-vs-buy-vs-wait call for your own organization. No code - just the market picture, plus questions to take back to your teams.</p>
+    <div class="chip-row">
+      <span class="chip level">🟡 Leader track · Medium</span>
+      <span class="chip audience">C-level · managers · curious minds</span>
+      <span class="chip time">No code · 45 min</span>
+      <span class="chip time">Builds on a1-a2</span>
+    </div>
+    <div class="agenda">
+      <span class="a1" style="flex:1">0-3 · Recap</span>
+      <span class="a2" style="flex:4">3-22 · Numbers + the registry</span>
+      <span class="a3" style="flex:4">22-40 · Build/buy/wait + exercises</span>
+      <span class="a4" style="flex:1">40-45 · Q&amp;A</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ============ INTRO ============ -->
+  <section class="section" id="intro">
+    <div class="section-kicker">
+      <span class="klabel">Part 0</span>
+      <h2>Where we are</h2>
+    </div>
+    <p class="lede">You now know why MCP exists (a1) and how a host, client, and server fit together (a2). This session zooms out to the market. A protocol lives or dies by its ecosystem: the vendors who speak it, the servers you can pick up instead of building, and the place you go to find them. We keep using <strong>Daybreak</strong>, the fictional coffee-subscription brand, to make the build-vs-buy call concrete. The single idea to hold onto: MCP already won the standards fight, so your decisions are no longer "should we?" - they are "which servers, from where, and in what order?"</p>
+    <div class="legend">
+      <span class="pill solid">Live - presented in session</span>
+      <span class="pill light">Self-study - read after class</span>
+      <span class="pill inkpill">Official sources covered</span>
+    </div>
+    <div class="callout win">
+      <strong>★ What you walk out with today</strong>
+      The four numbers that prove MCP is table stakes, a working mental model of the registry as your app store, a five-point method for judging any listed server before you trust it, the build-vs-buy-vs-wait matrix for your own systems, and a prioritized shortlist of the first three servers your organization should stand up.
+    </div>
+  </section>
+
+  <!-- ============ PART 1: THE NUMBERS ============ -->
+  <section class="section" id="the-numbers">
+    <div class="section-kicker">
+      <span class="klabel">Part 1 · covers official adoption/registry reporting</span>
+      <h2>The numbers that matter <span class="tag concept">7 min live</span></h2>
+    </div>
+    <p class="lede">You do not adopt a standard on faith; you adopt it on evidence that it already won. Four numbers make the case. Roughly <strong>97 million monthly SDK downloads</strong> - the toolkits developers use to build MCP into apps and servers. Around <strong>10,000 active servers</strong> - capabilities already built and shareable. An <strong>official registry since September 2025</strong> - a single public place to find them. And <strong>every major AI vendor on board</strong> - OpenAI, Google, and Microsoft all speak MCP. When the toolkit downloads, the server count, the discovery layer, and the vendor list all point the same way, "standard-won" stops being an opinion.</p>
+
+    <details class="card" open>
+      <summary><span class="mode live">Live</span>What "the standard won" actually buys you<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>A won standard changes the shape of your risk. Three consequences a leader should be able to name:</p>
+        <ul>
+          <li><strong>Portability.</strong> Because every major host speaks MCP, a server your team builds today works with the AI apps you have not chosen yet. You are not betting on one vendor's roadmap - you are building to an interface they all implement.</li>
+          <li><strong>A supply of ready-made capability.</strong> Ten thousand servers means many of the connections you need already exist. The default question flips from "who can build this?" to "is there already one worth adopting?"</li>
+          <li><strong>Hiring and knowledge compound.</strong> A standard the whole industry uses is one your people can learn once and reuse everywhere. That is the same reason organizations standardized on HTTP and SQL.</li>
+        </ul>
+        <div class="callout example">
+          <span class="ex-pill">Real world</span>
+          <p><strong>Daybreak's calculus.</strong> Daybreak runs Claude in support and Copilot in ops. Because both are MCP hosts, the one sales server their data team builds serves both - and will serve whatever they adopt next year. That portability, not any single feature, is why they chose to build on MCP rather than a vendor-specific plugin format that could be deprecated (as a1's stalled-pilot story showed).</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>How to read fast-moving adoption numbers honestly<span class="mini">3 min read</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>These figures move quickly, so treat them as direction, not decimals:</p>
+        <ul>
+          <li><strong>Download counts include churn.</strong> SDK downloads measure developer activity and enthusiasm, not deployed servers in production. They are a momentum signal, a strong one, but not a headcount.</li>
+          <li><strong>"Around 10,000 servers" mixes quality levels.</strong> Some are production-grade and maintained; many are experiments. The registry (Part 2) is how you tell them apart.</li>
+          <li><strong>Re-check before you cite.</strong> The ecosystem reports new numbers often. Before a board deck, pull the current figure rather than reusing last quarter's.</li>
+        </ul>
+        <p>The honest headline for a leadership audience is qualitative and durable: <strong>MCP has crossed from "promising" to "assumed."</strong> The exact number is this quarter's; the trend is the point.</p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ PART 2: THE REGISTRY ============ -->
+  <section class="section" id="the-registry">
+    <div class="section-kicker">
+      <span class="klabel">Part 2 · covers official "Registry" docs</span>
+      <h2>The registry as your app store <span class="tag concept">8 min live</span></h2>
+    </div>
+    <p class="lede">Ten thousand servers are only useful if you can find and trust them. Since September 2025 the official registry does for MCP servers roughly what an app store does for apps: <strong>discovery</strong> (search a public catalog instead of hunting across repos), <strong>versioning</strong> (know which release you are adopting and when it changed), and <strong>moderation</strong> (a listing process, not a free-for-all). It is the hub the whole ecosystem organizes around - your SDKs on one side, hosts and servers on the other, and your own organization plugging in.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 380" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The MCP ecosystem as a hub and spokes: the official registry at the center, connected to SDKs, hosts, published servers, and your organization.">
+        <style>
+          .ecHd { font: 700 14px Inter, sans-serif; fill: #1E242D; }
+          .ecHub { font: 700 14px Inter, sans-serif; fill: #FFFFFF; }
+          .ecHubs { font: 400 11px Inter, sans-serif; fill: #F8EFE4; }
+          .ecN { font: 700 13px Inter, sans-serif; fill: #FFFFFF; }
+          .ecNs { font: 400 11px Inter, sans-serif; fill: #F8EFE4; }
+          .ecNote { font: 600 13px Inter, sans-serif; fill: #043029; }
+          .ecSpoke { stroke: #A8622B; stroke-width: 2.5; fill: none; }
+        </style>
+        <text class="ecHd" x="40" y="34">The registry sits at the center; everything plugs into it</text>
+
+        <line class="ecSpoke" x1="440" y1="200" x2="180" y2="115"/>
+        <line class="ecSpoke" x1="440" y1="200" x2="700" y2="115"/>
+        <line class="ecSpoke" x1="440" y1="200" x2="180" y2="300"/>
+        <line class="ecSpoke" x1="440" y1="200" x2="700" y2="300"/>
+
+        <circle cx="440" cy="200" r="62" fill="#5C3312"/>
+        <text class="ecHub" x="404" y="196">Registry</text>
+        <text class="ecHubs" x="413" y="216">the hub</text>
+
+        <rect x="70" y="90" width="200" height="52" rx="9" fill="#A8622B"/>
+        <text class="ecN" x="88" y="114">SDKs</text>
+        <text class="ecNs" x="88" y="130">toolkits devs build with</text>
+
+        <rect x="610" y="90" width="200" height="52" rx="9" fill="#C08048"/>
+        <text class="ecN" x="628" y="114">Hosts</text>
+        <text class="ecNs" x="628" y="130">Claude · Copilot · Cursor</text>
+
+        <rect x="70" y="278" width="200" height="52" rx="9" fill="#C08048"/>
+        <text class="ecN" x="88" y="302">Published servers</text>
+        <text class="ecNs" x="88" y="318">~10k capabilities to adopt</text>
+
+        <rect x="610" y="278" width="200" height="52" rx="9" fill="#A8622B"/>
+        <text class="ecN" x="628" y="302">Your organization</text>
+        <text class="ecNs" x="628" y="318">publishes + consumes</text>
+
+        <rect x="40" y="352" width="14" height="14" rx="3" fill="#0E7C6B"/>
+        <text class="ecNote" x="64" y="364">One public hub for finding, versioning, and vetting servers - the app-store layer of MCP.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the MCP ecosystem, hub and spokes around the registry</figcaption>
+    </figure>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>Evaluating a listed server before you trust it<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>A listing in the registry is a starting point, not a seal of approval - the same way an app being in the store does not make it right for your company. Judge every candidate on five things:</p>
+        <ul>
+          <li><strong>Maintainer.</strong> Who publishes it - the system's own vendor, a known company, or an anonymous individual? A first-party server (the vendor of the system it connects to) is usually the safest bet.</li>
+          <li><strong>Auth model.</strong> How does it authenticate to your system? Modern, standard authentication is table stakes; "paste your admin password" is a hard no. (a4 goes deep on this.)</li>
+          <li><strong>Update cadence.</strong> When was it last updated, and how regularly? A server abandoned six months ago is a liability the day your system changes.</li>
+          <li><strong>Capability scope.</strong> Apply a2's control triangle - how many tools, do any of them write or delete, and what do the resources expose?</li>
+          <li><strong>Local or remote.</strong> Is this something one person runs, or something you can host and govern centrally? Prefer remote for anything shared (a2).</li>
+        </ul>
+        <p>Leadership takeaway: adopting a server is a supplier decision, not an install. The same diligence you apply to any vendor applies here - the registry just makes the candidates easy to find.</p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="mode self">Self-study</span>Aggregators and enterprise catalogs<span class="mini">3 min read</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>Above the public registry, a layer of curation is emerging that larger organizations will care about:</p>
+        <ul>
+          <li><strong>Aggregators</strong> collect, rank, and review servers - the "editor's picks" on top of the raw catalog. Useful for discovery, but their judgement is theirs, not yours; treat a rating as a lead, not a decision.</li>
+          <li><strong>Enterprise catalogs</strong> are the internal version: a curated, approved list of servers your organization allows, with governance baked in. This is where a mature company ends up - a private allow-list drawn from the public registry, vetted against your own security bar.</li>
+          <li><strong>Why it matters now:</strong> the choice is not "public registry vs nothing." Standing up an internal catalog early is how you get the benefits of the ecosystem without the sprawl a1 warned about. a5 covers how to run one.</li>
+        </ul>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ PART 3: BUILD VS BUY VS WAIT ============ -->
+  <section class="section" id="build-buy-wait">
+    <div class="section-kicker">
+      <span class="klabel">Part 3 · the leadership takeaway</span>
+      <h2>Build vs buy vs wait <span class="tag concept">6 min live</span></h2>
+    </div>
+    <p class="lede">With a real supply of servers, your job becomes portfolio strategy, not engineering. Two questions sort almost every candidate: <strong>how sensitive is the data</strong> the server touches, and <strong>how differentiating</strong> is the capability to your business. Plot those two and a clear policy falls out - <strong>buy</strong> commodity connections to standard systems, <strong>build</strong> the servers that sit on your proprietary data, and <strong>wait</strong> on categories that are still immature. The matrix below is the whole decision on one page.</p>
+
+    <figure class="zoomable">
+      <svg viewBox="0 0 880 400" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A two-by-two matrix. Axes: data sensitivity and business differentiation. Low-low and high-low quadrants say buy; high-high says build; a low-differentiation immature area says wait.">
+        <style>
+          .bmHd { font: 700 14px Inter, sans-serif; fill: #1E242D; }
+          .bmAx { font: 700 12px Inter, sans-serif; fill: #5B6674; }
+          .bmQ { font: 700 18px Inter, sans-serif; fill: #FFFFFF; }
+          .bmQs { font: 400 11px Inter, sans-serif; fill: #F8EFE4; }
+          .bmNote { font: 600 13px Inter, sans-serif; fill: #043029; }
+          .bmLine { stroke: #C3CBD6; stroke-width: 2; fill: none; }
+        </style>
+        <text class="bmHd" x="40" y="34">Sort each candidate system by data sensitivity and differentiation</text>
+
+        <text class="bmAx" x="18" y="200" transform="rotate(-90 18,200)">Data sensitivity  →</text>
+        <text class="bmAx" x="360" y="392">Business differentiation  →</text>
+
+        <line class="bmLine" x1="120" y1="60" x2="120" y2="360"/>
+        <line class="bmLine" x1="120" y1="360" x2="820" y2="360"/>
+
+        <rect x="130" y="70" width="335" height="135" rx="9" fill="#A8622B"/>
+        <text class="bmQ" x="150" y="120">BUILD carefully</text>
+        <text class="bmQs" x="150" y="144">Sensitive data, low differentiation:</text>
+        <text class="bmQs" x="150" y="162">build only if no trusted server exists;</text>
+        <text class="bmQs" x="150" y="180">keep it in-house for control.</text>
+
+        <rect x="475" y="70" width="335" height="135" rx="9" fill="#5C3312"/>
+        <text class="bmQ" x="495" y="120">BUILD - your moat</text>
+        <text class="bmQs" x="495" y="144">Sensitive AND differentiating:</text>
+        <text class="bmQs" x="495" y="162">your proprietary data. Own these</text>
+        <text class="bmQs" x="495" y="180">servers; they are the advantage.</text>
+
+        <rect x="130" y="215" width="335" height="135" rx="9" fill="#DDAF7E"/>
+        <text class="bmQ" x="150" y="265" fill="#5C3312">BUY or WAIT</text>
+        <text class="bmQs" x="150" y="289" fill="#5C3312">Low sensitivity, low differentiation:</text>
+        <text class="bmQs" x="150" y="307" fill="#5C3312">buy a maintained server, or wait if</text>
+        <text class="bmQs" x="150" y="325" fill="#5C3312">the category is still immature.</text>
+
+        <rect x="475" y="215" width="335" height="135" rx="9" fill="#C08048"/>
+        <text class="bmQ" x="495" y="265">BUY the connector</text>
+        <text class="bmQs" x="495" y="289">Differentiating use, non-sensitive data:</text>
+        <text class="bmQs" x="495" y="307">buy the commodity connection, spend</text>
+        <text class="bmQs" x="495" y="325">your effort on the use case, not glue.</text>
+
+        <rect x="40" y="374" width="14" height="14" rx="3" fill="#0E7C6B"/>
+        <text class="bmNote" x="64" y="386">Rule of thumb: buy commodity systems, build on proprietary data, wait on immature categories.</text>
+      </svg>
+      <figcaption>🔍 Click to zoom - the build-vs-buy-vs-wait matrix</figcaption>
+    </figure>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>Reading the matrix in Daybreak terms<span class="mini">4 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p>The quadrants are abstract until you drop real systems in. Here is how Daybreak sorts its candidates:</p>
+        <ul>
+          <li><strong>Buy:</strong> the connection to their calendar and their help-desk tool. Standard systems, non-sensitive, plenty of maintained servers. Building these would be paying to reinvent a commodity.</li>
+          <li><strong>Build:</strong> the server over their subscription and sales data. That data is both sensitive and their competitive edge - exactly the quadrant where you own the server rather than hand it to a third party.</li>
+          <li><strong>Wait:</strong> a server that would let AI act on their fulfillment robotics. The category is young, the risk of an action tool going wrong is high, and there is no mature option. Revisit next quarter.</li>
+        </ul>
+        <p>Leadership takeaway: the matrix is not a one-time exercise. Systems move between quadrants as categories mature - today's "wait" is next year's "buy." Re-run it each planning cycle.</p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ DEMO 1 ============ -->
+  <section class="section" id="demo-1">
+    <div class="section-kicker">
+      <span class="klabel">Demo 1 of 2</span>
+      <h2>Score three candidate servers <span class="tag demo">★ 8 min · pen and paper</span></h2>
+    </div>
+    <p class="lede">The five-point evaluation from Part 2 is a muscle. Exercise it on three fictional-but-realistic listings and you will apply it to real ones without hesitation.</p>
+
+    <div class="callout example">
+      <span class="ex-pill">Real world</span>
+      <p><strong>Three listings to score.</strong> (A) <em>"OfficeCal Connector"</em> - published by the calendar vendor itself, modern auth, updated last week, three read-only tools, remote. (B) <em>"MegaCRM Bridge"</em> - published by an unknown individual, "enter your API key," last updated 11 months ago, includes a delete-record tool, local only. (C) <em>"SalesDB Server"</em> - your own data team, modern auth, updated weekly, read-only query tools plus a catalog resource, remote.</p>
+    </div>
+
+    <div class="steps">
+      <div class="step"><p><strong>Score each on the five points:</strong> maintainer, auth model, update cadence, capability scope, local vs remote. Give a simple green / amber / red per point.</p></div>
+      <div class="step"><p><strong>Decide adopt / investigate / reject</strong> for each. Write one sentence of reasoning - the sentence you would say in an approval meeting.</p></div>
+      <div class="step"><p><strong>Compare with the read below.</strong> If your instinct matched, you have the method. If not, note which point you under-weighted.</p></div>
+    </div>
+
+    <details class="card">
+      <summary><span class="mode live">Live</span>The scored answer<span class="mini">3 min</span><span class="caret">▶</span></summary>
+      <div class="body">
+        <p><strong>A - OfficeCal: adopt.</strong> First-party maintainer, modern auth, fresh, read-only, remote. A textbook "buy the commodity connector."</p>
+        <p><strong>B - MegaCRM Bridge: reject.</strong> Unknown maintainer, password-in-plaintext auth, stale, a destructive write tool, local only. Any one of those is a stop; together they are a clear no.</p>
+        <p><strong>C - SalesDB: adopt and own.</strong> Your team maintains it, it sits on proprietary data, it is read-only and remote. This is the "build on your moat" quadrant made real.</p>
+        <p>Notice: you reached defensible decisions on all three with no code and no vendor call - just the five points and a2's control triangle.</p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ DEMO 2 ============ -->
+  <section class="section" id="demo-2">
+    <div class="section-kicker">
+      <span class="klabel">Demo 2 of 2</span>
+      <h2>Your org's first three servers <span class="tag demo">★ 6 min · prioritize</span></h2>
+    </div>
+    <p class="lede">Strategy is choosing what comes first. Using the N x M worksheet from a1 and the matrix above, name the first three servers your organization should stand up - and be ready to defend the order.</p>
+
+    <div class="steps">
+      <div class="step"><p><strong>Pull your a1 worksheet</strong> - the list of systems AI should reach, with business value and data owner. That is your candidate pool.</p></div>
+      <div class="step"><p><strong>Place each on the matrix:</strong> buy, build, or wait. Cross off the "wait" ones for now.</p></div>
+      <div class="step"><p><strong>Rank the survivors</strong> by value-to-effort: highest business value, lowest build cost, clearest data owner rises to the top. Buy candidates usually rank fast because effort is low.</p></div>
+      <div class="step"><p><strong>Write the top three</strong> as a one-line brief each: system, buy-or-build, who owns it, why it is first. This is what you take to your data team and, in a5, into a rollout plan.</p></div>
+    </div>
+
+    <div class="callout tip">
+      <strong>Keep the shortlist</strong>
+      These three servers are the spine of a5 (rollout) and the test cases for a4 (security). Bring them to both sessions - the course is building toward a plan you can actually execute, not a reading list.
+    </div>
+  </section>
+
+  <!-- ============ HOMEWORK ============ -->
+  <section class="section" id="exercise">
+    <div class="section-kicker">
+      <span class="klabel">Homework</span>
+      <h2>Before session 4 <span class="tag exercise">◐ 20-30 min total</span></h2>
+    </div>
+    <ul>
+      <li>Open the official registry at registry.modelcontextprotocol.io and find a real server for a system you actually use. Score it on the five points. Notice how much you can judge in two minutes.</li>
+      <li>Finish your first-three-servers shortlist from Demo 2 and share it with the data or platform lead. Their pushback is free strategy.</li>
+      <li>For your top build candidate, write one sentence on why building beats buying - if you cannot, it may belong in the buy column.</li>
+      <li>Bring one worry about trusting a third-party server to session 4 - "how do we know it will not leak our data?" is exactly what a4 answers.</li>
+    </ul>
+  </section>
+
+  <!-- ============ SOURCES ============ -->
+  <section class="section" id="official">
+    <div class="section-kicker">
+      <span class="klabel">Source material</span>
+      <h2>Official sources covered</h2>
+    </div>
+    <p class="lede">This session distills the official registry documentation and public ecosystem reporting into decision-maker language. Live catalogs and figures stay on the official sites; this page covers:</p>
+    <div class="covered">
+      <div class="covered-row"><span class="status pill solid">✓</span><span class="name">modelcontextprotocol.io - "Registry" docs</span><span class="note">Part 2 · discovery, versioning, moderation, and how to evaluate a listing</span></div>
+      <div class="covered-row"><span class="status pill light">◐</span><span class="name">Official ecosystem + adoption reporting</span><span class="note">Part 1 · the download, server-count, and vendor-adoption numbers - re-verify before citing</span></div>
+    </div>
+  </section>
+
+  <!-- ============ QUIZ ============ -->
+  <section class="section" id="quiz">
+    <div class="section-kicker">
+      <span class="klabel">Check yourself</span>
+      <h2>Three questions before you go 🎯 <span class="tag exercise">◐ 90 seconds</span></h2>
+    </div>
+    <div class="quiz-q" data-answer="1">
+      <p class="qtext">1 · What does the official registry provide that a scattered set of code repos does not?</p>
+      <button class="qopt" type="button">A · It writes the servers for you, so no one has to build them</button>
+      <button class="qopt" type="button">B · Discovery, versioning, and moderation - one public place to find, track, and vet servers, like an app store</button>
+      <button class="qopt" type="button">C · It guarantees every listed server is safe for your organization to use</button>
+      <p class="qwhy">The registry (live since September 2025) is the app-store layer: search a catalog, see versions, and rely on a listing process. A listing is a starting point for your own five-point diligence, not a safety guarantee.</p>
+    </div>
+    <div class="quiz-q" data-answer="2">
+      <p class="qtext">2 · A server touches your proprietary subscription data and gives you a real competitive edge. Build, buy, or wait?</p>
+      <button class="qopt" type="button">A · Buy - there is surely a maintained server for it in the registry</button>
+      <button class="qopt" type="button">B · Wait - proprietary data is always too risky to connect</button>
+      <button class="qopt" type="button">C · Build and own it - sensitive plus differentiating is the quadrant where you keep the server in-house</button>
+      <p class="qwhy">High data sensitivity and high differentiation is the "build your moat" quadrant. You buy commodity connections, wait on immature categories, and build the servers that sit on the data that makes you distinct.</p>
+    </div>
+    <div class="quiz-q" data-answer="0">
+      <p class="qtext">3 · You are judging a registry listing. Which combination should stop you cold?</p>
+      <button class="qopt" type="button">A · Unknown maintainer, paste-your-password auth, not updated in a year, and a delete tool</button>
+      <button class="qopt" type="button">B · First-party maintainer, modern auth, updated last week, read-only tools</button>
+      <button class="qopt" type="button">C · A server that is remote rather than local</button>
+      <p class="qwhy">Any one of an anonymous maintainer, weak auth, staleness, or a destructive tool is a warning; together they are a clear reject. Remote-vs-local is a governance choice, not a red flag - remote is usually preferable for shared capabilities.</p>
+    </div>
+    <p class="quiz-score"></p>
+  </section>
+
+  <!-- ============ CHEAT SHEET ============ -->
+  <section class="cheat" id="cheatsheet">
+    <h3>Leader session 3 cheat sheet <span>· pin this</span></h3>
+    <div class="grid-2">
+      <div class="cheat-item"><b>The four numbers</b><span>~97M monthly SDK downloads, ~10k servers, registry since Sept 2025, every major vendor on board.</span></div>
+      <div class="cheat-item"><b>What "won" buys you</b><span>Portability across hosts, a supply of ready-made servers, and skills your people learn once and reuse.</span></div>
+      <div class="cheat-item"><b>The registry</b><span>Discovery, versioning, moderation - the app-store layer for MCP servers, live since September 2025.</span></div>
+      <div class="cheat-item"><b>Judge a listing (5 points)</b><span>Maintainer, auth model, update cadence, capability scope, local vs remote. A listing is a lead, not a seal.</span></div>
+      <div class="cheat-item"><b>Enterprise catalog</b><span>Your own vetted allow-list drawn from the public registry - how mature orgs avoid sprawl (a5).</span></div>
+      <div class="cheat-item"><b>Build / buy / wait</b><span>Buy commodity systems, build on proprietary data, wait on immature categories. Re-run each cycle.</span></div>
+      <div class="cheat-item"><b>The two axes</b><span>Data sensitivity x business differentiation. Sensitive + differentiating = build and own the server.</span></div>
+      <div class="cheat-item"><b>First three servers</b><span>Rank by value-to-effort from your a1 worksheet; brief each as system, buy/build, owner, why first.</span></div>
+    </div>
+  </section>
+
+  <footer class="pagefoot">
+    <span>Leader session 3 of 6 · learn-mcp-with-phoebe · by Phoebe Fu &nbsp;·&nbsp; 📚 <a href="https://phoebefu6.github.io/learn-with-phoebe/">Learn with Phoebe ↗</a></span>
+    <span><a href="a2-architecture-plain.html">← Prev: The architecture in plain English</a> &nbsp;·&nbsp; <a href="a4-security-trust.html">Next: Security and trust →</a></span>
+  </footer>
+
+</main>
+
+<script src="../assets/app.js?v=1"></script>
+</body>
+</html>
